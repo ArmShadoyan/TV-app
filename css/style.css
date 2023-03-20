@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Libre+Baskerville&family=Montserrat&family=Mukta:wght@200&family=Roboto+Serif:wght@400;500&family=Signika+Negative:wght@300;400&display=swap');
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+.root{
+	height: 100%;
+	width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0%;
+	overflow: hidden;
+	background-image: url("/imgs/bg.png");
+	background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
+			/* *****
+			***	inputs blockkk */
+
+.root .login-block{
+	width: 100%;
+	height: 58%;
+	display: flex;
+	justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.login-block .logo-block img{
+	width: 100%;
+	height: 7rem;
+}
+.login-block .inputs-block{
+	width: 26%;
+	height: 61%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+.login-block .inputs-block .login-btn,
+.login-block .inputs-block input{
+	width: 100%;
+	height: 76px;
+	background-color: rgba(98, 97, 100, .40);
+    color: white;
+    border-radius: 0.5rem;
+    border: 5px solid transparent;
+    font-weight: bold;
+    outline: none;
+	margin: 20px;
+	padding: 0 30px;
+	user-select: none;
+}
+.login-block .inputs-block .active-login{
+	border: 5px solid #3ca45f;
+}
+.login-block .inputs-block p{
+	color: #f80c0c;
+	font-size: 30px;
+}
+.login-block .inputs-block input::placeholder{
+	font-size: 26px;
+	font-weight: bold;
+}
+
+.login-block .inputs-block .login-btn{
+	font-size: 30px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	cursor: pointer;
+}
+
+
+			/* *****
+			***	keyboard blockkk */
+
+.keyboard-block{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	position: fixed;
+    width: 100%;
+    height: 42%;
+    left: 0;
+    bottom: 0;
+    z-index: 9;
+}
+
+.keyboard-block .keyboard{
+	height: 100%;
+	width: 65%;
+	display: flex;
+	flex-direction: column;
+	justify-content: end;
+}
+.keyboard-block .keyboard .row{
+	width: 100%;
+	height: 20%;
+	display: flex;
+	font-size: 32px;
+	font-family: 'Montserrat', sans-serif;
+}
+
+.keyboard-block .keyboard .row .key{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 7%;
+    height: 94%;
+	margin: 3px;
+	position: relative;
+    text-align: center;
+    border-radius: 0.4rem;
+    background-color: #35343a;
+	color: #fff;
+	font-weight: bold;
+    cursor: pointer;
+}
+.keyboard-block .keyboard .row .bigKeys{
+	width: 14.6%;
+}
+.keyboard-block .keyboard .row .numbers-key{
+	width: 14%;
+}
+.keyboard-block .keyboard .row .space{
+	width: 68%;
+}
+.keyboard-block .keyboard .row .active{
+	background-color: #2E844E;
+}
+
+.material-symbols-outlined {
+	font-variation-settings:
+	'FILL' 1,
+	'wght' 700,
+	'GRAD' 200,
+	'opsz' 48;
+	font-size: 42px;
+
+  }
+.row .material-symbols-outlined{
+	font-size: 42px;
+  }
+.row .back-space{
+	font-size: 60px;
+}
