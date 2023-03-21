@@ -50,6 +50,7 @@
     border-radius: 0.5rem;
     border: 5px solid transparent;
     font-weight: bold;
+	font-size: 25px;
     outline: none;
 	margin: 20px;
 	padding: 0 30px;
@@ -73,6 +74,9 @@
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
+}
+.login-block .inputs-block .active-login-btn{
+	background-color: #2E844E;
 }
 
 
