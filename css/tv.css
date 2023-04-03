@@ -1,0 +1,294 @@
+.tv-block{
+	display: flex;
+	width: 98%;
+    height: 96%;
+    position: absolute;
+    margin: 1%;
+    top: 0;
+    left: 0;
+}
+.tv-block .lists-block{
+	display: flex;
+	flex-direction: column;
+	width: 40%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    left: 1%;
+}
+.tv-block .chanels-block{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: relative;
+}
+.tv-block .chanels-block .chanels-inner{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: absolute;
+	transition: .8s;
+	opacity: 1;
+}
+.tv-block .chanels-block .filter-menu{
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: absolute;
+	transition: .8s;
+	transform: translateX(-100rem);
+	z-index:1;
+}
+.tv-block .chanel-item{
+	position: relative;
+    width: 96%;
+    height: 13.3%;
+    background-color: #35343a;
+    margin-bottom: 1.5%;
+    border-radius: 0.4rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+	font-family: sans-serif;
+}
+.tv-block .chanel-item.chanel-item-active{
+	background-color: #2e844e ;
+}
+.tv-block .chanel-item.chanel-item-selected{
+	border: 2px solid #2e844e;
+}
+	.tv-block .chanel-item .chanel-number{
+	width: 15%;
+	display: flex;
+    text-align: center;
+	justify-content: center;
+    font-weight: bold;
+    color: #fff;
+	font-size: 3rem;
+}
+.tv-block .chanel-item .chanel-logo{
+	display: flex;
+    width: 16.5%;
+    height: 90%;
+    background-repeat: no-repeat;
+    background-size: 84%;
+    background-position: center;
+}
+.tv-block .chanel-item .chanel-title{
+    display: inline-block;
+    width: 65%;
+    padding-left: 3%;
+	font-size: 3rem;
+    color: #fff;
+    font-weight: bold;
+    overflow: hidden;
+}
+.tv-block .chanel-item .chanel-favorite{
+	position: absolute;
+    right: 2%;
+    top: 10%;
+    border-radius: 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+.tv-block .chanel-item .chanel-favorite.chanel-favorite-active{
+	background-color: yellow;
+}
+.tv-block .chanel-item .chanel-title.filter-menu-list-title{
+	width: 90%;
+}
+
+.chanel-item.filter-menu-active{
+	background-color: #2e844e;
+}
+
+.tv-block .player-block{
+	width: 57%;
+    height: 100%;
+    position: absolute;
+    display: inline-block;
+    right: 0%;
+}
+.tv-block .time-block{
+	display: flex;
+	justify-content: space-between;
+	border-radius: 0.4rem;
+    width: 100%;
+    height: 8%;
+    background: #35343a;
+    margin-bottom: 2%;
+    font-size: 3.5rem;
+    color: white;
+    font-weight: bold;
+    line-height: 8rem;
+}
+.tv-block .time-block .time{
+	font-size: 4rem;
+	font-family: sans-serif;
+	padding-right: 1.5rem;
+}
+.tv-block .time-block .date{
+	font-size: 4rem;
+	font-family: sans-serif;
+	padding-left: 1.5rem;
+}
+.tv-block .video-block{
+	width: 100%;
+    height: 65%;
+    object-fit: fill;
+    background-color: #000000;
+    position: relative;
+}
+.tv-block .video-block .video{
+	width: 100%;
+	height: 100%;
+	object-fit: fill;
+}
+
+.tv-block .current-chanel{
+	width: 100%;
+    height: 15%;
+    margin-top: 1%;
+    background: #35343a;
+    border-radius: 0.4rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-repeat: no-repeat;
+    background-size: 10%;
+    background-position: 16% center;
+    background-image: url(/imgs/tv/logo.png);
+}
+.tv-block .current-chanel-number{
+	width: 13%;
+    display: inline-block;
+    color: white;
+    font-size: 5rem;
+    text-align: center;
+    font-weight: bold;
+	font-family: sans-serif;
+}
+.tv-block .current-chanel-info{
+	width: 70%;
+    margin-left: 15%;
+    display: inline-block;
+    color: white;
+    font-size: 3rem;
+    height: 90%;
+    font-weight: bold;
+    overflow: hidden;
+}
+.tv-block .current-chanel-name{
+	height: 33%;
+    overflow: hidden;
+    line-height: 5rem;
+	font-size: 4rem;
+	font-family: sans-serif;
+}
+.tv-block .current-chanel-epg{
+	height: 65%;
+    overflow: hidden;
+    font-size: 3rem;
+    position: relative;
+    font-weight: normal;
+}
+.tv-block .current-epg,
+.tv-block .next-epg{
+	height: 45%;
+    margin-top: 0.5%;
+    overflow: hidden;
+}
+.tv-block .options-block{
+	width: 100%;
+    height: 8%;
+    margin-top: 1%;
+    background: #35343a;
+    border-radius: 0.4rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.tv-block .options-block .option-btn{
+	position: relative;
+    color: white;
+    font-weight: bold;
+    font-size: 3rem;
+	font-family: sans-serif;
+    padding-left: 7%;
+    padding-right: 3%;
+	cursor: pointer;
+}
+.option-btn .color-btn{
+	content: "";
+    width: 2.5rem;
+    height: 1.5rem;
+    position: absolute;
+    left: 0%;
+    top: 50%;
+    transform: translateY(-50%) translateX(66%);
+    border-radius: 0.3rem;
+}
+.option-btn .sort-red{
+	content: "";
+    position: absolute;
+    right: 5%;
+    top: 22%;
+    width: 1.8rem;
+    height: 2.1rem;
+    background-image: url(/imgs/tv/arrow.png);
+    background-repeat: no-repeat;
+    background-size: 1.8rem;
+    background-position: 0 center;
+}
+.red-btn{
+	background-color: red;
+}
+.yellow-btn{
+	background-color: yellow;
+}
+.green-btn{
+	background-color: green;
+}
+.blue-btn{
+	background-color: blue;
+}
+.tv-block .chanel-menu-title-block{
+	display: flex;
+	position: relative;
+    width: 98%;
+    height: 8%;
+    margin-bottom: 4%;
+    background-color: #35343a;
+    border-radius: 0.4rem;
+    cursor: pointer;
+}
+
+.tv-block .chanel-menu-title-block .filter-menu-icon{
+	width: 15%;
+	height: 100%;
+	background-image: url(/imgs/tv/category.png);
+	background-repeat: no-repeat;
+    background-size: 50%;
+    background-position: 50%;
+}
+.tv-block .chanel-menu-title-block .filter-menu-title{
+	width: 80%;
+	height: 100%;
+	font-size: 3.5rem;
+	color: #fff;
+	font-family: sans-serif;
+	align-items: center;
+	display: flex;
+	font-weight: bold;
+}
+
