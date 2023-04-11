@@ -97,14 +97,14 @@
     z-index: 9;
 }
 
-.keyboard-block .keyboard{
+.keyboard{
 	height: 100%;
 	width: 65%;
 	display: flex;
 	flex-direction: column;
 	justify-content: end;
 }
-.keyboard-block .keyboard .row{
+.keyboard .row{
 	width: 100%;
 	height: 20%;
 	display: flex;
@@ -112,7 +112,7 @@
 	font-family: 'Montserrat', sans-serif;
 }
 
-.keyboard-block .keyboard .row .key{
+.keyboard .row .key{
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -127,16 +127,16 @@
     cursor: pointer;
 	font-size: 3rem;
 }
-.keyboard-block .keyboard .row .bigKeys{
+.keyboard .row .bigKeys{
 	width: 14.6%;
 }
-.keyboard-block .keyboard .row .numbers-key{
+.keyboard .row .numbers-key{
 	width: 14%;
 }
-.keyboard-block .keyboard .row .space{
+.keyboard .row .space{
 	width: 68%;
 }
-.keyboard-block .keyboard .row .active{
+.keyboard .row .active{
 	background-color: #2E844E;
 }
 

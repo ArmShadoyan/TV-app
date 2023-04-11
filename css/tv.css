@@ -2,7 +2,7 @@
 	display: flex;
 	width: 98%;
     height: 96%;
-    position: absolute;
+    position: relative;
     margin: 1%;
     top: 0;
     left: 0;
@@ -48,7 +48,8 @@
 .tv-block .chanel-item{
 	position: relative;
     width: 96%;
-    height: 13.3%;
+    height: 12rem;
+    min-height: 12rem;
     background-color: #35343a;
     margin-bottom: 1.5%;
     border-radius: 0.4rem;
@@ -112,11 +113,13 @@
 }
 
 .tv-block .player-block{
-	width: 57%;
+	width: 100%;
     height: 100%;
-    position: absolute;
     display: inline-block;
+    position: absolute;
     right: 0%;
+    transition: .7s;
+    transform: translateX(0);
 }
 .tv-block .time-block{
 	display: flex;
@@ -169,6 +172,18 @@
     background-position: 16% center;
     background-image: url(/imgs/tv/logo.png);
 }
+.current-epg,
+.next-epg{
+    font-size: 3.5rem;
+    font-family: sans-serif;
+}
+.current-epg span,
+.next-epg span{
+    font-size: 3.5rem;
+    font-family: sans-serif;
+    color: #2e844e;
+}
+
 .tv-block .current-chanel-number{
 	width: 13%;
     display: inline-block;
@@ -292,3 +307,44 @@
 	font-weight: bold;
 }
 
+
+
+/* *****
+    SEARCH  *** */
+
+
+.chanels-search-inputblock .keyboard{
+    height: 41rem;
+    width: 100%;
+}
+.chanels-search-inputblock{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transform: translateX(110%);
+    transition: .7s;
+}
+.chanels-search-inputblock input{
+    height: 6rem;
+    width: 88%;
+    background-color: #35343a;
+    border: none;
+    border-radius: 1rem;
+    outline: none;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    line-height: 3rem;
+    padding: 3rem 2rem;}
+
+.tv-right-block{
+    position: relative;
+    display: flex;
+    width: 57%;
+    height: 100%;
+    right: -43%;
+}

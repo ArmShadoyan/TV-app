@@ -230,9 +230,6 @@ function backToSettings(){
 
 
 
-
-
-
 function addRemSettings(){
 	if(document.querySelector(".active-settings-item")){
 		document.querySelector(".active-settings-item").classList.remove("active-settings-item");

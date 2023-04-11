@@ -20,7 +20,7 @@ const popUpButtonsDiv = document.createElement("div");
 const cancleBtn = document.createElement("button");
 const exitBtn = document.createElement("button");
 
-keyboard.style.display = "none";
+// keyboard.style.display = "none";
 errorMessage.style.display = "none";
 loginBlock.style.top = "12%";
 
@@ -57,14 +57,7 @@ cancleBtn.textContent = "Cancle";
 exitBtn.classList.add("exit-btn");
 exitBtn.textContent = "Exit";
 
-root.append(loginBlock,keyboardBlock,popUp);
-loginBlock.append(logoBlock,inputsBlock);
-logoBlock.append(logoImg);
-inputsBlock.append(loginInput,passwordInput,loginBtn,errorMessage);
-keyboardBlock.append(keyboard);
-popUp.append(popUpInner);
-popUpInner.append(popUpAnswer,popUpButtonsDiv);
-popUpButtonsDiv.append(cancleBtn,exitBtn);
+
 
 const lettersKeyboard = [
 	["q","w","e","r","t","y","u","i","o","p","/","\\","back"],
@@ -82,23 +75,76 @@ const numbersKeyboard = [
 
 
 let currentBlock = "login";
+let currentInput = null;
 let keyIndex = 0;
 let rowIndex = 0;
 let i = 0;
+let inputI = 0
 let popUpi = 0;
+let keyboard_exist = false;
 
+function keyboardPos(){
 
-function loginBlockStyle(){
-	if(keyboard.style.display === "none"){
-		loginBlock.style.top = "12%";
-	}else{
+	if(keyboard_exist){
 		loginBlock.style.top = "0";
+	}else{
+		loginBlock.style.top = "12%";
 	}
 }
+keyboardPos()
 
-function printKeyboard(keyboardKeys){
+
+function build_Login_BLock(){
+	root.append(loginBlock,keyboardBlock,popUp);
+	loginBlock.append(logoBlock,inputsBlock);
+	logoBlock.append(logoImg);
+	inputsBlock.append(loginInput,passwordInput,loginBtn,errorMessage);
+	keyboardBlock.append(keyboard);
+	popUp.append(popUpInner);
+	popUpInner.append(popUpAnswer,popUpButtonsDiv);
+	popUpButtonsDiv.append(cancleBtn,exitBtn);
+	
+	currentInput = document.querySelector(".active-login")
+
+	loginInput.addEventListener("click", () => {
+		keyboard.innerHTML = "";
+		currentInput = loginInput;
+		print_keyboard(lettersKeyboard,currentInput);
+		keyboard_exist = true;
+		addRemLogin();
+		document.querySelector(".active-login").classList.remove("active-login");
+		loginInput.classList.add("active-login");
+		keyboardPos()
+	})
+
+	passwordInput.addEventListener("click", () => {
+		keyboard.innerHTML = "";
+		currentInput = passwordInput;
+		print_keyboard(lettersKeyboard,currentInput);
+		keyboard_exist = true;
+		addRemLogin();
+		document.querySelector(".active-login").classList.remove("active-login");
+		passwordInput.classList.add("active-login");
+		keyboardPos()
+	})
+console.log(loginBtn);
+	loginBtn.addEventListener("click",() => {
+		loginRequest(loginInput.value,passwordInput.value)
+					.then(() => {
+						if(!auth){
+							errorMessage.style.display = "block";
+							setTimeout(() => {
+								errorMessage.style.display = "none";
+							}, 3000);
+						}
+					});		
+	})
+}
+
+function print_keyboard(keyboardKeys,currentInput){
 	rowIndex = 0;
 	keyIndex = 0;
+	
 	keyboardKeys.forEach((row,rowI) => {
 		const rowLine = document.createElement("div");
 		rowLine.classList.add("row");
@@ -109,6 +155,7 @@ function printKeyboard(keyboardKeys){
 			symbol.classList.add("key");	
 			if(key.toUpperCase() != key.toLowerCase() && key.length === 1){
 				symbol.classList.add("letter");
+				
 			}
 			if(key === "Done"){
 				symbol.classList.add("bigKeys","done");
@@ -137,402 +184,92 @@ function printKeyboard(keyboardKeys){
 				</span>		
 				`;
 			}
-
-
 			rowLine.append(symbol);
 		});
 
 	});
+
+	const keys = document.querySelectorAll(".key");
+	let input = currentInput;
+			
+				keys.forEach(key => {		 
+					key.addEventListener("click",()=> {
+						keyboardClick(input,key)
+						
+					})
+				})
 	return keyboard;
 }
 
-
-document.addEventListener("keydown",(e) => {
-	if(currentBlock === "login"){
-	
-		const rows = document.querySelectorAll(".row");
-		let rowkeys = rows[rowIndex].querySelectorAll(".key");
-
-		if(e.key === "ArrowRight" && keyboard.style.display === "flex"){
-			
-			if(keyIndex === rowkeys.length-1){
-				keyIndex = -1;
-				if(document.querySelector(".active"))document.querySelector(".active").classList.remove("active");
-			}
-			
-			keyIndex++;
-			rowkeys[keyIndex].classList.add("active");
-			if(rowkeys[keyIndex-1]){
-				rowkeys[keyIndex-1].classList.remove("active");
-			}
-
-		 }else if(e.key === "ArrowLeft" && keyboard.style.display === "flex"){
-			if(keyIndex === 0){
-				keyIndex = rowkeys.length;
-				if(document.querySelector(".active"))document.querySelector(".active").classList.remove("active");
-			}
-
-			keyIndex--;
-			rowkeys[keyIndex].classList.add("active");
-			if(rowkeys[keyIndex+1])rowkeys[keyIndex+1].classList.remove("active");
-		 }
-		 
-		 if(e.key === "ArrowDown" && rowIndex < 3 && keyboard.style.display === "flex"){
-
-			rowkeys[keyIndex].classList.remove("active");
-			rowIndex++;	
+function keyboardControls(e){
+	let rowkeys;
+	let rows;
+    if(currentBlock === "login"){
+		if(keyboard_exist){
+			rows = document.querySelectorAll(".row");
 			rowkeys = rows[rowIndex].querySelectorAll(".key");
+		}
 
-			if(keyIndex > rowkeys.length-1)keyIndex = rowkeys.length-1;
-			
-
-			rowkeys[keyIndex].classList.add("active");	
-
-		 }else if(e.key === "ArrowUp" && rowIndex > 0 && keyboard.style.display === "flex"){
-			rowkeys[keyIndex].classList.remove("active");
-			rowIndex --;
-			rowkeys = rows[rowIndex].querySelectorAll(".key");
-			if(rowIndex === 2){
-				if(keyIndex === 2){
-					keyIndex = rowkeys.length-1;
-				}else if (keyIndex === 0){
-					keyIndex = 0;
-				}else{
-					keyIndex = 6;
-				}
-			};
-			rowkeys[keyIndex].classList.add("active");
-		 }
-	}
-});
-
-
-function activeInputs(){
-	const inputs = document.querySelectorAll(".input-block-item");
-	printOnClick();
-	
-	document.addEventListener("keydown",(e) => {
-		if(currentBlock === "login"){
-			
-			if(e.key === "Enter" && !loginBtn.classList.contains("active-login") && popUp.style.display === "none"){
-				keyboard.style.display = "flex";
-				loginBlockStyle();
-				print(e);
-			}else if(e.key === "Enter" && cancleBtn.classList.contains("popup-active") && keyboard.style.display === "none"){
-				popUp.style.display = "none";
-			}else if(e.key === "Backspace" && keyboard.style.display === "flex"){
-				keyboard.style.display = "none";
-				loginBlockStyle();
-				keyIndex = 0;
-				rowIndex = 0;
-				if(document.querySelector(".active")){
-					document.querySelector(".active").classList.remove("active");
-				}
-				keyboard.innerHTML = "";
-				printKeyboard(lettersKeyboard);
-				printOnClick();
-
-			}else if(e.key === "Backspace" && keyboard.style.display === "none"){
-				popUp.style.display = "block";
-			}
-
-			if(e.key === "Enter" && loginBtn.classList.contains("active-login")){
-			
-				loginRequest(loginInput.value,passwordInput.value)
-				.then(() => {
-					if(!auth){
-						errorMessage.style.display = "block";
-						setTimeout(() => {
-							errorMessage.style.display = "none";
-						}, 3000);
-					}
-				});		
-			}
-
-			if(e.key === "ArrowDown" && keyboard.style.display === "none"){
-				inputs[i].classList.remove("active-login");
-				i++;
-				if(i > 2)i = 0;
-				if(loginBtn.classList.contains("active-login")){
-					loginBtn.classList.remove("active-login");
-					i = 0;
-				}
-				inputs[i].classList.add("active-login");
-			}else if(e.key === "ArrowUp" && keyboard.style.display === "none"){
-				loginBtn.classList.remove("active-login-btn");
-				inputs[i].classList.remove("active-login");
-				if(i === 0)i = inputs.length;
-				i--;
-				if(loginBtn.classList.contains("active-login")){
-					loginBtn.classList.remove("active-login");
-					i = 1;
-				}
-				inputs[i].classList.add("active-login");
+        if(e.key === "Backspace" && keyboard.classList.contains("live-keyboard")){
+            document.querySelector(".player-block").style.transform = "translateX(0)";
+			document.querySelector(".chanels-search-inputblock").style.transform = "translateX(110%)";
+			currentBlock = "tv";
+			keyboard_exist = false;
+        }else if(e.key === "Enter"){
+			if(currentInput && keyboard_exist){
+				if(document.querySelector(".active"))document.querySelector(".active").click();
+			}else if(!keyboard_exist && document.querySelector(".active-login")){
+				document.querySelector(".active-login").click()
 			}
 		}
-	});
-}
-
-function createNumbersKeyboard(){
-	document.addEventListener("keydown",(e) => {
-		if(currentBlock === "login"){
-			if(e.key === "Enter"){
-				if(document.querySelectorAll(".numbers-key")[0].classList.contains("active") || 
-				document.querySelectorAll(".numbers-key")[1].classList.contains("active")){
-					if(document.querySelectorAll(".numbers-key")[0].textContent === "123"){
-						keyboard.innerHTML = "";
-						printKeyboard(numbersKeyboard);	
-						keyIndex = 0;
-						rowIndex = 0;
-					}else{
-						keyboard.innerHTML = "";
-						printKeyboard(lettersKeyboard);	
-						keyIndex = 0;
-						rowIndex = 0;
-					}
-				}
-			}
-		}
-	});
-}
-
-function upLow(){
-	document.addEventListener("keydown",(e) => {
-		if(currentBlock === "login"){
-			const shift = document.querySelectorAll(".shift");
-			const letters = document.querySelectorAll(".letter");
-			if(e.key === "Enter"){
-				if(shift[0].classList.contains("active") || shift[1].classList.contains("active")){
-					letters.forEach(item => {
-						if(item.textContent !== item.textContent.toUpperCase()){
-						item.textContent = item.textContent.toUpperCase();
-						}else{
-							item.textContent = item.textContent.toLowerCase();
-						}
-						
-					});
-				}
-			}
-		}
-	});
-}
-
-function activeInputOnclick(){
-	const inputs = document.querySelectorAll(".input");
-	inputs.forEach((item,index) => {
-		item.addEventListener("click",() => {
-			if(loginBtn.classList.contains("active-login-btn")){
-				loginBtn.classList.remove("active-login-btn");
-			}
-
-			if(index === 0){
-				loginBtn.classList.remove("active-login");
-				item.classList.add("active-login");
-				if(inputs[1].classList.contains("active-login")){
-					inputs[1].classList.remove("active-login");
-				}
-			}else if(index === 1){
-				loginBtn.classList.remove("active-login");
-				item.classList.add("active-login");
-				if(inputs[0].classList.contains("active-login")){
-					inputs[0].classList.remove("active-login");
-				}
-			}
-
-			keyboard.style.display = "flex";
-			loginBlockStyle();
-			
-		});
-	});
-
-	loginBtn.addEventListener("click",() => {
-		inputs.forEach(item => {
-			item.classList.remove("active-login");
-		});
-
-		loginRequest(loginInput.value,passwordInput.value)
-				.then(() => {
-					if(!auth){
-						errorMessage.style.display = "block";
-						setTimeout(() => {
-						errorMessage.style.display = "none";
-					}, 3000);
-					console.log(auth);
-					}
-				});
-
-		loginBtn.classList.add("active-login-btn");
-
-		
-		keyIndex = 0;
-		rowIndex = 0;
-		if(document.querySelector(".active"))document.querySelector(".active").classList.remove("active");
-	});	
-}
-
-function print(e){
-		
-		const activeInput = document.querySelector(".active-login");
-		const pressedKey = document.querySelector(".active");
-		if(e.key === "Enter"){		
-			if(pressedKey){
-				if(!pressedKey.classList.contains("shift") && !pressedKey.classList.contains("back")
-				&& pressedKey.textContent.length === 1){
-
-				activeInput.value += pressedKey.textContent;
-
-				}
-			}
-			
-		}
-		if(!document.querySelector(".active")){
-			document.querySelectorAll(".row")[0].querySelectorAll(".key")[0].classList.add("active");
-		}
-	
-}
-
-function deleteeOnKey(){
-	document.addEventListener("keydown",(e) => {
-			if(currentBlock === "login"){
-				const activeInput = document.querySelector(".active-login");
-				const backBtn = document.querySelector(".back");
-				const cleanBtn = document.querySelector(".clean");
-				const doneBtn = document.querySelector(".done");
-				if(e.key === "Enter" && backBtn.classList.contains("active")){
-					activeInput.value = activeInput.value.split("").slice(0,-1).join("");
-			}else if(e.key === "Enter" && cleanBtn.classList.contains("active")){
-				activeInput.value = "";
-			}else if(e.key === "Enter" && doneBtn.classList.contains("active")){
-				const inputItems = document.querySelectorAll(".input-block-item");
-				if(i < inputItems.length-1){
-					inputItems[i].classList.remove("active-login");
-					inputItems[i + 1].classList.add("active-login");
-					i++;
-				}else{
-					keyboard.style.display = "none";
-					loginBlockStyle();
-					document.querySelector(".active").classList.remove("active");
-					keyIndex = 0;
+		if(keyboard_exist){
+			if(e.key === "ArrowRight"){
+				keyIndex++;
+				if(keyIndex > rowkeys.length-1)keyIndex = 0;
+				addRemLogin();
+			}else if(e.key === "ArrowLeft"){
+				keyIndex--;
+				if(keyIndex < 0)keyIndex = rowkeys.length-1;
+				addRemLogin();
+			}else if(e.key === "ArrowDown"){
+				rowIndex++;
+				if(rowIndex > rows.length-1){
 					rowIndex = 0;
 				}
+				if(rowIndex > 2){
+					keyIndex = 0;
+				}
+				addRemLogin()
+			}
+			else if(e.key === "ArrowUp"){
+				rowIndex--;
+				if(rowIndex < 0){
+					rowIndex = rows.length-1;
+					keyIndex = 0;
+				}
+				addRemLogin()
+			}
+		}else if(!keyboard_exist && !document.querySelector(".keyboard").classList.contains("live-keyboard")){
+			const inputs = document.querySelectorAll(".input-block-item");
+			if(e.key === "ArrowDown"){
+				document.querySelector(".active-login").classList.remove("active-login")
+				inputI++;
+				if(inputI > inputs.length-1)inputI = 0;
+				inputs[inputI].classList.add("active-login")
+			}else if(e.key === "ArrowUp"){
+				document.querySelector(".active-login").classList.remove("active-login")
+				inputI--;
+				if(inputI < 0)inputI = inputs.length-1;
+				inputs[inputI].classList.add("active-login")
+
 			}
 		}
-	});
+    }
 }
 
-function printOnClick(){
-	const keys = document.querySelectorAll(".key");
+build_Login_BLock();
+popUpActive();
 
-	if(document.querySelector(".active")){
-		document.querySelector(".active").classList.remove("active");
-	}
-
-	keys.forEach((item,index) => {
-
-		if(!item.classList.contains("shift") &&
-		   !item.classList.contains("back") &&
-		   !item.classList.contains("numbers-key") &&
-		   !item.classList.contains("done")&&
-		   !item.classList.contains("clean")){
-
-			item.addEventListener("click",(e) => {
-				console.log(1);
-				const activeInput = document.querySelector(".active-login");
-
-				if(document.querySelector(".active")){
-					document.querySelector(".active").classList.remove("active");
-				}
-				item.classList.add("active");
-
-				const rows = document.querySelectorAll(".row");
-				rows.forEach((item,rIndex) => {
-					
-					item.querySelectorAll(".key").forEach((key,kIndex) => {
-						if(key.classList.contains("active")){
-							
-							keyIndex = kIndex;
-							rowIndex = rIndex;
-						}
-
-					});
-				});
-
-				if(activeInput)activeInput.value += item.textContent;
-			});
-		   } else if(item.classList.contains("shift")){
-				item.addEventListener("click",() => {
-					const letters = document.querySelectorAll(".letter");
-					letters.forEach(item => {
-						if(item.textContent !== item.textContent.toUpperCase()){
-						item.textContent = item.textContent.toUpperCase();
-						}else{
-							item.textContent = item.textContent.toLowerCase();
-						}
-					});
-				});
-		   }
-		   else if(item.classList.contains("back")){
-			item.addEventListener("click",() => {
-				const activeInput = document.querySelector(".active-login");
-				activeInput.value = activeInput.value.split("").slice(0,-1).join("");
-			});
-		   }
-		   else if(item.classList.contains("clean")){
-			item.addEventListener("click", () => {
-				const activeInput = document.querySelector(".active-login");
-				activeInput.value = "";
-			});
-		   }
-		   else if(item.classList.contains("done")){
-			item.addEventListener("click",() => {
-				const inputItems = document.querySelectorAll(".input-block-item");
-				inputItems.forEach((item,index) =>{
-					if(item.classList.contains("active-login")){
-						i = index;
-					}
-				});
-				if(i !== inputItems.length-1){
-					inputItems[i].classList.remove("active-login");
-					inputItems[i + 1].classList.add("active-login");
-					i++;
-				}
-				else{
-					keyIndex = 0;
-					rowIndex = 0;
-					keyboard.style.display = "none";
-					loginBlockStyle();
-				}
-			});
-				
-		   }
-		   else if(item.classList.contains("numbers-key")){
-			if(item.textContent === "123"){
-				item.addEventListener("click",() => {
-					keyboard.innerHTML = "";
-					printKeyboard(numbersKeyboard);	
-					printOnClick();
-					keyIndex = 0;
-					rowIndex = 0;
-				});
-			}else{
-				item.addEventListener("click",() => {
-							keyboard.innerHTML = "";
-							printKeyboard(lettersKeyboard);	
-							printOnClick();
-							keyIndex = 0;
-							rowIndex = 0;
-				});
-							
-			}
-		   }
-		
-		   
-	});
-	if(document.querySelector(".active")){
-	document.querySelector(".active").classList.remove("active");
-	}
-
-}
 
 function popUpActive(){
 	const popUpBtns = popUp.querySelectorAll("button");
@@ -555,11 +292,3 @@ function popUpActive(){
 		}
 	});
 }
-
-printKeyboard(lettersKeyboard);
-upLow();
-createNumbersKeyboard();
-activeInputs();
-activeInputOnclick();
-deleteeOnKey();
-popUpActive();
