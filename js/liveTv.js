@@ -430,12 +430,13 @@ function filterMenuOnclick(){
 }
 
 function createChanelsSearechInput(){
+	// debugger
 	const inputBlock = document.createElement("div");
 	const tvBlock = document.createElement("div");
 	const rightBlock = document.createElement("div");
 	const input = document.createElement("input");
 	
-	inputBlock.append(input,print_keyboard(lettersKeyboard,document.querySelector(".chanels-search-input")));
+	inputBlock.append(input,print_keyboard(lettersKeyboard,input));
 	
 	inputBlock.classList.add("chanels-search-inputblock");
 	input.classList.add("chanels-search-input");
@@ -526,8 +527,7 @@ function enCode(str){
 }
 
 function tvRender(chanels,filterMenu){
-	console.log(chanels)
-	console.log(filterMenu)
+	currentPage = "tv";
 	root.innerHTML = "";
 	root.append(createChanelsSearechInput());
 	document.querySelector(".keyboard").classList.add("live-keyboard");
@@ -538,8 +538,7 @@ function tvRender(chanels,filterMenu){
 	addRemTvChanel();
 	chanelsSerachBack();
 	filterMenuOnclick();
-	document.querySelector(".keyboard").innerHTML = "";
-	print_keyboard(lettersKeyboard,document.querySelector(".chanels-search-input") )
+	// print_keyboard(lettersKeyboard,document.querySelector(".chanels-search-input") )
 
 	document.querySelector(".chanel-item-active").classList.add("chanel-item-selected");
 	chanels.forEach(item => {

@@ -112,7 +112,7 @@
 	font-family: 'Montserrat', sans-serif;
 }
 
-.keyboard .row .key{
+.key{
 	display: flex;
 	align-items: center;
 	justify-content: center;
@@ -136,8 +136,8 @@
 .keyboard .row .space{
 	width: 68%;
 }
-.keyboard .row .active{
-	background-color: #2E844E;
+.active {
+	background-color: #2E844E !important;
 }
 
 .material-symbols-outlined {

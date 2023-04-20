@@ -1,3 +1,5 @@
+let searchedItems = [];
+
 
 document.addEventListener("keydown",(e) => {
 	let items = document.querySelectorAll(".menu-item");
@@ -21,10 +23,10 @@ document.addEventListener("keydown",(e) => {
 					document.querySelector(".menu-active").classList.remove("menu-active");
 					settingsRender();
 				}
-				else if(menuMovieItem.classList.contains("menu-active")){
+				else if(menuTvItem.classList.contains("menu-active")){
 					document.querySelector(".menu-tv-item").click();
 				}
-				else if(menuMoviesitem.classList.contains("menu-active")){
+				else if(menuMovieItem.classList.contains("menu-active")){
 					document.querySelector(".menu-movies-item").click();
 				}
 			}
@@ -37,27 +39,64 @@ document.addEventListener("keydown",(e) => {
 		}else if(currentBlock === "filter-menu"){
 			filterMenuControls(e)
 		}else if(currentBlock === "movies"){
+			
 			let cols = document.querySelectorAll(".m-row");
 			let rows = cols[mCol].querySelectorAll(".m-i");
 
-			if(e.key == "ArrowRight"){
-				if(mRow < rows.length-1){
+			if(e.key === "ArrowRight"){
+				// debugger
+				if(mRow > 1 && isNextMovie){
+					movieItemsRender("right");
+					addRemMovie();
+
+					// mRowTranslate -= 35;
+					// cols[mCol].style.transform = `translate(${mRowTranslate}rem)`
+				}
+				else if(mRow < rows.length-1){
 					mRow++;
 					addRemMovie();
 				}
-			}else if(e.key == "ArrowLeft"){
-				if(mRow > 0){
+			}else if(e.key === "ArrowLeft"){
+				// debugger
+				if(mRow < rows.length-2 && isPrevMovie){
+					movieItemsRender("left");
+					addRemMovie();
+					// mRowTranslate += 35;
+					// cols[mCol].style.transform = `translate(${mRowTranslate}rem)`
+				}
+				else if(mRow > 0){
 					mRow--;
 					addRemMovie();
 				}
-			}else if(e.key == "ArrowDown"){
-				if(mCol < cols.length-1){
+			}else if(e.key === "ArrowDown"){
+				// debugger
+				if(mCol < cols.length-1 && currentPage === "movies"){
 					if(mCol > 1)movieScrollFunc(1);
 					mRow = 0;
 					mCol++;
 					addRemMovie();
+				}else if(currentPage === "movies-search"){
+					if(mCol === 0){
+						if(searchedItems.length === 0){
+							document.querySelector(".movie-item-active").classList.remove("movie-item-active")
+							currentBlock = "login";
+							rowIndex = 0;
+							keyIndex = 0;
+							addRemLogin();
+						}else {
+							mCol++;
+							addRemMovie()
+						}
+					}
+					else if(mCol === 1){
+							document.querySelector(".movie-item-active").classList.remove("movie-item-active")
+							currentBlock = "login";
+							rowIndex = 0;
+							keyIndex = 0;
+							addRemLogin();
+					}
 				}
-			}else if(e.key == "ArrowUp"){
+			}else if(e.key === "ArrowUp"){
 				
 				if(mCol > 0){
 					if(mCol < cols.length)movieScrollFunc(-1);
@@ -65,6 +104,21 @@ document.addEventListener("keydown",(e) => {
 					mCol--;
 					addRemMovie();
 				}
+			}else if(e.key === "Enter"){
+				document.querySelector(".movie-item-active").click();
+			}
+		}else if(currentBlock === "movie-info"){
+			if(e. key === "ArrowRight" || e.key === "ArrowDown"){
+				if(infoI < document.querySelectorAll(".info-i").length-1)
+				infoI++;
+				addRemInfo();
+			}else if(e.key === "ArrowLeft" || e.key == "ArrowUp"){
+				if(infoI > 0){
+					infoI--;
+					addRemInfo();
+				}
+			}else if(e.key === "Enter"){
+				document.querySelector(".movie-item-active").click();
 			}
 		}
 	});	
@@ -73,7 +127,7 @@ document.addEventListener("keydown",(e) => {
 function keyboardClick(currentInput,key){
 	
 	input = currentInput
-	let searchedItems = [];
+	searchedItems = [];
 	if(document.querySelector(".active"))document.querySelector(".active").classList.remove("active");
 	key.classList.add("active")
 	let activeText = document.querySelector(".active").innerText
@@ -96,11 +150,12 @@ function keyboardClick(currentInput,key){
 		}else if(document.querySelector(".active").classList.contains("done")){
 			
 			let inputs = document.querySelectorAll(".input-block-item");
-			if(!document.querySelector(".keyboard").classList.contains("live-keyboard")){
+			if(!document.querySelector(".keyboard").classList.contains("live-keyboard") && !document.querySelector(".keyboard").classList.contains("movie-keyboard")){
 						inputs[inputI].classList.remove("active-login");
 					inputI++;
 					if(inputI === inputs.length-1){
-						document.querySelector(".keyboard").innerHTML = "";
+						debugger
+						document.querySelector(".keyboard").remove();
 						keyboard_exist = false;
 						inputI = 0;
 						keyboardPos();
@@ -119,18 +174,43 @@ function keyboardClick(currentInput,key){
 
 		}
 		else if(document.querySelector(".active").classList.contains("numbers-key")){
-			
+			// debugger
 			document.querySelectorAll(".numbers-key").forEach(item => {
 				if(item.textContent == "123"){
-					document.querySelector(".keyboard").innerHTML = ""
-					print_keyboard(numbersKeyboard,currentInput)
-					addRemLogin()
-					console.log(1);
+					const parent = document.querySelector(".keyboard").parentElement;
+					if(currentPage === "movies"){
+						document.querySelector(".keyboard").remove();
+						parent.append(print_keyboard(numbersKeyboard,document.querySelector(".movie-search-input"))) 
+						document.querySelector(".keyboard").classList.add("movie-keyboard")
+						addRemLogin();
+					}else if(currentPage === "tv"){
+						document.querySelector(".keyboard").remove();
+						parent.append(print_keyboard(numbersKeyboard,document.querySelector(".chanels-search-input"))) 
+						document.querySelector(".keyboard").classList.add("live-keyboard")
+						addRemLogin();
+					}else if(currentPage === "login"){
+						document.querySelector(".keyboard").remove();
+						parent.append(print_keyboard(numbersKeyboard,document.querySelector(".active-login"))) 
+						addRemLogin();
+					}
 				}else if(item.textContent == "Eng"){
-					document.querySelector(".keyboard").innerHTML = ""
-					print_keyboard(lettersKeyboard,currentInput)
-					console.log(1);
-					addRemLogin()
+					const parent = document.querySelector(".keyboard").parentElement;
+					if(currentPage === "movies"){
+						document.querySelector(".keyboard").remove();
+						parent.append(print_keyboard(lettersKeyboard,document.querySelector(".movie-search-input"))) 
+						document.querySelector(".keyboard").classList.add("movie-keyboard")
+						addRemLogin();
+					
+					}	else if(currentPage === "tv"){
+						document.querySelector(".keyboard").remove();
+						parent.append(print_keyboard(lettersKeyboard,document.querySelector(".chanels-search-input"))) 
+						document.querySelector(".keyboard").classList.add("live-keyboard")
+						addRemLogin();
+					}else if(currentPage === "login"){
+						document.querySelector(".keyboard").remove();
+						parent.append(print_keyboard(lettersKeyboard,document.querySelector(".active-login"))) 
+						addRemLogin();
+					}
 				}
 			})
 		}else if((document.querySelector(".active").classList.contains("clean"))){
@@ -138,7 +218,7 @@ function keyboardClick(currentInput,key){
 		}else if((document.querySelector(".active").classList.contains("space"))){
 			currentInput.value += " ";
 		}
-		if(currentInput !== document.querySelector(".login-input") && currentInput !== document.querySelector(".password-input") ){
+		if(currentInput === document.querySelector(".chanels-search-input")){
 
 			chanels.forEach(chanel => {
 				let chanelName = chanel.name.split(" ").join("").toLowerCase();
@@ -153,6 +233,20 @@ function keyboardClick(currentInput,key){
 			printChanelsList(searchedItems)
 			addRemTvChanel();
 			if(document.querySelector(".chanel-item-active")) document.querySelector(".chanel-item-active").click();
+		}else if(currentInput === document.querySelector(".movie-search-input")){
+			document.querySelector(".searched-movies-row").innerHTML = "";
+			movies.forEach(movie => {
+				let movieName = movie.name.split(" ").join("").toLowerCase()
+				if(movieName.includes(input.value.split(" ").join("").toLowerCase())){
+					searchedItems.push(movie);
+					document.querySelector(".not-found-block").style.display = "none";
+					document.querySelector(".searched-movies-row").style.display = "flex";
+					if(document.querySelector(".searched-movies-row").querySelectorAll(".movies-item").length < 5){
+						document.querySelector(".searched-movies-row").append(build_movie_items(movie)); 
+					}
+				}				
+			})
+			console.log(searchedItems);
 		}
 }
 

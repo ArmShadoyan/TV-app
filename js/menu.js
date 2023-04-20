@@ -60,7 +60,7 @@ function menuOnClick(){
 					return data;
 				}).then(data => {
 					chanels = data;
-					console.log(chanels)
+
 				}).then(data => {
 
 					getRequest(categoryUrl)
@@ -85,7 +85,6 @@ function menuOnClick(){
 					return categorys
 				}).then(categorys => {
 					movieCategorys = categorys
-					console.log(movieCategorys);
 					return movieCategorys;
 				})
 				.then(movieCategorys => {
@@ -95,7 +94,20 @@ function menuOnClick(){
 						return data
 					}).then(data => {
 						movies = data;
-						console.log(movies)
+						return movies;
+					}).then(data => {
+						console.log(movies);
+						moviesObj = {};
+						movieCategorys.forEach(cat => {
+							moviesObj[cat.category_id] = {category:cat.category_name,movies:[]};	
+
+						})
+						movies.forEach(movie => {
+							moviesObj[movie.category_id].movies.push(movie)
+
+						})
+						console.log(moviesObj);
+					}).then(data => {
 						moviesRender(movieCategorys,movies)
 					})
 				})
@@ -106,6 +118,7 @@ function menuOnClick(){
 
 
 function menuRender(){
+	currentPage = "menu";
 	currentBlock = "menu";
 	root.innerHTML = "";
 	createMenuElements();

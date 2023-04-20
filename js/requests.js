@@ -11,6 +11,7 @@ let categoryUrl = "http://79.143.180.88:25461/player_api.php?username=4&password
 let moviesUrl = "http://79.143.180.88:25461/player_api.php?username=4&password=4&action=get_vod_streams";
 let moviesCategoryUrl = "http://79.143.180.88:25461/player_api.php?username=4&password=4&action=get_vod_categories";
 
+
 // http://79.143.180.88:25461/player_api.php?username=${userName}&password=${password}
 
 // let url = "http://vikingotv.club:8080/player_api.php?username=user806606&password=345645644";
@@ -28,19 +29,20 @@ async function loginRequest(userName,password){
 		return data;
 	}).then(data => {
 		if(data.user_info.auth){
+			
 		}
 	}).catch(error => {
 		console.log(error);
 	});
 }
 
-
-keyboard.innerHTML = "";
 root.innerHTML = "";
 createMenuElements();
 addRemMenu();
 currentBlock = "menu";
 menuOnClick();
+
+
 
 
 function getRequest(url){
@@ -49,6 +51,9 @@ function getRequest(url){
 function epgRequest(streamId){
 	return fetch(`http://79.143.180.88:25461/player_api.php?username=4&password=4&action=get_simple_data_table&stream_id=${streamId}`);
 	// return fetch(`http://79.143.180.88:25461/player_api.php?username=user806606&password=345645644&action=get_simple_data_table&stream_id=${streamId}`);
+}
+function movieInfoRequest(streamId){
+	return fetch(`http://79.143.180.88:25461/player_api.php?username=4&password=4&action=get_vod_info&vod_id=${streamId}`)
 }
 
 

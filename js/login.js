@@ -11,7 +11,7 @@ const loginBtn = document.createElement("div");
 
 const errorMessage = document.createElement("p");
 const keyboardBlock = document.createElement("div");
-const keyboard = document.createElement("div");
+
 
 const popUp = document.createElement("div");
 const popUpInner = document.createElement("div");
@@ -19,6 +19,7 @@ const popUpAnswer = document.createElement("div");
 const popUpButtonsDiv = document.createElement("div");
 const cancleBtn = document.createElement("button");
 const exitBtn = document.createElement("button");
+
 
 // keyboard.style.display = "none";
 errorMessage.style.display = "none";
@@ -44,7 +45,6 @@ loginBtn.textContent = "Log In";
 errorMessage.textContent = "invalid login or password";
 errorMessage.classList.add("error-message");
 keyboardBlock.classList.add("keyboard-block");
-keyboard.classList.add("keyboard");
 
 popUp.style.display = "none";
 popUp.classList.add("pop-up");
@@ -75,6 +75,7 @@ const numbersKeyboard = [
 
 
 let currentBlock = "login";
+let currentPage = "login"
 let currentInput = null;
 let keyIndex = 0;
 let rowIndex = 0;
@@ -95,11 +96,13 @@ keyboardPos()
 
 
 function build_Login_BLock(){
+	currentPage = "login";
+
 	root.append(loginBlock,keyboardBlock,popUp);
 	loginBlock.append(logoBlock,inputsBlock);
 	logoBlock.append(logoImg);
 	inputsBlock.append(loginInput,passwordInput,loginBtn,errorMessage);
-	keyboardBlock.append(keyboard);
+	// keyboardBlock.append(keyboard);
 	popUp.append(popUpInner);
 	popUpInner.append(popUpAnswer,popUpButtonsDiv);
 	popUpButtonsDiv.append(cancleBtn,exitBtn);
@@ -107,9 +110,9 @@ function build_Login_BLock(){
 	currentInput = document.querySelector(".active-login")
 
 	loginInput.addEventListener("click", () => {
-		keyboard.innerHTML = "";
+		keyboardBlock.innerHTML = "";
 		currentInput = loginInput;
-		print_keyboard(lettersKeyboard,currentInput);
+		keyboardBlock.append(print_keyboard(lettersKeyboard,currentInput)) ;
 		keyboard_exist = true;
 		addRemLogin();
 		document.querySelector(".active-login").classList.remove("active-login");
@@ -118,9 +121,9 @@ function build_Login_BLock(){
 	})
 
 	passwordInput.addEventListener("click", () => {
-		keyboard.innerHTML = "";
+		keyboardBlock.innerHTML = "";
 		currentInput = passwordInput;
-		print_keyboard(lettersKeyboard,currentInput);
+		keyboardBlock.append(print_keyboard(lettersKeyboard,currentInput)) ;
 		keyboard_exist = true;
 		addRemLogin();
 		document.querySelector(".active-login").classList.remove("active-login");
@@ -142,6 +145,9 @@ console.log(loginBtn);
 }
 
 function print_keyboard(keyboardKeys,currentInput){
+	const keyboard = document.createElement("div");
+	keyboard.classList.add("keyboard");
+
 	rowIndex = 0;
 	keyIndex = 0;
 	
@@ -185,19 +191,14 @@ function print_keyboard(keyboardKeys,currentInput){
 				`;
 			}
 			rowLine.append(symbol);
+
+			let input = currentInput;
+			symbol.addEventListener("click",()=> {
+				keyboardClick(input,symbol)
+				currentBlock = "login";
+			})
 		});
-
 	});
-
-	const keys = document.querySelectorAll(".key");
-	let input = currentInput;
-			
-				keys.forEach(key => {		 
-					key.addEventListener("click",()=> {
-						keyboardClick(input,key)
-						
-					})
-				})
 	return keyboard;
 }
 
@@ -210,7 +211,7 @@ function keyboardControls(e){
 			rowkeys = rows[rowIndex].querySelectorAll(".key");
 		}
 
-        if(e.key === "Backspace" && keyboard.classList.contains("live-keyboard")){
+        if(e.key === "Backspace" && document.querySelector(".keyboard").classList.contains("live-keyboard")){
             document.querySelector(".player-block").style.transform = "translateX(0)";
 			document.querySelector(".chanels-search-inputblock").style.transform = "translateX(110%)";
 			currentBlock = "tv";
@@ -244,12 +245,25 @@ function keyboardControls(e){
 			else if(e.key === "ArrowUp"){
 				rowIndex--;
 				if(rowIndex < 0){
-					rowIndex = rows.length-1;
-					keyIndex = 0;
+					// debugger
+					if(currentPage === "login"){
+						rowIndex = rows.length-1;
+						keyIndex = 0;
+					}else if(currentPage === "movies-search"){
+						 document.querySelector(".active").classList.remove("active");
+						 currentBlock = "movies";
+						 if(searchedItems.length === 0){
+							mCol = 0;
+						 }else{
+							mCol = 1;
+						 }
+						 addRemMovie();
+					}
 				}
-				addRemLogin()
+				
+				if(currentBlock === "login")addRemLogin();
 			}
-		}else if(!keyboard_exist && !document.querySelector(".keyboard").classList.contains("live-keyboard")){
+		}else if(!keyboard_exist && !document.querySelector(".keyboard")){
 			const inputs = document.querySelectorAll(".input-block-item");
 			if(e.key === "ArrowDown"){
 				document.querySelector(".active-login").classList.remove("active-login")
