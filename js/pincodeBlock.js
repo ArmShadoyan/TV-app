@@ -1,23 +1,23 @@
-let parentalI = 0;
-let pinkeyI = 0;
+var parentalI = 0;
+var pinkeyI = 0;
 
 function ChangeParentalCodeElements(){
-	const backToMenuDiv = document.createElement("div");
-	const backToMenuBtn = document.createElement("div");
+	var backToMenuDiv = document.createElement("div");
+	var backToMenuBtn = document.createElement("div");
 
-	const pinBlock = document.createElement("div");
-	const pinInputBlock = document.createElement("div");
-	const pinTitle = document.createElement("div");
-	const pinRow = document.createElement("div");
-	const pin1 = document.createElement("div");
-	const pin2 = document.createElement("div");
-	const pin3 = document.createElement("div");
-	const pin4 = document.createElement("div");
-	const errorPin = document.createElement("div");
-	const successPin = document.createElement("div");
+	var pinBlock = document.createElement("div");
+	var pinInputBlock = document.createElement("div");
+	var pinTitle = document.createElement("div");
+	var pinRow = document.createElement("div");
+	var pin1 = document.createElement("div");
+	var pin2 = document.createElement("div");
+	var pin3 = document.createElement("div");
+	var pin4 = document.createElement("div");
+	var errorPin = document.createElement("div");
+	var successPin = document.createElement("div");
 
-	const pinKeyboardBlock = document.createElement("div");
-	const pinKeyboardRow = document.createElement("div");
+	var pinKeyboardBlock = document.createElement("div");
+	var pinKeyboardRow = document.createElement("div");
 
 	pinInputBlock.classList.add("pin_input_block");
 	pinTitle.classList.add("pin_title");
@@ -42,8 +42,8 @@ function ChangeParentalCodeElements(){
 	pinRow.append(pin1,pin2,pin3,pin4);
 
 	pinKeys.forEach(key => {
-		const pinKeyBlock = document.createElement("div");
-		const pinKey = document.createElement("div");
+		var pinKeyBlock = document.createElement("div");
+		var pinKey = document.createElement("div");
 		pinKeyBlock.classList.add("pin_key_block");
 		pinKey.classList.add("pin_key");
 		pinKey.textContent = key;
@@ -59,8 +59,8 @@ function ChangeParentalCodeElements(){
 
 
 function parentalCodeControls(e){
-	const backBtn = document.querySelector(".back-to-menu-btn");
-	const pinInputs = document.querySelectorAll(".pin_input");
+	var backBtn = document.querySelector(".back-to-menu-btn");
+	var pinInputs = document.querySelectorAll(".pin_input");
 	if(e.key === "ArrowRight"  && document.querySelector(".pin_keyboard_row").style.display === "none"){
 
 		if(backBtn.classList.contains("active-settings-back")){
@@ -95,7 +95,7 @@ function parentalCodeControls(e){
 			settingsRender();
 		}
 	}else if(document.querySelector(".pin_keyboard_row").style.display === "flex"){
-		const pinKeys = document.querySelectorAll(".pin_key");
+		var pinKeys = document.querySelectorAll(".pin_key");
 		if(e.key === "ArrowRight"){
 			pinkeyI++;
 			if(pinkeyI == pinKeys.length)pinkeyI = 0;
@@ -160,8 +160,8 @@ function lockCategoriesRender(){
 }
 
 function parentalCodeOnclick(){
-	const keyboardRow = document.querySelector(".pin_keyboard_row");
-	const parentalInputs = document.querySelectorAll(".pin_input");
+	var keyboardRow = document.querySelector(".pin_keyboard_row");
+	var parentalInputs = document.querySelectorAll(".pin_input");
 	console.log(parentalInputs);
 	parentalInputs.forEach(item => {
 		item.addEventListener("click",() => {
@@ -170,8 +170,8 @@ function parentalCodeOnclick(){
 		});
 	});
 
-	const pinKeys = document.querySelectorAll(".pin_key");
-	const pinInputs = document.querySelectorAll(".pin_input");
+	var pinKeys = document.querySelectorAll(".pin_key");
+	var pinInputs = document.querySelectorAll(".pin_input");
 
 	pinKeys.forEach(item => {
 		item.addEventListener("click",() => {

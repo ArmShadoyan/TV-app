@@ -53,12 +53,12 @@
     font-weight: bold;
 	font-size: 25px;
     outline: none;
-	margin: 20px;
+	margin: 2.5rem;
 	padding: 0 30px;
 	user-select: none;
 }
 .login-block .inputs-block .active-login{
-	border: 5px solid #3ca45f;
+	border: 0.6rem solid #3ca45f;
 }
 .login-block .inputs-block p{
 	color: #f80c0c;
@@ -134,7 +134,7 @@
 	width: 14%;
 }
 .keyboard .row .space{
-	width: 68%;
+	width: 70%;
 }
 .active {
 	background-color: #2E844E !important;

@@ -1,0 +1,84 @@
+.player-container{
+    background-color: black;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 4;
+}
+
+.player-block{
+    width: 100%;
+    height: 100%;
+}
+
+.video{
+    width: 100%;
+    height: 100%;
+}
+
+.player-progres-section{
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    position: absolute;
+    bottom: 0%;
+    left: 0;
+    width: 100%;
+    height: 13%;
+}
+.player-time,
+.player-duration
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 10%;
+    font-size: 3rem;
+    color: #fff;
+}
+
+.player-progres-block{
+    display: flex;
+    align-items: center;
+    justify-content: center ;
+    width: 70%;
+}
+.player-progres{
+    position: relative;
+    width: 100%;
+    height: 7%;
+    background-color: #434248;
+    border-radius: 0.4rem;
+}
+.player-progres-inner{
+    display: flex;
+    align-items: center;
+    height: 100%;
+    position:absolute;
+    background-color: #2e844e;
+    border-radius: 0.5rem;
+    z-index: 1;
+}
+.player-progres-btn{
+    background-color: #2e844e;
+    position: absolute;
+    width: 1.4rem;
+    height: 2.4rem;
+    border-radius: 1rem;
+    border: 0.2rem solid #fff;
+    right: 0;
+}
+.player-duration{
+    width: 10%;
+}
+.player-settings-button{
+    position: absolute;
+    width: 5rem;
+    height: 5rem;
+    top: 5rem;
+    left: 5rem;
+    background-image: url(/imgs/player/settings.png);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}

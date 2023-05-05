@@ -1,17 +1,17 @@
 
-let menuI = 0;
+var menuI = 0;
 
-	const menuLogoBlock = document.createElement("div");
-	const menuBlock = document.createElement("div");
-	const menuTvItem = document.createElement("div");
-	const menuMovieItem = document.createElement("div");
-	const menuSeriesitem = document.createElement("div");
-	const menuSettingsItem = document.createElement("div");
+	var menuLogoBlock = document.createElement("div");
+	var menuBlock = document.createElement("div");
+	var menuTvItem = document.createElement("div");
+	var menuMovieItem = document.createElement("div");
+	var menuSeriesitem = document.createElement("div");
+	var menuSettingsItem = document.createElement("div");
 
-	const menuTvTitle = document.createElement("div");
-	const menuMovieTitle = document.createElement("div");
-	const menuSeriesTitle = document.createElement("div");
-	const menuSettingsTitle = document.createElement("div");
+	var menuTvTitle = document.createElement("div");
+	var menuMovieTitle = document.createElement("div");
+	var menuSeriesTitle = document.createElement("div");
+	var menuSettingsTitle = document.createElement("div");
 
 	menuLogoBlock.classList.add("menu-logo-block");
 	menuBlock.classList.add("menu-block");
@@ -33,7 +33,7 @@ let menuI = 0;
 	
 	
 
-function createMenuElements(){
+  function createMenuElements(){
 	root.append(menuLogoBlock,menuBlock);
 	menuBlock.append(menuTvItem,menuMovieItem,menuSeriesitem,menuSettingsItem);
 	menuTvItem.append(menuTvTitle);
@@ -44,42 +44,52 @@ function createMenuElements(){
 
 
 function menuOnClick(){
-	const menuItems = menuBlock.querySelectorAll(".menu-item");
+	var menuItems = menuBlock.querySelectorAll(".menu-item");
 	menuItems.forEach(item => {
 		item.addEventListener("click",() => {
+			
 			if(item.firstElementChild.textContent === "Settings"){
 				settingsRender();
 			}else if(item.firstElementChild.textContent === "Live Tv"){
 				root.innerHTML = "";
-				let filterMenu = ["Favorites","All","Search"];
+				var filterMenu = ["Favorites","All","Search"];
 				currentBlock = "tv";
-				getRequest(chanelsUrl)
-				
-				.then(data => {
-					data = data.json();
-					return data;
-				}).then(data => {
-					chanels = data;
-
-				}).then(data => {
-
-					getRequest(categoryUrl)
+				getRequest(baseUrl,urlParams.loginUrl,urlParams.liveCategorys)
 					.then(data => {
 						data = data.json();
 						return data;
 					}).then(data => {
 						categorys = data;
+						// 
+						console.log(categorys,chanels);
+						liveObj = {};	
 						categorys.forEach(item => {
+							liveObj[item.category_id] = {category:item.category_name,chanels:[]}
 							filterMenu.push(item.category_name);
 						})
 						return filterMenu
-					}).then(filterMenu => {
-						tvRender(chanels,filterMenu);
-						chanelsOnClick();
+					}).then(data => {
+						getRequest(baseUrl,urlParams.loginUrl,urlParams.liveChanels)
+						.then(data => {
+							data = data.json();
+							return data;
+						}).then(data => {
+							chanels = data;
+							chanels.forEach(item => {
+								if(liveObj[item.category_id])liveObj[item.category_id].chanels.push(item);
+							})
+							// 
+							console.log(liveObj);
+						}).then(data => {
+							if(document.querySelector(".loader-parent"))document.querySelector(".loader-parent").remove();
+							tvRender(chanels,filterMenu);
+							chanelsOnClick();
+						})
 					})
-				})
+				
 			}else if(item.firstElementChild.textContent === "Movies"){
-				getRequest(moviesCategoryUrl)
+				currentSearch = "movies"
+				getRequest(baseUrl,urlParams.loginUrl,urlParams.movieCategorys)
 				.then(categorys => {
 					categorys = categorys.json();
 					return categorys
@@ -88,7 +98,7 @@ function menuOnClick(){
 					return movieCategorys;
 				})
 				.then(movieCategorys => {
-					getRequest(moviesUrl)
+					getRequest(baseUrl,urlParams.loginUrl,urlParams.movies)
 					.then(data => {
 						data = data.json()
 						return data
@@ -96,19 +106,55 @@ function menuOnClick(){
 						movies = data;
 						return movies;
 					}).then(data => {
-						console.log(movies);
 						moviesObj = {};
-						movieCategorys.forEach(cat => {
-							moviesObj[cat.category_id] = {category:cat.category_name,movies:[]};	
-
+						movieCategorys.forEach((cat,index) => {
+							moviesObj[cat.category_id] = {category:cat.category_name,movies:[],index:index};	
 						})
 						movies.forEach(movie => {
-							moviesObj[movie.category_id].movies.push(movie)
+							// 
+							if(moviesObj[movie.category_id])moviesObj[movie.category_id].movies.push(movie)
 
 						})
+						for(item in moviesObj){
+							if(moviesObj[item].movies.length === 0){
+								console.log(moviesObj[item]);
+								delete moviesObj[item]
+							}
+						}
+
 						console.log(moviesObj);
 					}).then(data => {
-						moviesRender(movieCategorys,movies)
+						moviesRender(movieCategorys,movies,moviesObj,"movies")
+					})
+				})
+			}else if(item.firstElementChild.textContent === "Series"){
+				currentSearch = "series";
+				getRequest(baseUrl,urlParams.loginUrl,urlParams.seriesCategorys)
+				.then(categorys => {
+					categorys = categorys.json();
+					return categorys;
+				}).then(categorys => {
+					seriesCategory = categorys;
+					return seriesCategory;
+				}).then(seriesCategory => {
+					getRequest(baseUrl,urlParams.loginUrl,urlParams.series)
+					.then(data => {
+						data = data.json();
+						return data;
+					}).then(data => {
+						series = data;
+						return series;
+					}).then(data => {
+						console.log(series,seriesCategory)
+						seriesObj = {};
+						seriesCategory.forEach((cat,index) => {
+							// 
+							seriesObj[cat.category_id] = {category:cat.category_name,movies:[],index:index}
+						})
+						series.forEach(item => {
+							if(seriesObj[item.category_id])seriesObj[item.category_id].movies.push(item);
+						})
+						moviesRender(seriesCategory,series,seriesObj,"series")
 					})
 				})
 			}

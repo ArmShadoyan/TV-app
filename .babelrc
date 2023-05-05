@@ -1,0 +1,9 @@
+{
+    // "presets": [
+    //   ["@babel/preset-env", {
+    //     "useBuiltIns": "usage",
+    //     "corejs": 3
+    //   }]
+    // ],
+    "plugins": ["@babel/plugin-transform-arrow-functions","babel-plugin-loop-optimizer","@babel/plugin-transform-template-literals"]
+  }

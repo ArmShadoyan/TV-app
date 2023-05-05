@@ -23,6 +23,7 @@
 	flex-direction: column;
 	align-items: center;
 	position: relative;
+    overflow: hidden;
 }
 .tv-block .chanels-block .chanels-inner{
 	width: 100%;
@@ -33,6 +34,7 @@
 	position: absolute;
 	transition: .8s;
 	opacity: 1;
+    overflow: hidden;
 }
 .tv-block .chanels-block .filter-menu{
 	width: 100%;
@@ -42,16 +44,15 @@
 	align-items: center;
 	position: absolute;
 	transition: .8s;
-	transform: translateX(-100rem);
 	z-index:1;
 }
 .tv-block .chanel-item{
 	position: relative;
     width: 96%;
-    height: 12rem;
-    min-height: 12rem;
+    height: 14rem;
+    min-height: 14rem;
     background-color: #35343a;
-    margin-bottom: 1.5%;
+    margin-bottom: 1.6rem;
     border-radius: 0.4rem;
     cursor: pointer;
     display: flex;
@@ -179,7 +180,7 @@
 }
 .current-epg span,
 .next-epg span{
-    font-size: 3.5rem;
+    font-size: 3rem;
     font-family: sans-serif;
     color: #2e844e;
 }
@@ -348,3 +349,104 @@
     height: 100%;
     right: -43%;
 }
+
+.filter-menu-transform{
+    transform: translateX(-100rem);
+}
+.filter-menu-parent{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    transition: .8s;
+    transform: translateX(-100rem);
+    z-index: 1;
+}
+
+.loader-parent{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-image: url("/imgs/bg.png");
+    background-size: contain;
+}
+
+.loader-text{
+    color: #fff;
+    font-size: 11rem;
+    font-size: 5rem;
+    margin: 7rem 0 0 3rem;
+    font-family: sans-serif;
+}
+
+:root {
+    --size: 9;
+    --color-one: #fff;
+    --color-three:#fff;
+  
+  }
+  body {
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+    background: hsl(0, 0%, 96%);
+  }
+  @property --nose {
+    syntax: '<percentage>';
+    initial-value: 0%;
+    inherits: false;
+  }
+  @property --tail {
+    syntax: '<percentage>';
+    initial-value: 0%;
+    inherits: false;
+  }
+  .loader {
+    height: calc(var(--size) * 1vmin);
+    width: calc(var(--size) * 1vmin);
+    border-radius: 50%;
+    mask: conic-gradient(
+      from 45deg,
+      transparent 0 var(--tail),
+      #000 0 var(--nose),
+      transparent 0 var(--nose)
+    );
+    border-style: solid;
+    border-width: 1vmin;
+    border-top-color: var(--color-one);
+    border-right-color: var(--color-two);
+    border-bottom-color: var(--color-three);
+    border-left-color: var(--color-four);
+    animation: load 2.5s both infinite ease-in-out, spin 3.25s infinite linear;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes load {
+    0% {
+      --tail: 0%;
+      --nose: 0%;
+    }
+    40%,
+    60% {
+      --nose: 100%;
+      --tail: 0%;
+    }
+    100% {
+      --nose: 100%;
+      --tail: 100%;
+    }
+  }

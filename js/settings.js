@@ -1,7 +1,7 @@
-let settingsI = 0;
-let timezoneRem = 0;
+var settingsI = 0;
+var timezoneRem = 0;
 
-const settingsMenuOptions = [
+var settingsMenuOptions = [
 	{id:1,name:"Use Xtream Code EPG",icon:"/imgs/settingsmenu/format.svg",class:"xtream-item", label:"1"},
 	{id:2,name:"Use TMDB API",icon:"/imgs/settingsmenu/tmdb.png",class:"tmdb-item", label:"1"},
 	{id:3,name:"Remove subtitle background",icon:"/imgs/settingsmenu/subtitles.png",class:"remove-item", label:"1"},
@@ -12,24 +12,24 @@ const settingsMenuOptions = [
 	{id:8,name:"Log out",icon:"/imgs/settingsmenu/logout.png",class:"logout-item"},
 ];
 
-const languageOptions = [
+var languageOptions = [
 	{id:1,name:"English",icon:"/imgs/settingsmenu/checked.svg",class:"english",img:"/imgs/settingsmenu/us.png"},
 	{id:2,name:"Portugues Brazil",icon:"",class:"port-braz",img:"/imgs/settingsmenu/br.png"},
 	{id:3,name:"Spanish",icon:"",class:"spanish",img:"/imgs/settingsmenu/es.png"},
 ];
 
-const timeZoneOptions = ["-12","-11","-10","-9","-8","-7","-6","-5","-4","-3","-2","-1","0","1","2","3","4","5","6","7","8","9","10","11","12"];
+var timeZoneOptions = ["-12","-11","-10","-9","-8","-7","-6","-5","-4","-3","-2","-1","0","1","2","3","4","5","6","7","8","9","10","11","12"];
 
-const pinKeys = ["1","2","3","4","5","6","7","8","9","0"];
+var pinKeys = ["1","2","3","4","5","6","7","8","9","0"];
 
 
 function createSettingsElemnts(options){
-	const settingsMenu = document.createElement("div");
-	const settingsBlock = document.createElement("div");
-	const settingsBlockInner = document.createElement("div");
-	const backToMenuDiv = document.createElement("div");
-	const backToMenuBtn = document.createElement("div");
-	const settingsTitle = document.createElement("div");
+	var settingsMenu = document.createElement("div");
+	var settingsBlock = document.createElement("div");
+	var settingsBlockInner = document.createElement("div");
+	var backToMenuDiv = document.createElement("div");
+	var backToMenuBtn = document.createElement("div");
+	var settingsTitle = document.createElement("div");
 	
 	settingsBlock.classList.add("settings-block");
 	settingsBlockInner.classList.add("settings-block-inner");
@@ -47,9 +47,9 @@ function createSettingsElemnts(options){
 	backToMenuDiv.append(backToMenuBtn);
 
 	options.forEach(item => {
-		const settingsItem = document.createElement("div");
-		const icon = document.createElement("div");
-		const title = document.createElement("div");
+		var settingsItem = document.createElement("div");
+		var icon = document.createElement("div");
+		var title = document.createElement("div");
 
 		if(options == settingsMenuOptions || options == languageOptions){
 
@@ -70,10 +70,10 @@ function createSettingsElemnts(options){
 		settingsItem.append(icon,title);
 
 		if(item.label){
-			const label = document.createElement("label");
-			const input = document.createElement("input");
-			const span = document.createElement("span");
-			const childSpan = document.createElement("span");
+			var label = document.createElement("label");
+			var input = document.createElement("input");
+			var span = document.createElement("span");
+			var childSpan = document.createElement("span");
 			childSpan.classList.add("settings-child-span");
 			settingsItem.classList.add("label");
 			input.type = "checkbox";
@@ -88,7 +88,7 @@ function createSettingsElemnts(options){
 				}
 			});
 		}else if(item.img){
-			const flag = document.createElement("img");
+			var flag = document.createElement("img");
 			flag.src = item.img;
 			flag.classList.add("language-flag-img");
 			settingsItem.append(flag);
@@ -98,8 +98,8 @@ function createSettingsElemnts(options){
 }
 
 function createSettingsControls(e){
-	const settingsItems = document.querySelectorAll(".settings-item");
-	const backBtn = document.querySelector(".back-to-menu-btn");
+	var settingsItems = document.querySelectorAll(".settings-item");
+	var backBtn = document.querySelector(".back-to-menu-btn");
 
 			if(e.key === "ArrowDown"){
 				
@@ -118,12 +118,11 @@ function createSettingsControls(e){
 				}
 
 				if(document.querySelector(".settings-title").textContent === "Select Timezone"){
-					const timeZoneItems = document.querySelectorAll(".timezone-settings-item");
+					var timeZoneItems = document.querySelectorAll(".timezone-settings-item");
 					if(settingsI >= 4 && settingsI < timeZoneItems.length-5){
 						timezoneRem -= 10;
 						document.querySelector(".settings-menu").style.transform = (`translateY(${timezoneRem}rem)`);
 					}
-					
 				}
 			}else if(e.key === "ArrowUp"){
 			
@@ -137,7 +136,7 @@ function createSettingsControls(e){
 				
 				if(document.querySelector(".settings-title").textContent === "Select Timezone"){
 
-					const timeZoneItems = document.querySelectorAll(".timezone-settings-item");
+					var timeZoneItems = document.querySelectorAll(".timezone-settings-item");
 					if(settingsI >= 3 && settingsI < timeZoneItems.length-5){
 						console.log(settingsI);
 						timezoneRem += 10;
@@ -150,12 +149,12 @@ function createSettingsControls(e){
 				settingsItems[settingsI].classList.remove("active-settings-item");
 				settingsI = 0;
 			}else if(e.key === "Enter"){
-			   const activeItem = document.querySelector(".active-settings-item");
+			   var activeItem = document.querySelector(".active-settings-item");
 
 				if(document.querySelector(".active-settings-item")){
 					if(document.querySelector(".active-settings-item").querySelector(".settings-child-span")){
 
-						const checkspan = document.querySelector(".active-settings-item").querySelector(".settings-child-span");
+						var checkspan = document.querySelector(".active-settings-item").querySelector(".settings-child-span");
 							if(checkspan){
 									if(!checkspan.classList.contains("active-check")){
 										checkspan.classList.add("active-check");
@@ -171,6 +170,7 @@ function createSettingsControls(e){
 					if(	document.querySelector(".settings-title").textContent === "Settings"){
 						backBtn.classList.remove("active-settings-back");
 						menuRender();
+						root.classList.remove("settings-root")
 					}else if(document.querySelector(".settings-title").textContent === "Languages"){
 						backBtn.classList.remove("active-settings-back");
 						settingsRender();
@@ -186,17 +186,22 @@ function createSettingsControls(e){
 					parentalCodeRender();
 				}else if(activeItem.lastElementChild.textContent === "Lock Categories"){
 					lockCategoriesRender();
+				}else if(activeItem.lastElementChild.textContent === "Log out"){
+					root.innerHTML = "";
+					build_Login_BLock();
+					currentPage = "login"
+					currentBlock = "login"
 				}
 
 			}
 }
 
 function settingsOnclick(){
-	const backBtn = document.querySelector(".back-to-menu-btn");
+	var backBtn = document.querySelector(".back-to-menu-btn");
 	backBtn.addEventListener("click",() => {
 		menuRender();
 	});
-	const settingsItem  = document.querySelectorAll(".settings-item");
+	var settingsItem  = document.querySelectorAll(".settings-item");
 	settingsItem.forEach(item => {
 		if(!item.classList.contains("label")){
 			item.addEventListener("click",() => {
@@ -214,6 +219,11 @@ function settingsOnclick(){
 					lockCategoriesRender();
 					parentalCodeOnclick();
 					backToSettings();
+				}else if(item.textContent === "Log out"){
+						root.innerHTML = "";
+						build_Login_BLock();
+						currentPage = "login"
+						currentBlock = "login"
 				}
 			});
 		}
@@ -222,7 +232,7 @@ function settingsOnclick(){
 
 
 function backToSettings(){
-	const backBtn = document.querySelector(".back-to-menu-btn");
+	var backBtn = document.querySelector(".back-to-menu-btn");
 	backBtn.addEventListener("click",() => {
 		settingsRender();
 	});

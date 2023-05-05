@@ -1,136 +1,140 @@
 
-let movieCategorys = [];
-let movies = [];
-let moviesObj;
-let movieScroll = 0;
-// let movieScrollCount = 55;
-let mRowTranslate = 0
-let movieCount = 5;
+var movieCategorys = [];
+var movies = [];
+var moviesObj;
+var movieScroll = 0;
+// var movieScrollCount = 55;
+var mRowTranslate = 0
+var movieCount = 7;
 
 
-let nextMovie=1
-let prevMovie = 1;
-let isNextMovie = 1;
-let isPrevMovie = 1;
+var nextMovie=1
+var prevMovie = 1;
+var isNextMovie = 1;
+var isPrevMovie = 1;
 
-// console.log(isPrevMovie);
-mRow = 0;
-mCol = 1;
+var previousPage;
+var previousBlock;
+var currentSearch;
 
-let infoI = 0;
+var mRow = 0;
+var mCol = 1;
 
+var infoI = 0;
+var searchI = 0;
+var catIndex = null;
 
-const moviesHeader = document.createElement("div")
-const backToMenuBtn = document.createElement("div");
-const searchBlock = document.createElement("div");
-
-moviesHeader.classList.add("movies-header","m-row");
-backToMenuBtn.classList.add("movies-back-to-menu","m-i");
-searchBlock.classList.add("movies-search-block","m-i");
-searchBlock.textContent = "Search";
+var episodes = [];
 
 
 function build_movies_header(){
+    var moviesHeader = document.createElement("div");
+    var backToMenuBtn = document.createElement("div");
+    var searchBlock = document.createElement("div");
+    
+    moviesHeader.classList.add("movies-header","m-row");
+    backToMenuBtn.classList.add("movies-back-to-menu","m-i");
+    searchBlock.classList.add("movies-search-block","m-i");
+    searchBlock.textContent = "Search";
+
     moviesHeader.append(backToMenuBtn,searchBlock);
 
     backToMenuBtn.addEventListener("click",() => {
         menuRender();
     })
     searchBlock.addEventListener("click",() => {
-        
+        if(document.querySelector(".search-active"))document.querySelector(".search-active").classList.remove("search-active")
+        searchedItems = [];
+        if(document.querySelector(".movie-search-container"))document.querySelector(".movie-search-container").remove();
         movieSearchRender();
+        document.querySelector(".movie-search-container").style.display = "block"
+        document.querySelector(".searched-movies-row").style.display = "none";
+        document.querySelector(".not-found-block").style.display = "flex"
+        currentInput = document.querySelector(".movie-search-input");
+        currentInput.value = "";
     });
-
+    
     return moviesHeader;
 }
 
-
-function build_select_categorys_block(movieCategorys){
-    //    console.log(movieCategorys);
-       const selectCategorysBlock = document.createElement("div");
-       const selectCategorysRow = document.createElement("div");
-
-        movieCategorys.forEach((item,index) => {
-        const selectCategory = document.createElement("div");
-        const selectCategoryTitle = document.createElement("div");
-    
-        selectCategorysBlock.classList.add("movie-select-categorys-block");
-        selectCategorysRow.classList.add("movie-select-categorys-row","m-row");
-        selectCategory.classList.add("movie-select-category","m-i");
-        selectCategory.setAttribute("index",index)
-        selectCategoryTitle.classList.add("select-category-title");  
-
-        selectCategoryTitle.textContent = `${item.category_name}`
-        
-        selectCategory.append(selectCategoryTitle);
-        selectCategorysRow.append(selectCategory);
-
-        selectCategory.addEventListener("click",() => {
-            movieScrollFunc(1,index);
-            document.querySelector(".movie-item-active").classList.remove("movie-item-active");
-            selectCategory.classList.add("movie-item-active");
-            mCol = index+2;
-            mRow = 0;
-            addRemMovie();
-        })
-    })
+function build_category_blocks(movieCategorys,movies,obj){
+    // console.log(movieCategorys,movies);
+    var selectCategorysBlock = document.createElement("div");
+    var selectCategorysRow = document.createElement("div");
+    selectCategorysBlock.classList.add("movie-select-categorys-block");
+    selectCategorysRow.classList.add("movie-select-categorys-row","m-row","movies-row");
 
     selectCategorysBlock.append(selectCategorysRow);
 
-    return selectCategorysBlock;
-}
-
-
-function build_movies_category_blocks(movieCategorys,movies){
-    // console.log(movieCategorys,movies);
-    const moviesContainerInner = document.createElement("div");
-    const moviesContainer = document.createElement("div");
+    var moviesContainerInner = document.createElement("div");
+    var moviesContainer = document.createElement("div");
     moviesContainerInner.classList.add("movies-containerinner");
     moviesContainer.classList.add("movies-container");
     
-    moviesContainerInner.append(build_select_categorys_block(movieCategorys))
+    moviesContainerInner.append(selectCategorysBlock);
 
     movieCategorys.forEach((item,index) => {
-        const categoryBlock = document.createElement("div");
-        const categoryTitle = document.createElement("div");
+        selectCategorysRow.append(build_movie_category_item(item,obj,index));
 
-        const moviesRow = document.createElement("div");
+        var categoryBlock = document.createElement("div");
+        var categoryTitle = document.createElement("div");
+
+        var moviesRow = document.createElement("div");
         moviesRow.setAttribute("index",index);
         moviesRow.setAttribute("position",0);
-        for (let i = 0; i < moviesObj[item.category_id].movies.length; i++) {
-           if(i < 5){
-               if(moviesRow){
-                   moviesRow.append(build_movie_items(moviesObj[item.category_id].movies[i]));
+        if(obj[item.category_id]){
+            for (var i = 0; i < obj[item.category_id].movies.length; i++) {
+                if(i < 7){
+                   if(moviesRow){
+                       moviesRow.append(build_movie_items(obj[item.category_id].movies[i]));
+                   }
                }
-           }
-       }
+             }
+        }
 
         moviesRow.classList.add("movies-row","m-row");
         categoryBlock.classList.add("movie-category-block");
         categoryTitle.classList.add("movie-category-title");
         categoryTitle.textContent = `${item.category_name}`
-        
-        categoryBlock.append(categoryTitle,moviesRow);
-        moviesContainerInner.append(categoryBlock)
-
-    })
+        if(obj[item.category_id]){
+            if(obj[item.category_id].movies.length > 0){
+                // moviesRow.setAttribute("catIndex",index);
+                categoryBlock.append(categoryTitle,moviesRow);
+                moviesContainerInner.append(categoryBlock);
+            };
+        }
+    });
     
-    moviesContainer.append(build_movies_header(),moviesContainerInner)
+    moviesContainer.append(build_movies_header(),moviesContainerInner);
 
-    return moviesContainer
-}
- 
+    return moviesContainer;
+};
     
-    function build_movie_items(movie){
-    const movieItem = document.createElement("div");
-    const movieImgBlock = document.createElement("div");
-    const movieTitleBlock = document.createElement("div");
-    const movieTitle = document.createElement("div");
+function build_movie_items(movie){
+     var movieItem = document.createElement("div");
+     var movieImgBlock = document.createElement("div");
+     var movieTitleBlock = document.createElement("div");
+     var movieTitle = document.createElement("div");
 
     movieItem.classList.add("movies-item","m-i");
-    
+    var img = new Image()
+    // debugger
+    img.onload = () =>{
+        requestAnimationFrame(() =>{
+        movieImgBlock.style.backgroundImage = `url(${img.src})`
+        })
+    }
+
+    img.onerror = () =>{
+            requestAnimationFrame(() =>{
+            movieImgBlock.style.backgroundImage = `url(imgs/logo-large.png)`;
+            movieImgBlock.style.backgroundSize = "contain";
+        })
+    }
+
     movieImgBlock.classList.add("movie-img-block");
-    movieImgBlock.style.cssText = `background-image:url(${movie.stream_icon})`;
+    img.src = movie.stream_icon?movie.stream_icon:movie.cover
+    // movieImgBlock.style.cssText = `background-image:url(${movie.stream_icon?movie.stream_icon:movie.cover})`;
     movieTitleBlock.classList.add("movie-title-block");
     movieTitle.classList.add("movie-title");
     movieTitle.textContent = `${movie.name}`
@@ -139,41 +143,90 @@ function build_movies_category_blocks(movieCategorys,movies){
     movieTitleBlock.append(movieTitle);
     
     movieItem.addEventListener("click",() => {
-        movieInfoRequest(movie.stream_id)
-        .then(data => {
-            data = data.json();
-            return data
-        }).then(data =>{
-            movieInfoRender(data,currentPage)
-        })
+    // debugger     
+        if(currentPage === "movies" || currentPage === "movies-search" && currentSearch === "movies"){
+            getRequest(baseUrl,urlParams.loginUrl,urlParams.movieInfo,movie.stream_id)
+            .then(data => {
+                data = data.json();
+                return data
+            }).then(data =>{
+                previousPage = currentPage;
+                previousBlock = currentBlock;
+                if(document.querySelector(".movie-info-container"))document.querySelector(".movie-info-container").remove();
+                movieInfoRender(data,currentPage,previousBlock)
+                if(document.querySelector(".loader-parent"))document.querySelector(".loader-parent").remove();
+            })  
+        }else if(currentPage === "series" || currentPage === "movies-search" && currentSearch === "series"){
+            
+            getRequest(baseUrl,urlParams.loginUrl,urlParams.seriesInfo,movie.series_id)
+            .then(data => {
+                data = data.json();
+                return data
+            }).then(data => {
+                previousPage = currentPage;
+                previousBlock = currentBlock;
+                movieInfoRender(data,currentPage,previousBlock)
+                if(document.querySelector(".loader-parent"))document.querySelector(".loader-parent").remove();
+            })
+        }
     })
 
     return movieItem
 }
 
+function build_movie_category_item(item,obj,index){
+    var selectCategory = document.createElement("div");
+    var selectCategoryTitle = document.createElement("div");
 
+    
+    selectCategory.classList.add("movie-select-category","m-i");
+    selectCategory.setAttribute("index",index)
+    selectCategoryTitle.classList.add("select-category-title");  
+    
+    selectCategoryTitle.textContent = `${item.category_name}`
 
+    // if(obj[item.category_id].movies.length > 0){
+    //     // selectCategorysRow.append(selectCategory);
+    // }
+    selectCategory.append(selectCategoryTitle);
 
-function moviesRender(movieCategorys,movies){
+    selectCategory.addEventListener("click",() => {
+    // debugger
+        movieScrollFunc(1,index);
+        document.querySelector(".movie-item-active").classList.remove("movie-item-active");
+        selectCategory.classList.add("movie-item-active");
+        mCol = index+2;
+        catIndex = mRow
+        mRow = 0;
+        addRemMovie();
+    })
+    return selectCategory;
+}
+
+function moviesRender(categorys,movies,obj,page){
     root.innerHTML = "";
     
     currentBlock = "movies";
-    currentPage = "movies";
-    root.append(build_movies_category_blocks(movieCategorys,movies));
+    currentPage = page;
+    root.append(build_category_blocks(categorys,movies,obj));
+    console.log(document.querySelectorAll(".movies-row"));
     mRow = 0;
     mCol = 1;
     addRemMovie();
-
+    document.querySelector(".movie-select-categorys-row").style.transform = "translateY(0rem)";
+    mRowTranslate = 0;
     document.querySelector(".movies-container").addEventListener("wheel",(e) => {
+        // console.log(e.deltaY);
+        // debugger
         if(e.deltaY > 0){
-            movieScrollFunc(1);
-            if(mCol == 0){
-                mCol+=2;
-                addRemMovie();
-            }
-            else if(mCol < document.querySelectorAll(".m-row").length-1){
+            
+            if(mCol < 2){
+                mCol++
+                addRemMovie()
+            }else if(mCol < document.querySelectorAll(".m-row").length-1){
                 mCol++;
                 addRemMovie();
+                movieScrollFunc(1);
             }
         };
         if(e.deltaY < 0){
@@ -181,35 +234,37 @@ function moviesRender(movieCategorys,movies){
             if(mCol > 1){
                 mCol--;
                 addRemMovie();
-            }
+            };
         };
-    })
-}
+    });
+};
 
-function movieInfoRender(data,previousPage){
-    console.log(previousPage);
+function movieInfoRender(data,previousPage,block){
+
     currentPage = "movie-info";
     currentBlock = "movie-info"
-    // root.innerHTML = "";
-    // console.log(data);
 
-    const container = document.createElement("div");
-    const backToMovieBlock = document.createElement("div");
-    const backToMovieBtn = document.createElement("div");
-    const containerInner = document.createElement("div");
-    const imgBlock = document.createElement("div");
-    const imgDiv = document.createElement("div");
-    const playBtnDiv = document.createElement("div");
-    const playBtn = document.createElement("div");
+    var container = document.createElement("div");
+    var backToMovieBlock = document.createElement("div");
+    var backToMovieBtn = document.createElement("div");
+    var containerInner = document.createElement("div");
+    var imgBlock = document.createElement("div");
+    var imgDiv = document.createElement("div");
+    var playBtnDiv = document.createElement("div");
+    var playBtn = document.createElement("div");
 
-    const infoBlock = document.createElement("div");
-    const infoName = document.createElement("div");
-    const infoDesc = document.createElement("div");
-    const infoCast = document.createElement("div");
-    const infoGenres = document.createElement("div");
-    const infoRateTimeBlock = document.createElement("div");
-    const infoRate = document.createElement("div");
-    const infoTime = document.createElement("div");
+    var infoBlock = document.createElement("div");
+    var infoName = document.createElement("div");
+    var infoDesc = document.createElement("div");
+    var infoCast = document.createElement("div");
+    var infoGenres = document.createElement("div");
+    var infoRateTimeBlock = document.createElement("div");
+    var infoRate = document.createElement("div");
+    var infoTime = document.createElement("div");
+
+    var seasonSection = document.createElement("div");
+    var seasonBlock = document.createElement("div");
+    var episodeBlock = document.createElement("div");
 
     container.classList.add("movie-info-container");
     backToMovieBlock.classList.add("movie-info-back-block");
@@ -217,109 +272,271 @@ function movieInfoRender(data,previousPage){
     containerInner.classList.add("movie-info-containerinner");
     imgBlock.classList.add("movie-info-img-block");
     imgDiv.classList.add("movie-info-img-div");
-    imgDiv.style.cssText = `background-image: url(${data.info.cover_big})`
     playBtnDiv.classList.add("movie-info-playbtn-div");
     playBtn.classList.add("movie-info-playbtn","info-i");
     playBtn.textContent = "Play";
 
-    infoBlock.classList.add("movie-info-block");
-    infoName.classList.add("movie-info-name");
-    infoName.textContent = `${data.info.name}`
-    infoDesc.classList.add("movie-info-desc");
-    infoDesc.textContent = `${data.info.description}`;
-    infoCast.classList.add("movie-info-cast");
-    infoCast.textContent = `${data.info.cast}`;
-    infoGenres.classList.add("movie-info-genres");
-    infoGenres.textContent = `${data.info.genre}`
-    infoRateTimeBlock.classList.add("movie-info-rate-div");
-    infoRate.classList.add("movie-info-rate");
-    infoRate.textContent = `${data.info.rating}`
-    infoTime.classList.add("movie-info-time");
-    infoTime.textContent = `${data.info.duration}`
+    seasonBlock.classList.add("season-block","series-row");
+    episodeBlock.classList.add("episode-block","series-row");
+    seasonSection.classList.add("season-section");
+    
+    if(currentSearch === "movies"){
+        // debugger
+        console.log(moviesObj[data.movie_data.category_id]);
+        imgDiv.style.cssText = `background-image: url(${data.info.cover_big?data.info.cover_big:data.info.movie_image})`
+        infoBlock.classList.add("movie-info-block");
+        infoName.classList.add("movie-info-name");
+        infoName.textContent = `${data.info.name?data.info.name:data.movie_data.name}`
+        infoDesc.classList.add("movie-info-desc");
+        infoDesc.textContent = `${data.info.description?data.info.description:data.info.plot}`;
+        infoCast.classList.add("movie-info-cast");
+        infoCast.textContent = `${data.info.cast}`;
+        infoGenres.classList.add("movie-info-genres");
+        infoGenres.textContent = `${data.info.genre}`
+        infoRateTimeBlock.classList.add("movie-info-rate-div");
+        infoRate.classList.add("movie-info-rate");
+        infoRate.textContent = `${data.info.rating}`
+        infoTime.classList.add("movie-info-time");
+        infoTime.textContent = `${data.info.duration}`
 
-    backToMovieBlock.append(backToMovieBtn);
-    imgBlock.append(imgDiv,playBtnDiv);
-    playBtnDiv.append(playBtn);
-    infoBlock.append(infoName,infoDesc,infoCast,infoGenres,infoRateTimeBlock);
-    infoRateTimeBlock.append(infoRate,infoTime);
-    containerInner.append(imgBlock,infoBlock);
-    container.append(backToMovieBlock,containerInner);
-    root.append(container);
+        backToMovieBlock.append(backToMovieBtn);
+        imgBlock.append(imgDiv,playBtnDiv);
+        playBtnDiv.append(playBtn);
+        infoBlock.append(infoName,infoDesc,infoCast,infoGenres,infoRateTimeBlock);
+        infoRateTimeBlock.append(infoRate,infoTime);
+        containerInner.append(imgBlock,infoBlock);
+        container.append(backToMovieBlock,containerInner);
+        root.append(container);
+        
+    }else if(currentSearch === "series"){
+        seriesI = 0;
+        seriesR = 0;
+        seriesInfo = 0;
+        var img = new Image()
 
-    //qwer
+        img.onload = () =>{
+            imgDiv.style.backgroundImage = `url(${img.src})`
+        }
+
+        img.onerror = () =>{
+            imgDiv.style.backgroundImage = `url(imgs/logo-large.png)`;
+        }
+
+        img.src = data?.info.cover
+        infoBlock.classList.add("movie-info-block");
+        infoName.classList.add("movie-info-name");
+        infoName.textContent = `${data.info.name}`
+        infoDesc.classList.add("movie-info-desc");
+        infoDesc.textContent = `${data.info.plot}`;
+        infoCast.classList.add("movie-info-cast");
+        infoCast.textContent = `${data.info.cast}`;
+        infoGenres.classList.add("movie-info-genres");
+        infoGenres.textContent = `${data.info.genre}`
+        infoRateTimeBlock.classList.add("movie-info-rate-div");
+        infoRate.classList.add("movie-info-rate");
+        infoRate.textContent = `${data.info.rating}`
+        infoTime.classList.add("movie-info-time");
+        infoTime.textContent = `00:${data.info.episode_run_time}:00`
+
+        console.log(data);
+        backToMovieBlock.append(backToMovieBtn);
+        imgBlock.append(imgDiv,playBtnDiv);
+        playBtnDiv.append(playBtn);
+        infoBlock.append(infoName,infoDesc,infoCast,infoGenres,infoRateTimeBlock,seasonSection);
+        
+        episodes = [];
+        var seasonsObj = {};
+
+        if(!Array.isArray(data.episodes)){
+                for(item in data.episodes){
+                    episodes.push(data.episodes[item])
+                }
+        }else{
+            episodes = data.episodes;    
+        }
+
+        if(data.seasons.length > 0){
+            data.seasons.forEach(season => {
+                episodes.forEach(episode => {
+                    if(season.season_number === episode[0].season){
+                        console.log(season,episode);
+                        seasonsObj[season.season_number] = {season:season,episodes:episode}
+                    }
+                })
+            })
+            console.log(seasonsObj);
+
+            seasonSection.append(seasonBlock,episodeBlock)
+            infoRateTimeBlock.append(infoRate,infoTime);
+            containerInner.append(imgBlock,infoBlock);
+            container.append(backToMovieBlock,containerInner);
+            root.append(container);
+            
+            var seasonIndex = 0;
+            for(item in seasonsObj){
+                var season = document.createElement("div");
+                season.classList.add("season","series-i"); 
+                season.setAttribute("season",item);
+                seasonBlock.append(season);
+                season.textContent = `season${item}`
+                // debugger
+                var defaultEpisodes 
+                // debugger
+                if(episodes[Object.keys(seasonsObj)]){
+                     defaultEpisodes = episodes[Object.keys(seasonsObj)[0]].episodes;
+                }else{
+                     defaultEpisodes = episodes[0]
+                }
+                // document.querySelector(".episode-block").innerHTML = "";
+
+                
+                season.addEventListener("click",(e) => {
+                    e.stopPropagation();
+                    var currentEpisodes = seasonsObj[e.target.getAttribute("season")].episodes
+                    console.log(currentEpisodes);
+                    document.querySelector(".episode-block").innerHTML = "";
+                    document.querySelector(".episode-block").style.transform = "translate(0rem)"
+                    seriesTransform = 0;
+                    seriesI = 0;
+                    lastIndex = 0;
+                    // addRemSeries();
+                    currentEpisodes.forEach(item => {
+                        createEpisode(item,data)
+                    })
+                })
+            }
+            
+                defaultEpisodes.forEach(ep => {
+                    console.log(ep.season);
+                    createEpisode(ep,data)
+                })
+        }else{
+            // debugger
+            seasonSection.append(seasonBlock,episodeBlock)
+            infoRateTimeBlock.append(infoRate,infoTime);
+            containerInner.append(imgBlock,infoBlock);
+            container.append(backToMovieBlock,containerInner);
+            root.append(container);
+            episodes.forEach((ep,index) => {
+                var season = document.createElement("div");
+                season.classList.add("season","season-i");
+                season.setAttribute("season",index);
+                seasonBlock.append(season);
+                season.textContent = `season${index+1}`
+                
+                season.addEventListener("click",(e) => {
+                    // debugger
+                    e.stopPropagation();
+                    var currentEpisodes = episodes[+(e.target.getAttribute("season"))]
+                    console.log(currentEpisodes);
+                    document.querySelector(".episode-block").innerHTML = "";
+                    currentEpisodes.forEach(item => {
+                        createEpisode(item,data)
+                    })
+                })
+            })
+                    var defaultEpisodes = episodes[0];
+                    
+                    defaultEpisodes.forEach(ep => {
+                        console.log(ep.season);
+                        createEpisode(ep,data)
+                    })
+        }
+    }
     document.querySelector(".movies-container").style.display = "none";
     container.style.display = "block";
     
     addRemInfo();
-    
-    backToMovieBtn.addEventListener("click",() => {
+
+    // debugger
+    backToMovieBtn.addEventListener("click",(e) => {
+        e.stopPropagation();
         container.remove();
         document.querySelector(".movies-container").style.display = "block";
         currentBlock = "movies";
         currentPage = previousPage;
+        if(block)currentBlock = block;
         addRemMovie();
+    })
+
+    playBtn.addEventListener("click",(e) => {
+        e.stopPropagation();
+        debugger
+        playerBlockRender(data);
+        console.log(data);
     })
 }
 
 function addRemMovie(){
-    // debugger
     if(document.querySelector(".movie-item-active")){
         document.querySelector(".movie-item-active").classList.remove("movie-item-active");
     }
-    document.querySelectorAll(".m-row")[mCol].querySelectorAll(".m-i")[mRow].classList.add("movie-item-active")
+    if( document.querySelectorAll(".m-row")[mCol].querySelectorAll(".m-i")[mRow]){
+        document.querySelectorAll(".m-row")[mCol].querySelectorAll(".m-i")[mRow].classList.add("movie-item-active")
+    }
 }
 
-function addRemInfo(){
-    // 
-    if(document.querySelector(".movie-item-active")){
-        document.querySelector(".movie-item-active").classList.remove("movie-item-active");
-    }
-    document.querySelectorAll(".info-i")[infoI].classList.add("movie-item-active")
-}
+function createEpisode(item,data){
+    var episode = document.createElement("div");
+    var episodeImgBlock = document.createElement("div");
+    var episodeNameBlock = document.createElement("div");
+    
+    var img = new Image()
 
-function movieScrollFunc(deltaY,movieScrollCount = 1){
-    // debugger
-    if(deltaY > 0 && movieScroll > -((document.querySelectorAll(".movie-category-block").length-1) * 55.5)){
-        movieScroll -= movieScrollCount * 55.5;
-        document.querySelector(".movies-container").style.transform = `translateY(${movieScroll}%)`
-        
-        
-    }else if(deltaY < 0 && movieScroll < 0){
-        movieScroll += 55.5;
-        document.querySelector(".movies-container").style.transform = `translateY(${movieScroll}%)`
-    }
+    img.onload = () =>{
+            requestAnimationFrame(() =>{
+            episodeImgBlock.style.backgroundImage = `url(${img.src})`
+            })
+        }
+    
+            img.onerror = () =>{
+                requestAnimationFrame(() =>{
+                episodeImgBlock.style.backgroundImage = `url(imgs/logo-large.png)`;
+                episodeImgBlock.style.backgroundSize = "contain";
+            })
+        }
+    
+    img.src = item.info.movie_image?item.info.movie_image:data.info.cover;
+    // episodeImgBlock.style.backgroundImage = `url(${item.info.movie_image?item.info.movie_image:data.info.cover})`
+    episode.classList.add("episode","series-i");
+    episodeImgBlock.classList.add("episode-img-block");
+    episodeNameBlock.classList.add("episode-name-block");
+    episodeNameBlock.textContent = `S${item.season} E${item.episode_num}`
+   
+    episode.append(episodeImgBlock,episodeNameBlock)
+    document.querySelector(".episode-block").append(episode);
 }
 
 function movieSearchRender (){
-    root.innerHTML = "";
+    previousPage = currentPage;
     currentPage = "movies-search";
     searchedItems = [];
     isNextMovie = 1;
     movieCount = 5;
     mRow = 0;
     mCol = 0;
-    const movieSearchContainer = document.createElement("div");
-    const backToMovieBlock = document.createElement("div");
-    const backToMovieBtn = document.createElement("div");
-    const currentPageTitle = document.createElement("div");
-    const searchedMoviesBlock = document.createElement("div");
-    const searchedMoviesRow = document.createElement("div");
-    const notFoundBlock = document.createElement("div");
-    const notFoundImg = document.createElement("img");
-    const notFoundText = document.createElement("div");
-    const inputBlock = document.createElement("div");
-    const inputIcon = document.createElement("div");
-    const input = document.createElement("input");
-
+    var movieSearchContainer = document.createElement("div");
+    var backToMovieBlock = document.createElement("div");
+    var backToMovieBtn = document.createElement("div");
+    var currentPageTitle = document.createElement("div");
+    var searchedMoviesBlock = document.createElement("div");
+    var searchedMoviesRow = document.createElement("div");
+    var notFoundBlock = document.createElement("div");
+    var notFoundImg = document.createElement("img");
+    var notFoundText = document.createElement("div");
+    var inputBlock = document.createElement("div");
+    var inputIcon = document.createElement("div");
+    var input = document.createElement("input");
+    
     movieSearchContainer.classList.add("movie-search-container","movies-container");
-    backToMovieBlock.classList.add("movies-header","m-row");
+    backToMovieBlock.classList.add("movies-header","search-row");
     backToMovieBtn.classList.add("movies-back-to-menu","m-i");
-    currentPageTitle.classList.add("movies-search-page-title")
-    currentPageTitle.textContent = "Search"
+    currentPageTitle.classList.add("movies-search-page-title");
+    currentPageTitle.textContent = "Search";
     searchedMoviesBlock.classList.add("searched-movies-block");
-    searchedMoviesRow.classList.add("movies-row","m-row","searched-movies-row")
+    searchedMoviesRow.classList.add("movies-row","search-row","searched-movies-row");
     searchedMoviesRow.style.display = "none";
-    notFoundBlock.classList.add("not-found-block")
+    notFoundBlock.classList.add("not-found-block");
     notFoundImg.classList.add("not-found-img");
     notFoundImg.src = "/imgs/movies/empty.svg";
     notFoundText.classList.add("not-found-text");
@@ -334,35 +551,55 @@ function movieSearchRender (){
     notFoundBlock.append(notFoundImg,notFoundText);
     inputBlock.append(inputIcon,input);
     searchedMoviesBlock.append(notFoundBlock,searchedMoviesRow);
-    // searchedMoviesBlock.append(searchedMoviesRow);
-    // searchedMoviesRow.append(build_movie_items())
     backToMovieBlock.append(backToMovieBtn,currentPageTitle);
-    
+
+    movieSearchContainer.style.display = "none"
+
     document.querySelector(".keyboard").classList.add("movie-keyboard");
     currentBlock = "login";
     keyboard_exist = true;
     addRemLogin();
 
-    backToMovieBtn.addEventListener("click",() => {
-        moviesRender(movieCategorys,movies);
-    })
-}
-
-
+    backToMovieBtn.addEventListener("click",(e) => {
+        e.stopPropagation();
+    
+        movieSearchContainer.style.display = "none";
+        currentPage = currentSearch;
+        currentBlock = "movies";
+        addRemMovie();
+    });
+};
 
 function movieItemsRender(side){
+    var row;
     // debugger
-            let row = document.querySelector(".movies-row .movie-item-active").parentNode;
-            let items = row.querySelectorAll(".movies-item")
-
+    if(currentPage === "movies" || currentPage === "series"){
+        row = document.querySelector(".movies-row .movie-item-active").parentNode;
+    }else if(currentPage === "movies-search"){
+        row = document.querySelector(".searched-movies-row .search-active").parentNode
+    }
+            var items = row.querySelectorAll(".movies-item")
             if(currentPage === "movies"){
-                nextMovie = moviesObj[Object.keys(moviesObj)[row.getAttribute("index")]].movies[movieCount]
-                prevMovie = moviesObj[Object.keys(moviesObj)[row.getAttribute("index")]].movies[movieCount-6]
-            }else if(currentPage === "movies-search"){
+                for(item in moviesObj){
+                    if(moviesObj[item].index === +row.getAttribute("index")){
+                        // debugger
+                        nextMovie = moviesObj[item].movies[movieCount];
+                        prevMovie = moviesObj[item].movies[movieCount-6];
+                    }
+                }
+            }else if(currentPage === "series"){
+                for(item in seriesObj){
+                    if(seriesObj[item].index === +row.getAttribute("index")){
+                        nextMovie = seriesObj[item].movies[movieCount];
+                        prevMovie = seriesObj[item].movies[movieCount-8];
+                    }
+                }
+                
+            }
+            else if(currentPage === "movies-search"){
                 nextMovie = searchedItems[movieCount]
                 prevMovie = searchedItems[movieCount-6]
             }
-
             
             if(nextMovie && side === "right"){
                 items[0].remove();
@@ -375,30 +612,260 @@ function movieItemsRender(side){
             }
             
             if(currentPage === "movies"){
-                isNextMovie = moviesObj[Object.keys(moviesObj)[row.getAttribute("index")]].movies[movieCount]
-                isPrevMovie = moviesObj[Object.keys(moviesObj)[row.getAttribute("index")]].movies[movieCount-6]
-            }else if(currentPage === "movies-search"){
+                for(item in moviesObj){
+                    if(moviesObj[item].index === +row.getAttribute("index")){
+                        nextMovie = moviesObj[item].movies[movieCount];
+                        prevMovie = moviesObj[item].movies[movieCount-8];
+                    }
+                }
+            }else if(currentPage === "series"){
+                for(item in seriesObj){
+                    if(seriesObj[item].index === +row.getAttribute("index")){
+                        nextMovie = seriesObj[item].movies[movieCount];
+                        prevMovie = seriesObj[item].movies[movieCount-8];
+                    }
+                }           
+             }else if(currentPage === "movies-search"){
                 isNextMovie = searchedItems[movieCount]
-                isPrevMovie = searchedItems[movieCount-6]
+                isPrevMovie = searchedItems[movieCount-8]
             }
-    
- 
+}
+
+function movieControls(e){
+    var cols = document.querySelectorAll(".m-row");
+			var rows = cols[mCol].querySelectorAll(".m-i");
+
+			if(e.key === "ArrowRight"){
+                // debugger
+                console.log(mCol);
+				if(mRow > 1 && nextMovie && mCol > 1){
+					movieItemsRender("right");
+					addRemMovie();
+				}else if(mCol === 1){
+                    // debugger
+                    if(mRow > 1 && mRow < rows.length-3){
+                        mRowTranslate -= 35;
+				    	cols[mCol].style.transform = `translate(${mRowTranslate}rem)`
+                        mRow++;
+					    addRemMovie();
+                    }else if(mRow < rows.length-1){
+                        mRow++;
+					    addRemMovie();
+                    }
+                }else if(mRow < rows.length-3 && mCol > 1){
+					mRow++;
+					addRemMovie();
+				}else if(mCol === 0 && mRow < rows.length-1){
+                    mRow++;
+					addRemMovie();
+                }
+			}else if(e.key === "ArrowLeft"){
+                // debugger
+				if(mRow < rows.length-4 && prevMovie && mCol > 1){
+					movieItemsRender("left");
+					addRemMovie();
+				}else if(mCol > 1 && mRow > 0){
+                    mRow--;
+					addRemMovie();
+                }
+                
+                if(mCol === 1){
+                    // debugger
+                    if(mRow > 2 && mRow < rows.length-2){
+                        mRowTranslate += 35;
+				    	cols[mCol].style.transform = `translate(${mRowTranslate}rem)`;
+                        mRow--;
+					    addRemMovie();
+                    }else if(mRow > 0){
+                        mRow--;
+					    addRemMovie();
+                    }
+                }else if(mRow > 0 && mCol === 1){
+					mRow--;
+					addRemMovie();
+				}else if(mCol === 0 && mRow > 0){
+					mRow--;
+					addRemMovie();
+
+                }
+
+
+
+			}else if(e.key === "ArrowDown"){
+				if(mCol < cols.length-1){
+                    if(currentPage === "movies" || currentPage === "series"){
+                        if(mCol > 1)movieScrollFunc(1);
+                        if(mCol === 1){
+                            catIndex = mRow;
+                        }
+                        if(mCol === 0){
+                            mRow = catIndex;
+                        }
+                        mCol++;
+                        if(mRow > cols[mCol].querySelectorAll(".m-i").length-1){
+                            mRow = 0;
+                        }
+                        addRemMovie();
+                    }
+				}
+                if(currentPage === "movies-search"){
+                
+					if(mCol === 0){
+						if(searchedItems.length === 0){
+							document.querySelector(".movie-item-active").classList.remove("movie-item-active")
+							currentBlock = "login";
+							rowIndex = 0;
+							keyIndex = 0;
+							addRemLogin();
+						}else {
+							mCol++;
+							addRemMovie()
+						}
+					}
+					else if(mCol === 1){
+							document.querySelector(".movie-item-active").classList.remove("movie-item-active")
+							currentBlock = "login";
+							rowIndex = 0;
+							keyIndex = 0;
+							addRemLogin();
+					}
+				}
+			}else if(e.key === "ArrowUp"){
+				// debugger
+                if(mCol === 2){
+                    mRow = catIndex
+                    addRemMovie();
+                }
+				if(mCol > 0){
+					if(mCol < cols.length)movieScrollFunc(-1);
+                    if(mCol === 1){
+                        catIndex = mRow;
+                    }
+					mCol--;
+                    if(mRow > cols[mCol].querySelectorAll(".m-i").length-1){
+                        console.log(mRow);
+                        mRow = 0;
+                    }
+					addRemMovie();
+				}
+                if(mCol < 0){
+                    searchI = 0;
+                    addRemSearch();
+                }
+			}else if(e.key === "Enter"){
+				document.querySelector(".movie-item-active").click();
+			}
+}
+
+function movieInfoControls(e){
+    if(e. key === "ArrowRight" || e.key === "ArrowDown"){
+        if(infoI < document.querySelectorAll(".info-i").length-1){
+            infoI++;
+            addRemInfo();
+        }else if(e.key === "ArrowRight"){
+            seriesR = 1;
+            addRemSeries();
+            currentBlock = "series";
+        }
+    }else if(e.key === "ArrowLeft" || e.key == "ArrowUp"){
+        if(infoI > 0){
+            infoI--;
+            addRemInfo();
+        }
+    }else if(e.key === "Enter"){
+        document.querySelector(".movie-item-active").click();
+    }
+}
+
+function movieSearchControls(e){
+    var rows = document.querySelector(".searched-movies-row").querySelectorAll(".m-i");
+    //
+    if(e.key === "ArrowDown"){
+        //
+        searchI++;
+        
+        if(searchI > 0 && searchedItems.length === 0){
+            document.querySelector(".search-active").classList.remove("search-active")
+            currentBlock = "login";
+            rowIndex = 0;
+            keyIndex = 0;
+            addRemLogin();
+        }
+        if(searchI <= document.querySelectorAll(".search-row").length-1){
+            mRow = 0;
+            addRemSearch();
+        }else{
+            document.querySelector(".search-active").classList.remove("search-active")
+            currentBlock = "login";
+            rowIndex = 0;
+            keyIndex = 0;
+            addRemLogin();
+
+        }
+        // addRemSearch();
+    }else if(e.key === "ArrowUp"){
+        //
+        searchI--;
+        if(searchI >= 0){
+            mRow = 0;
+            addRemSearch();
+        }
+    }else if(e.key === "ArrowRight"){
+        //
+        if(mRow > 1 && isNextMovie){
+            movieItemsRender("right");
+            addRemSearch();
+        }
+        else if(mRow < rows.length-1){
+            mRow++;
+            addRemSearch();
+        }
+    }else if(e.key === "ArrowLeft"){
+        //
+        if(mRow < rows.length-2 && isPrevMovie){
+            movieItemsRender("left");
+            addRemSearch();
+        }
+        else if(mRow > 0){
+            mRow--;
+            addRemSearch();
+        }
+    }else if(e.key === "Enter"){
+        document.querySelector(".search-active").click();
+        // currentBlock = "movies";
+        
+    }
+}
+
+
+function addRemInfo(){
+    // 
+    if(document.querySelector(".movie-item-active")){
+        document.querySelector(".movie-item-active").classList.remove("movie-item-active");
+    }
+    document.querySelectorAll(".info-i")[infoI].classList.add("movie-item-active")
 }
 
 
 
+function addRemSearch () {
+    if(document.querySelector(".search-active")){
+        document.querySelector(".search-active").classList.remove("search-active");
+    }
+    if(document.querySelectorAll(".search-row")[searchI].querySelectorAll(".m-i")[mRow]){
+        document.querySelectorAll(".search-row")[searchI].querySelectorAll(".m-i")[mRow].classList.add("search-active");
+    }
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+function movieScrollFunc(deltaY,movieScrollCount = 1){
+    //
+    if(deltaY > 0 && movieScroll > -((document.querySelectorAll(".movie-category-block").length-1) * 65)){
+        movieScroll -= (65 * movieScrollCount);
+        document.querySelector(".movies-container").style.transform = `translateY(${movieScroll}%)`
+    }else if(deltaY < 0 && movieScroll < 0){
+        movieScroll += (65 * movieScrollCount);
+        document.querySelector(".movies-container").style.transform = `translateY(${movieScroll}%)`
+    }
+}
 
 

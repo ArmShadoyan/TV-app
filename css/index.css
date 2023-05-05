@@ -1,0 +1,16 @@
+*{
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+}
+
+@media only screen and (max-width: 1280px) {
+    html {
+        font-size: 6.66666667px;
+    }
+}
+@media only screen and (max-width: 1920px) {
+    * {
+        font-size: 10px;
+    }
+}
