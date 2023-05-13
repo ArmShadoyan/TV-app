@@ -1,9 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Libre+Baskerville&family=Montserrat&family=Mukta:wght@200&family=Roboto+Serif:wght@400;500&family=Signika+Negative:wght@300;400&display=swap');
-*{
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-}
 
 .root{
 	height: 100%;
@@ -42,43 +36,39 @@
 	align-items: center;
 	justify-content: center;
 }
-.login-block .inputs-block .login-btn,
-.login-block .inputs-block input{
+.inputs-block .login-btn,
+.inputs-block input{
 	width: 100%;
-	height: 76px;
-	background-color: rgba(98, 97, 100, .40);
+	height: 7rem;
+	background-color: rgba(98, 97, 100, .40) !important;
     color: white;
-    border-radius: 5px;
-    border: 5px solid transparent;
+    border-radius: 0.5rem;
+    border: 0.5rem solid transparent;
     font-weight: bold;
-	font-size: 25px;
     outline: none;
 	margin: 2.5rem;
+	font-size: 3rem;
 	padding: 0 30px;
 	user-select: none;
 }
-.login-block .inputs-block .active-login{
-	border: 0.6rem solid #3ca45f;
-}
+
 .login-block .inputs-block p{
 	color: #f80c0c;
-	font-size: 30px;
+	font-size: 3rem;
 	font-family: sans-serif;
 }
 .login-block .inputs-block input::placeholder{
-	font-size: 26px;
+	font-size: 3rem;
 	font-weight: bold;
 }
 
 .login-block .inputs-block .login-btn{
-	font-size: 30px;
+	font-size: 3.5rem;
+	font-family: sans-serif;
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	cursor: pointer;
-}
-.login-block .inputs-block .active-login-btn{
-	background-color: #2E844E;
 }
 
 
@@ -135,9 +125,6 @@
 }
 .keyboard .row .space{
 	width: 70%;
-}
-.active {
-	background-color: #2E844E !important;
 }
 
 .material-symbols-outlined {

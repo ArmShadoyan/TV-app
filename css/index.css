@@ -1,3 +1,7 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400&family=Libre+Baskerville&family=Montserrat&family=Mukta:wght@200&family=Roboto+Serif:wght@400;500&family=Signika+Negative:wght@300;400&display=swap');
+
+
 *{
 	margin: 0;
 	padding: 0;
@@ -13,4 +17,18 @@
     * {
         font-size: 10px;
     }
+}
+
+.active {
+	background-color: #2E844E !important;
+}
+
+.menu-block .active {
+	border:3px solid #2E844E !important;
+	background-color: rgb(32, 32, 32) !important;
+	transform: scale(1.05);
+}
+
+.active-login {
+    border-color:#2E844E !important;
 }

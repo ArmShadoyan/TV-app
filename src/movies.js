@@ -1,3 +1,5 @@
+let categoryArr = [];
+
 
 var movieCategorys = [];
 var movies = [];
@@ -5,23 +7,18 @@ var moviesObj;
 var movieScroll = 0;
 // var movieScrollCount = 55;
 var mRowTranslate = 0
-var movieCount = 7;
+var movieCount = 5;
 
 
-var nextMovie=1
-var prevMovie = 1;
-var isNextMovie = 1;
-var isPrevMovie = 1;
+// var nextMovie=1
+// var prevMovie = 1;
+let nextMovie = 1;
+let prevMovie = 1;
 
 var previousPage;
 var previousBlock;
 var currentSearch;
 
-var mRow = 0;
-var mCol = 1;
-
-var infoI = 0;
-var searchI = 0;
 var catIndex = null;
 
 var episodes = [];
@@ -33,32 +30,54 @@ function build_movies_header(){
     var searchBlock = document.createElement("div");
     
     moviesHeader.classList.add("movies-header","m-row");
-    backToMenuBtn.classList.add("movies-back-to-menu","m-i");
+    backToMenuBtn.classList.add("movies-back-to-menu","m-i","search-back-ctrl");
     searchBlock.classList.add("movies-search-block","m-i");
+
+    moviesHeader.setAttribute("index",0)
     searchBlock.textContent = "Search";
 
     moviesHeader.append(backToMenuBtn,searchBlock);
 
     backToMenuBtn.addEventListener("click",() => {
-        menuRender();
+
+        pages.set_current("menu");
+
     })
     searchBlock.addEventListener("click",() => {
-        if(document.querySelector(".search-active"))document.querySelector(".search-active").classList.remove("search-active")
+
         searchedItems = [];
-        if(document.querySelector(".movie-search-container"))document.querySelector(".movie-search-container").remove();
-        movieSearchRender();
-        document.querySelector(".movie-search-container").style.display = "block"
-        document.querySelector(".searched-movies-row").style.display = "none";
-        document.querySelector(".not-found-block").style.display = "flex"
-        currentInput = document.querySelector(".movie-search-input");
-        currentInput.value = "";
+
+        if(document.querySelector(".movie-search-container")){
+            document.querySelector(".movie-search-container").remove();
+        }
+            if(pages.current == "movies"){
+                pages.set_current("moviesSearch");
+                controls.set_current("keyboard");
+                controls.keyboard.rowIndex = 0;
+                controls.keyboard.index = 0;
+                controls.keyboard.move();
+            }else if(pages.current == "series"){
+                pages.set_current("seriesSearch");
+                controls.set_current("keyboard");
+                controls.keyboard.rowIndex = 0;
+                controls.keyboard.index = 0;
+                controls.keyboard.move();
+            }
+            
+            document.querySelector(".movie-search-container").style.display = "block"
+            document.querySelector(".searched-movies-row").style.display = "none";
+            document.querySelector(".not-found-block").style.display = "flex"
+            
+            // currentInput = document.querySelector(".movie-search-input");
+            // currentInput.value = "";
     });
     
     return moviesHeader;
 }
 
 function build_category_blocks(movieCategorys,movies,obj){
-    // console.log(movieCategorys,movies);
+    categoryArr = [];
+
     var selectCategorysBlock = document.createElement("div");
     var selectCategorysRow = document.createElement("div");
     selectCategorysBlock.classList.add("movie-select-categorys-block");
@@ -70,6 +89,7 @@ function build_category_blocks(movieCategorys,movies,obj){
     var moviesContainer = document.createElement("div");
     moviesContainerInner.classList.add("movies-containerinner");
     moviesContainer.classList.add("movies-container");
+    moviesContainer.setAttribute("translate",0)
     
     moviesContainerInner.append(selectCategorysBlock);
 
@@ -80,13 +100,13 @@ function build_category_blocks(movieCategorys,movies,obj){
         var categoryTitle = document.createElement("div");
 
         var moviesRow = document.createElement("div");
-        moviesRow.setAttribute("index",index);
+        moviesRow.setAttribute("index",item.category_id);
         moviesRow.setAttribute("position",0);
         if(obj[item.category_id]){
             for (var i = 0; i < obj[item.category_id].movies.length; i++) {
-                if(i < 7){
+                if(i < 5){
                    if(moviesRow){
-                       moviesRow.append(build_movie_items(obj[item.category_id].movies[i]));
+                       moviesRow.append(build_movie_items(obj[item.category_id].movies[i],i));
                    }
                }
              }
@@ -99,6 +119,7 @@ function build_category_blocks(movieCategorys,movies,obj){
         if(obj[item.category_id]){
             if(obj[item.category_id].movies.length > 0){
                 // moviesRow.setAttribute("catIndex",index);
+                categoryArr.push(movieCount);
                 categoryBlock.append(categoryTitle,moviesRow);
                 moviesContainerInner.append(categoryBlock);
             };
@@ -110,13 +131,14 @@ function build_category_blocks(movieCategorys,movies,obj){
     return moviesContainer;
 };
     
-function build_movie_items(movie){
+function build_movie_items(movie,index){
      var movieItem = document.createElement("div");
      var movieImgBlock = document.createElement("div");
      var movieTitleBlock = document.createElement("div");
      var movieTitle = document.createElement("div");
 
     movieItem.classList.add("movies-item","m-i");
+    movieItem.setAttribute("index",index)
     var img = new Image()
     // debugger
     img.onload = () =>{
@@ -134,7 +156,6 @@ function build_movie_items(movie){
 
     movieImgBlock.classList.add("movie-img-block");
     img.src = movie.stream_icon?movie.stream_icon:movie.cover
-    // movieImgBlock.style.cssText = `background-image:url(${movie.stream_icon?movie.stream_icon:movie.cover})`;
     movieTitleBlock.classList.add("movie-title-block");
     movieTitle.classList.add("movie-title");
     movieTitle.textContent = `${movie.name}`
@@ -143,32 +164,17 @@ function build_movie_items(movie){
     movieTitleBlock.append(movieTitle);
     
     movieItem.addEventListener("click",() => {
-    // debugger     
-        if(currentPage === "movies" || currentPage === "movies-search" && currentSearch === "movies"){
-            getRequest(baseUrl,urlParams.loginUrl,urlParams.movieInfo,movie.stream_id)
-            .then(data => {
-                data = data.json();
-                return data
-            }).then(data =>{
-                previousPage = currentPage;
-                previousBlock = currentBlock;
-                if(document.querySelector(".movie-info-container"))document.querySelector(".movie-info-container").remove();
-                movieInfoRender(data,currentPage,previousBlock)
-                if(document.querySelector(".loader-parent"))document.querySelector(".loader-parent").remove();
-            })  
-        }else if(currentPage === "series" || currentPage === "movies-search" && currentSearch === "series"){
-            
-            getRequest(baseUrl,urlParams.loginUrl,urlParams.seriesInfo,movie.series_id)
-            .then(data => {
-                data = data.json();
-                return data
-            }).then(data => {
-                previousPage = currentPage;
-                previousBlock = currentBlock;
-                movieInfoRender(data,currentPage,previousBlock)
-                if(document.querySelector(".loader-parent"))document.querySelector(".loader-parent").remove();
-            })
+
+        if(pages.current === "movies" || pages.current === "moviesSearch"){
+            // debugger
+            pages.set_current("movieInfo",movie);
+
+        }else if(pages.current === "series" || pages.current === "seriesSearch"){
+
+            pages.set_current("seriesInfo",movie);
+
         }
+
     })
 
     return movieItem
@@ -185,64 +191,40 @@ function build_movie_category_item(item,obj,index){
     
     selectCategoryTitle.textContent = `${item.category_name}`
 
-    // if(obj[item.category_id].movies.length > 0){
-    //     // selectCategorysRow.append(selectCategory);
-    // }
     selectCategory.append(selectCategoryTitle);
 
-    selectCategory.addEventListener("click",() => {
-    // debugger
-        movieScrollFunc(1,index);
-        document.querySelector(".movie-item-active").classList.remove("movie-item-active");
-        selectCategory.classList.add("movie-item-active");
-        mCol = index+2;
-        catIndex = mRow
-        mRow = 0;
-        addRemMovie();
+    selectCategory.addEventListener("click",(e) => {
+        
+        blockScroll(document.querySelector(".movies-container"),1,"rem",65,"Y",index)
+        controls.movies.index = 0;
+        controls.movies.rowIndex = index + 2;
+        controls.movies.move();      
+        console.log(index);
+        document.querySelector(".movie-select-categorys-row").setAttribute("index",index)
     })
     return selectCategory;
 }
 
 function moviesRender(categorys,movies,obj,page){
-    root.innerHTML = "";
     
-    currentBlock = "movies";
-    currentPage = page;
     root.append(build_category_blocks(categorys,movies,obj));
-    console.log(document.querySelectorAll(".movies-row"));
-    mRow = 0;
-    mCol = 1;
-    addRemMovie();
     document.querySelector(".movie-select-categorys-row").style.transform = "translateY(0rem)";
-    mRowTranslate = 0;
     document.querySelector(".movies-container").addEventListener("wheel",(e) => {
-        // console.log(e.deltaY);
-        // debugger
+        let container = document.querySelector(".movies-container");
         if(e.deltaY > 0){
+      
+            blockScroll(container,e.deltaY);
             
-            if(mCol < 2){
-                mCol++
-                addRemMovie()
-            }else if(mCol < document.querySelectorAll(".m-row").length-1){
-                mCol++;
-                addRemMovie();
-                movieScrollFunc(1);
-            }
         };
         if(e.deltaY < 0){
-            movieScrollFunc(-1);
-            if(mCol > 1){
-                mCol--;
-                addRemMovie();
-            };
+
+            blockScroll(container,e.deltaY);
+          
         };
     });
 };
 
 function movieInfoRender(data,previousPage,block){
-
-    currentPage = "movie-info";
-    currentBlock = "movie-info"
 
     var container = document.createElement("div");
     var backToMovieBlock = document.createElement("div");
@@ -268,36 +250,48 @@ function movieInfoRender(data,previousPage,block){
 
     container.classList.add("movie-info-container");
     backToMovieBlock.classList.add("movie-info-back-block");
-    backToMovieBtn.classList.add("movie-info-back-btn","info-i");
+    backToMovieBtn.classList.add("movie-info-back-btn","info-ctrl");
     containerInner.classList.add("movie-info-containerinner");
     imgBlock.classList.add("movie-info-img-block");
     imgDiv.classList.add("movie-info-img-div");
     playBtnDiv.classList.add("movie-info-playbtn-div");
-    playBtn.classList.add("movie-info-playbtn","info-i");
+    playBtn.classList.add("movie-info-playbtn","info-ctrl");
     playBtn.textContent = "Play";
 
-    seasonBlock.classList.add("season-block","series-row");
-    episodeBlock.classList.add("episode-block","series-row");
+    seasonBlock.classList.add("season-block","episode-row");
+    episodeBlock.classList.add("episode-block","episode-row");
     seasonSection.classList.add("season-section");
     
     if(currentSearch === "movies"){
         // debugger
-        console.log(moviesObj[data.movie_data.category_id]);
-        imgDiv.style.cssText = `background-image: url(${data.info.cover_big?data.info.cover_big:data.info.movie_image})`
+        seriesInfo = 0;
+        var img = new Image()
+
+        img.onload = () =>{
+            imgDiv.style.backgroundImage = `url(${img.src})`
+        }
+
+        img.onerror = () =>{
+            imgDiv.style.backgroundImage = `url(imgs/logo-large.png)`;
+        }
+
+        img.src = data.info.cover_big?data.info.cover_big:data.info.movie_image
+        // console.log(moviesObj[data.movie_data.category_id]);
         infoBlock.classList.add("movie-info-block");
         infoName.classList.add("movie-info-name");
+        // debugger
         infoName.textContent = `${data.info.name?data.info.name:data.movie_data.name}`
         infoDesc.classList.add("movie-info-desc");
-        infoDesc.textContent = `${data.info.description?data.info.description:data.info.plot}`;
+        infoDesc.textContent = `${data.info.description? data.info.description : data.info.plot? data.info.plot : ""}`;
         infoCast.classList.add("movie-info-cast");
-        infoCast.textContent = `${data.info.cast}`;
+        infoCast.textContent = `${data.info.cast? data.info.cast : ""}`;
         infoGenres.classList.add("movie-info-genres");
-        infoGenres.textContent = `${data.info.genre}`
+        infoGenres.textContent = `${data.info.genre? data.info.genre : ""}`
         infoRateTimeBlock.classList.add("movie-info-rate-div");
         infoRate.classList.add("movie-info-rate");
-        infoRate.textContent = `${data.info.rating}`
+        infoRate.textContent = `${data.info.rating? data.info.rating : ""}`
         infoTime.classList.add("movie-info-time");
-        infoTime.textContent = `${data.info.duration}`
+        infoTime.textContent = `${data.info.duration? data.info.duration : ""}`
 
         backToMovieBlock.append(backToMovieBtn);
         imgBlock.append(imgDiv,playBtnDiv);
@@ -309,8 +303,6 @@ function movieInfoRender(data,previousPage,block){
         root.append(container);
         
     }else if(currentSearch === "series"){
-        seriesI = 0;
-        seriesR = 0;
         seriesInfo = 0;
         var img = new Image()
 
@@ -325,18 +317,18 @@ function movieInfoRender(data,previousPage,block){
         img.src = data?.info.cover
         infoBlock.classList.add("movie-info-block");
         infoName.classList.add("movie-info-name");
-        infoName.textContent = `${data.info.name}`
+        infoName.textContent = `${data.info.name? data.info.name : ""}`
         infoDesc.classList.add("movie-info-desc");
-        infoDesc.textContent = `${data.info.plot}`;
+        infoDesc.textContent = `${data.info.plot? data.info.plot : ""}`;
         infoCast.classList.add("movie-info-cast");
-        infoCast.textContent = `${data.info.cast}`;
+        infoCast.textContent = `${data.info.cast? data.info.cast : ""}`;
         infoGenres.classList.add("movie-info-genres");
-        infoGenres.textContent = `${data.info.genre}`
+        infoGenres.textContent = `${data.info.genre? data.info.genre : ""}`
         infoRateTimeBlock.classList.add("movie-info-rate-div");
         infoRate.classList.add("movie-info-rate");
-        infoRate.textContent = `${data.info.rating}`
+        infoRate.textContent = `${data.info.rating? data.info.rating : ""}`
         infoTime.classList.add("movie-info-time");
-        infoTime.textContent = `00:${data.info.episode_run_time}:00`
+        infoTime.textContent = `00:${data.info.episode_run_time? data.info.episode_run_time : ""}:00`
 
         console.log(data);
         backToMovieBlock.append(backToMovieBtn);
@@ -375,7 +367,7 @@ function movieInfoRender(data,previousPage,block){
             var seasonIndex = 0;
             for(item in seasonsObj){
                 var season = document.createElement("div");
-                season.classList.add("season","series-i"); 
+                season.classList.add("season","episode-ctrl"); 
                 season.setAttribute("season",item);
                 seasonBlock.append(season);
                 season.textContent = `season${item}`
@@ -399,7 +391,6 @@ function movieInfoRender(data,previousPage,block){
                     seriesTransform = 0;
                     seriesI = 0;
                     lastIndex = 0;
-                    // addRemSeries();
                     currentEpisodes.forEach(item => {
                         createEpisode(item,data)
                     })
@@ -419,7 +410,7 @@ function movieInfoRender(data,previousPage,block){
             root.append(container);
             episodes.forEach((ep,index) => {
                 var season = document.createElement("div");
-                season.classList.add("season","season-i");
+                season.classList.add("season","episode-ctrl");
                 season.setAttribute("season",index);
                 seasonBlock.append(season);
                 season.textContent = `season${index+1}`
@@ -443,20 +434,13 @@ function movieInfoRender(data,previousPage,block){
                     })
         }
     }
-    document.querySelector(".movies-container").style.display = "none";
-    container.style.display = "block";
-    
-    addRemInfo();
 
-    // debugger
     backToMovieBtn.addEventListener("click",(e) => {
         e.stopPropagation();
         container.remove();
-        document.querySelector(".movies-container").style.display = "block";
-        currentBlock = "movies";
-        currentPage = previousPage;
-        if(block)currentBlock = block;
-        addRemMovie();
+        pages.current = pages.previous;
+        controls.set_current("movies");
+        controls.movies.move();
     })
 
     playBtn.addEventListener("click",(e) => {
@@ -465,15 +449,6 @@ function movieInfoRender(data,previousPage,block){
         playerBlockRender(data);
         console.log(data);
     })
-}
-
-function addRemMovie(){
-    if(document.querySelector(".movie-item-active")){
-        document.querySelector(".movie-item-active").classList.remove("movie-item-active");
-    }
-    if( document.querySelectorAll(".m-row")[mCol].querySelectorAll(".m-i")[mRow]){
-        document.querySelectorAll(".m-row")[mCol].querySelectorAll(".m-i")[mRow].classList.add("movie-item-active")
-    }
 }
 
 function createEpisode(item,data){
@@ -497,8 +472,7 @@ function createEpisode(item,data){
         }
     
     img.src = item.info.movie_image?item.info.movie_image:data.info.cover;
-    // episodeImgBlock.style.backgroundImage = `url(${item.info.movie_image?item.info.movie_image:data.info.cover})`
-    episode.classList.add("episode","series-i");
+    episode.classList.add("episode","episode-ctrl");
     episodeImgBlock.classList.add("episode-img-block");
     episodeNameBlock.classList.add("episode-name-block");
     episodeNameBlock.textContent = `S${item.season} E${item.episode_num}`
@@ -508,13 +482,9 @@ function createEpisode(item,data){
 }
 
 function movieSearchRender (){
-    previousPage = currentPage;
-    currentPage = "movies-search";
     searchedItems = [];
     isNextMovie = 1;
     movieCount = 5;
-    mRow = 0;
-    mCol = 0;
     var movieSearchContainer = document.createElement("div");
     var backToMovieBlock = document.createElement("div");
     var backToMovieBtn = document.createElement("div");
@@ -529,12 +499,12 @@ function movieSearchRender (){
     var input = document.createElement("input");
     
     movieSearchContainer.classList.add("movie-search-container","movies-container");
-    backToMovieBlock.classList.add("movies-header","search-row");
+    backToMovieBlock.classList.add("movies-header","search-row","movie-search-row");
     backToMovieBtn.classList.add("movies-back-to-menu","m-i");
     currentPageTitle.classList.add("movies-search-page-title");
     currentPageTitle.textContent = "Search";
     searchedMoviesBlock.classList.add("searched-movies-block");
-    searchedMoviesRow.classList.add("movies-row","search-row","searched-movies-row");
+    searchedMoviesRow.classList.add("movies-row","search-row","searched-movies-row","movie-search-row");
     searchedMoviesRow.style.display = "none";
     notFoundBlock.classList.add("not-found-block");
     notFoundImg.classList.add("not-found-img");
@@ -556,316 +526,100 @@ function movieSearchRender (){
     movieSearchContainer.style.display = "none"
 
     document.querySelector(".keyboard").classList.add("movie-keyboard");
-    currentBlock = "login";
-    keyboard_exist = true;
-    addRemLogin();
 
     backToMovieBtn.addEventListener("click",(e) => {
         e.stopPropagation();
-    
+        // debugger
         movieSearchContainer.style.display = "none";
-        currentPage = currentSearch;
-        currentBlock = "movies";
-        addRemMovie();
+        
+        // pages.set_previous();
+        if(pages.current === "seriesSearch"){
+            pages.current = "series"
+            controls.movies.rowindex = 0;
+            controls.movies.index = 1;
+        }else if(pages.current === "moviesSearch"){
+            pages.current = "movies"
+            controls.movies.rowindex = 0;
+            controls.movies.index = 1;
+        }
+        
+        controls.set_current("movies");
+        controls.movies.move();
+
     });
 };
 
 function movieItemsRender(side){
+    
     var row;
-    // debugger
-    if(currentPage === "movies" || currentPage === "series"){
-        row = document.querySelector(".movies-row .movie-item-active").parentNode;
-    }else if(currentPage === "movies-search"){
-        row = document.querySelector(".searched-movies-row .search-active").parentNode
+    if(pages.current === "movies" || pages.current === "series"){
+        row = document.querySelector(".active").parentNode;
+    }else if(pages.current === "moviesSearch" || pages.current === "seriesSearch"){
+        row = document.querySelector(".searched-movies-row .active").parentNode
     }
+            // debugger
             var items = row.querySelectorAll(".movies-item")
-            if(currentPage === "movies"){
-                for(item in moviesObj){
-                    if(moviesObj[item].index === +row.getAttribute("index")){
-                        // debugger
-                        nextMovie = moviesObj[item].movies[movieCount];
-                        prevMovie = moviesObj[item].movies[movieCount-6];
-                    }
-                }
-            }else if(currentPage === "series"){
-                for(item in seriesObj){
-                    if(seriesObj[item].index === +row.getAttribute("index")){
-                        nextMovie = seriesObj[item].movies[movieCount];
-                        prevMovie = seriesObj[item].movies[movieCount-8];
-                    }
-                }
-                
+            if(side === "right"){
+                movieCount++;
+            }else if(side === "left"){
+                movieCount--;
             }
-            else if(currentPage === "movies-search"){
-                nextMovie = searchedItems[movieCount]
-                prevMovie = searchedItems[movieCount-6]
+            if(pages.current === "movies"){
+                nextMovie = moviesObj[+row.getAttribute("index")].movies[movieCount-1];
+                prevMovie = moviesObj[+row.getAttribute("index")].movies[movieCount-5];
+            }else if(pages.current === "series"){
+                nextMovie = seriesObj[+row.getAttribute("index")].movies[movieCount-1];
+                prevMovie = seriesObj[+row.getAttribute("index")].movies[movieCount-5];
+            }else if(pages.current === "moviesSearch" || pages.current === "seriesSearch"){
+                nextMovie = searchedItems[movieCount-1];
+                prevMovie = searchedItems[movieCount-5];
             }
+            // else if(pages.current === "series"){
+            //     for(item in seriesObj){
+            //         if(seriesObj[item].index === +row.getAttribute("index")){
+            //             nextMovie = seriesObj[item].movies[movieCount];
+            //             prevMovie = seriesObj[item].movies[movieCount-8];
+            //         }
+            //     }
+            // }
+
+            // else if(pages.current === "movies-search"){
+            //     nextMovie = searchedItems[movieCount]
+            //     prevMovie = searchedItems[movieCount-6]
+            // }
+            // debugger
             
             if(nextMovie && side === "right"){
                 items[0].remove();
                 row.append(build_movie_items(nextMovie))
-                movieCount++;
+                // movieCount++;
             }else if(prevMovie && side === "left"){
                 items[items.length-1].remove();
                 row.prepend(build_movie_items(prevMovie))
-                movieCount--;
+                // movieCount--;
             }
-            
-            if(currentPage === "movies"){
-                for(item in moviesObj){
-                    if(moviesObj[item].index === +row.getAttribute("index")){
-                        nextMovie = moviesObj[item].movies[movieCount];
-                        prevMovie = moviesObj[item].movies[movieCount-8];
-                    }
-                }
-            }else if(currentPage === "series"){
-                for(item in seriesObj){
-                    if(seriesObj[item].index === +row.getAttribute("index")){
-                        nextMovie = seriesObj[item].movies[movieCount];
-                        prevMovie = seriesObj[item].movies[movieCount-8];
-                    }
-                }           
-             }else if(currentPage === "movies-search"){
-                isNextMovie = searchedItems[movieCount]
-                isPrevMovie = searchedItems[movieCount-8]
-            }
-}
-
-function movieControls(e){
-    var cols = document.querySelectorAll(".m-row");
-			var rows = cols[mCol].querySelectorAll(".m-i");
-
-			if(e.key === "ArrowRight"){
-                // debugger
-                console.log(mCol);
-				if(mRow > 1 && nextMovie && mCol > 1){
-					movieItemsRender("right");
-					addRemMovie();
-				}else if(mCol === 1){
-                    // debugger
-                    if(mRow > 1 && mRow < rows.length-3){
-                        mRowTranslate -= 35;
-				    	cols[mCol].style.transform = `translate(${mRowTranslate}rem)`
-                        mRow++;
-					    addRemMovie();
-                    }else if(mRow < rows.length-1){
-                        mRow++;
-					    addRemMovie();
-                    }
-                }else if(mRow < rows.length-3 && mCol > 1){
-					mRow++;
-					addRemMovie();
-				}else if(mCol === 0 && mRow < rows.length-1){
-                    mRow++;
-					addRemMovie();
-                }
-			}else if(e.key === "ArrowLeft"){
-                // debugger
-				if(mRow < rows.length-4 && prevMovie && mCol > 1){
-					movieItemsRender("left");
-					addRemMovie();
-				}else if(mCol > 1 && mRow > 0){
-                    mRow--;
-					addRemMovie();
-                }
-                
-                if(mCol === 1){
-                    // debugger
-                    if(mRow > 2 && mRow < rows.length-2){
-                        mRowTranslate += 35;
-				    	cols[mCol].style.transform = `translate(${mRowTranslate}rem)`;
-                        mRow--;
-					    addRemMovie();
-                    }else if(mRow > 0){
-                        mRow--;
-					    addRemMovie();
-                    }
-                }else if(mRow > 0 && mCol === 1){
-					mRow--;
-					addRemMovie();
-				}else if(mCol === 0 && mRow > 0){
-					mRow--;
-					addRemMovie();
-
-                }
 
 
-
-			}else if(e.key === "ArrowDown"){
-				if(mCol < cols.length-1){
-                    if(currentPage === "movies" || currentPage === "series"){
-                        if(mCol > 1)movieScrollFunc(1);
-                        if(mCol === 1){
-                            catIndex = mRow;
-                        }
-                        if(mCol === 0){
-                            mRow = catIndex;
-                        }
-                        mCol++;
-                        if(mRow > cols[mCol].querySelectorAll(".m-i").length-1){
-                            mRow = 0;
-                        }
-                        addRemMovie();
-                    }
-				}
-                if(currentPage === "movies-search"){
-                
-					if(mCol === 0){
-						if(searchedItems.length === 0){
-							document.querySelector(".movie-item-active").classList.remove("movie-item-active")
-							currentBlock = "login";
-							rowIndex = 0;
-							keyIndex = 0;
-							addRemLogin();
-						}else {
-							mCol++;
-							addRemMovie()
-						}
-					}
-					else if(mCol === 1){
-							document.querySelector(".movie-item-active").classList.remove("movie-item-active")
-							currentBlock = "login";
-							rowIndex = 0;
-							keyIndex = 0;
-							addRemLogin();
-					}
-				}
-			}else if(e.key === "ArrowUp"){
-				// debugger
-                if(mCol === 2){
-                    mRow = catIndex
-                    addRemMovie();
-                }
-				if(mCol > 0){
-					if(mCol < cols.length)movieScrollFunc(-1);
-                    if(mCol === 1){
-                        catIndex = mRow;
-                    }
-					mCol--;
-                    if(mRow > cols[mCol].querySelectorAll(".m-i").length-1){
-                        console.log(mRow);
-                        mRow = 0;
-                    }
-					addRemMovie();
-				}
-                if(mCol < 0){
-                    searchI = 0;
-                    addRemSearch();
-                }
-			}else if(e.key === "Enter"){
-				document.querySelector(".movie-item-active").click();
-			}
-}
-
-function movieInfoControls(e){
-    if(e. key === "ArrowRight" || e.key === "ArrowDown"){
-        if(infoI < document.querySelectorAll(".info-i").length-1){
-            infoI++;
-            addRemInfo();
-        }else if(e.key === "ArrowRight"){
-            seriesR = 1;
-            addRemSeries();
-            currentBlock = "series";
-        }
-    }else if(e.key === "ArrowLeft" || e.key == "ArrowUp"){
-        if(infoI > 0){
-            infoI--;
-            addRemInfo();
-        }
-    }else if(e.key === "Enter"){
-        document.querySelector(".movie-item-active").click();
-    }
-}
-
-function movieSearchControls(e){
-    var rows = document.querySelector(".searched-movies-row").querySelectorAll(".m-i");
-    //
-    if(e.key === "ArrowDown"){
-        //
-        searchI++;
-        
-        if(searchI > 0 && searchedItems.length === 0){
-            document.querySelector(".search-active").classList.remove("search-active")
-            currentBlock = "login";
-            rowIndex = 0;
-            keyIndex = 0;
-            addRemLogin();
-        }
-        if(searchI <= document.querySelectorAll(".search-row").length-1){
-            mRow = 0;
-            addRemSearch();
-        }else{
-            document.querySelector(".search-active").classList.remove("search-active")
-            currentBlock = "login";
-            rowIndex = 0;
-            keyIndex = 0;
-            addRemLogin();
-
-        }
-        // addRemSearch();
-    }else if(e.key === "ArrowUp"){
-        //
-        searchI--;
-        if(searchI >= 0){
-            mRow = 0;
-            addRemSearch();
-        }
-    }else if(e.key === "ArrowRight"){
-        //
-        if(mRow > 1 && isNextMovie){
-            movieItemsRender("right");
-            addRemSearch();
-        }
-        else if(mRow < rows.length-1){
-            mRow++;
-            addRemSearch();
-        }
-    }else if(e.key === "ArrowLeft"){
-        //
-        if(mRow < rows.length-2 && isPrevMovie){
-            movieItemsRender("left");
-            addRemSearch();
-        }
-        else if(mRow > 0){
-            mRow--;
-            addRemSearch();
-        }
-    }else if(e.key === "Enter"){
-        document.querySelector(".search-active").click();
-        // currentBlock = "movies";
-        
-    }
+            // if(pages.current === "movies"){
+            //     for(item in moviesObj){
+            //         if(moviesObj[item].index === +row.getAttribute("index")){
+            //             nextMovie = moviesObj[item].movies[movieCount];
+            //             prevMovie = moviesObj[item].movies[movieCount-8];
+            //         }
+            //     }
+            // }else if(pages.current === "series"){
+            //     for(item in seriesObj){
+            //         if(seriesObj[item].index === +row.getAttribute("index")){
+            //             nextMovie = seriesObj[item].movies[movieCount];
+            //             prevMovie = seriesObj[item].movies[movieCount-8];
+            //         }
+            //     }           
+            //  }else if(pages.current === "movies-search"){
+            //     isNextMovie = searchedItems[movieCount]
+            //     isPrevMovie = searchedItems[movieCount-8]
+            // }
 }
 
 
-function addRemInfo(){
-    // 
-    if(document.querySelector(".movie-item-active")){
-        document.querySelector(".movie-item-active").classList.remove("movie-item-active");
-    }
-    document.querySelectorAll(".info-i")[infoI].classList.add("movie-item-active")
-}
-
-
-
-function addRemSearch () {
-    if(document.querySelector(".search-active")){
-        document.querySelector(".search-active").classList.remove("search-active");
-    }
-    if(document.querySelectorAll(".search-row")[searchI].querySelectorAll(".m-i")[mRow]){
-        document.querySelectorAll(".search-row")[searchI].querySelectorAll(".m-i")[mRow].classList.add("search-active");
-    }
-}
-
-function movieScrollFunc(deltaY,movieScrollCount = 1){
-    //
-    if(deltaY > 0 && movieScroll > -((document.querySelectorAll(".movie-category-block").length-1) * 65)){
-        movieScroll -= (65 * movieScrollCount);
-        document.querySelector(".movies-container").style.transform = `translateY(${movieScroll}%)`
-    }else if(deltaY < 0 && movieScroll < 0){
-        movieScroll += (65 * movieScrollCount);
-        document.querySelector(".movies-container").style.transform = `translateY(${movieScroll}%)`
-    }
-}
 
 

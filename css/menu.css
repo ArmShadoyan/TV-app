@@ -33,9 +33,11 @@
     transition: all .2s linear;
     font-size: 3rem;
 }
-.menu-block .menu-active{
-	border-color: #41a901;
-    transform: scale(1.05);
+
+.menu-block .menu-item:hover{
+    border:3px solid #2E844E !important;
+	background-color: rgb(32, 32, 32) !important;
+	transform: scale(1.05);
 }
 .menu-block .menu-tv-item{
 	background-image: url(/imgs/menu/tv.png);

@@ -34,7 +34,6 @@
 	position: absolute;
 	transition: .8s;
 	opacity: 1;
-    overflow: hidden;
 }
 .tv-block .chanels-block .filter-menu{
 	width: 100%;

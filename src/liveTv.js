@@ -1,5 +1,3 @@
-var tvChanelI = 0;
-var filterMenuI = 0;
 var liveObj = {};
 var chanels = [];
 var categorys = [];
@@ -7,7 +5,7 @@ var favoriteItems = [];
 var filteredEpg = []
 var filteredCat = [];
 var epgTimer;
-var chanelsCount = 8;
+var chanelsCount = 6;
 var nextChanel = 1;
 var prevChanel = 1;
 var menuTransform = 0;
@@ -54,7 +52,7 @@ function createTvElements(){
 	return listsBlock;
 }
 
-function createPlayerBlock(){
+function createTvPlayerBlock(){
 	var playerBlock = document.createElement("div");
 	var timeBlock = document.createElement("div");
 	var VideoBlock = document.createElement("div");
@@ -122,18 +120,13 @@ function createPlayerBlock(){
 	menuBtn.textContent = "Menu";
 
 	favoritesBtn.addEventListener("click",function(e) {
+		// debugger
 		var activeChanel = document.querySelector(".chanel-item-active");
 		var fav = activeChanel.querySelector(".chanel-favorite");
 		if(!fav.classList.contains("chanel-favorite-active")){
 			fav.classList.add("chanel-favorite-active");
 			activeChanel.classList.add("chanel-item-fav");
-			// chanels.forEach(item => {
-			// 	if(item.name === activeChanel.querySelector(".chanel-title").textContent){
-			// 		item.favorite = "true";									
-			// 		favoriteItems.push(item);
-			// 		localStorage.setItem("favorites",JSON.stringify(favoriteItems));
-			// 	}
-			// });
+		
 			for(var i = 0;i < chanels.length;i++){
 				var item = chanels[i];
 				if(item.name === activeChanel.querySelector(".chanel-title").textContent){
@@ -145,17 +138,7 @@ function createPlayerBlock(){
 		}else{
 			fav.classList.remove("chanel-favorite-active");
 			activeChanel.classList.remove("chanel-item-fav");
-			// chanels.forEach((item,index) => {
-			// 	if(item.name === activeChanel.querySelector(".chanel-title").textContent){
-			// 		console.log(item);	
-			// 		favoriteItems.forEach((fav,index) => {
-			// 			if(fav.name === item.name){
-			// 				favoriteItems.splice(index,1);
-			// 				console.log(favoriteItems);
-			// 			}
-			// 		});
-			// 	}
-			// });
+	
 			for(var j = 0;j < chanels.length;j++){
 				var item = chanels[j];
 				var index = j;
@@ -188,66 +171,24 @@ function createPlayerBlock(){
 	return playerBlock;
 }
 
-function currentTime(){
-	var date = new Date();
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
-
-    var day = date.getDate(); 
-    var hours = date.getHours();
-    var minuts = date.getMinutes();
-
-    if (hours < 10) hours = "0" + hours;
-    if (minuts < 10) minuts = "0" + minuts;
-
-    if (day < 10) day = "0" + day;
-    if (month < 10) month = "0" + month;
-
-	document.querySelector(".date").textContent = `
-		${year}/${month}/${day}
-	`;
-	document.querySelector(".time").textContent = `
-		${hours}:${minuts}
-	`;
-
-
-	setTimeout(() => {
-		currentTime();
-	}, 10000);
-}
-
-
-
 function printChanelsList(items,name){
 	var chanelsBlock = document.querySelector(".chanels-block");
 	var chanelsInner = document.querySelector(".chanels-inner");
 	var menu = document.querySelector(".filter-menu");
 	var menuParent = document.querySelector(".filter-menu-parent");
 
-	// items.forEach((item,index) => {
-		
-	// 		if(name === "filterMenu"){
-	// 			menu.append(createChanelItem(item))
-	// 		}else{
-	// 			if(index < 8){
-	// 				chanelsInner.append(createChanelItem(item))
-	// 			}
-	// 		}
-	// });
 	for(var i = 0;i < items.length;i++){
 		var item = items[i];
 		if(name === "filterMenu"){
 			menu.append(createChanelItem(item))
 		}else{
-			if(i < 8){
+			if(i < 6){
 				chanelsInner.append(createChanelItem(item))
 			}
 		}
 	}
-	// qwert
 	menuParent.append(menu)
 	chanelsBlock.append(chanelsInner,menuParent);
-	// chanelsBlock.append(chanelsInner,menu);
 }
 
 function createChanelItem(item){
@@ -257,11 +198,6 @@ function createChanelItem(item){
 	var title = document.createElement("div");
 	var favorite = document.createElement("div");
 
-	// favoriteItems.forEach(fav => {
-	// 	if(item.name === fav.name){
-	// 		favorite.classList.add("chanel-favorite-active");
-	// 	}
-	// });
 	for(var i = 0;i < favoriteItems.length;i++){
 		var fav = favoriteItems[i];
 		if(item.name === fav.name){
@@ -291,14 +227,14 @@ function createChanelItem(item){
 
 		chanelItem.append(number,logo,title,favorite);
 		// chanelsInner.append(chanelItem);
-		chanelItem.classList.add("control-chanels");
+		chanelItem.classList.add("chanel-ctrl");
 
 	}else{
 		title.textContent = `${item}`;
 		chanelItem.append(title);
 		title.classList.add("filter-menu-list-title");
 		// menu.append(chanelItem);
-		chanelItem.classList.add("filter-menu-item");
+		chanelItem.classList.add("filter-menu-item","tv-category-ctrl");
 		if(item === "All")chanelItem.classList.add("All");
 	}
 
@@ -339,36 +275,29 @@ function createChanelItem(item){
 
 function chanelItemsRender(side){
 	// debugger
-
-		var items = document.querySelectorAll(".chanels-inner .chanel-item");
-		var block = document.querySelector(".chanels-inner");
+	var items = document.querySelectorAll(".chanels-inner .chanel-item");
+	var block = document.querySelector(".chanels-inner");
 
 	nextChanel = filteredCat[chanelsCount];
-	prevChanel = filteredCat[chanelsCount-9]
+	prevChanel = filteredCat[chanelsCount-7] 
 	
-	if(side === "bottom"){
+	if(side === "bottom" && nextChanel){
 		items[0].remove();
-		block.append(createChanelItem(nextChanel))
+		block.append(createChanelItem(nextChanel));
 		chanelsCount++;
-	}else if(side === "top"){
+	}
+	
+	if(side === "top"){
 		items[items.length-1].remove();
 		block.prepend(createChanelItem(prevChanel))
 		chanelsCount--;
 	}
 	nextChanel = filteredCat[chanelsCount];
-	prevChanel = filteredCat[chanelsCount-9]
+	prevChanel = filteredCat[chanelsCount-7]
 }
 
 function updateEpgs(categorys){
-	// categorys.epg_listings.forEach(list =>{
-	// 	var liveDate = list.start.split(" ")[0].split("-").join("");
-	// 	if(document.querySelector(".date")){
-	// 		var currentDate = document.querySelector(".date").innerText.split("/").join("");
-	// 		if(liveDate == currentDate){
-	// 			filteredEpg.push(list);
-	// 		}
-	// 	}
-	// });
+
 	for(var i = 0;i < categorys.epg_listings.length;i++){
 		var list = categorys.epg_listings[i];
 		var liveDate = list.start.split(" ")[0].split("-").join("");
@@ -381,18 +310,7 @@ function updateEpgs(categorys){
 	}
 	var currentEpgs = [];
 	var nextEpgs = [];
-	// filteredEpg.forEach((epg,index) => {
-	// 	var currentHour = document.querySelector(".time").innerText.split(":")[0];
-	// 	var currentMinute = document.querySelector(".time").innerText.split(":")[1];
-
-	// 	var start = toDate(epg.start_timestamp).split(":").join("");
-	// 	var end = toDate(epg.stop_timestamp).split(":").join("");
-	// 	var time = document.querySelector(".time").innerText.split(":").join("");
-	// 		if(+time < +end && +time > +start){
-	// 			currentEpgs.push(filteredEpg[index]);
-	// 			nextEpgs.push(filteredEpg[index+1])
-	// 		} 
-	// });
+	
 	for(let j = 0;j < filteredEpg.length;j++){
 		var epg = filteredEpg[j];
 		var currentHour = document.querySelector(".time").innerText.split(":")[0];
@@ -435,7 +353,7 @@ function chanelsSerachBack(){
 			document.querySelector(".chanels-search-inputblock").style.transform = "translateX(110%)";
 			document.querySelector(".keyboard").classList.remove("live-keyboard")
 		}else{
-			showChanelsMenu();
+			showChanelsMenu();	
 		}
 	});	
 }
@@ -448,15 +366,10 @@ function showChanelsMenu(){
 			chanelsInner.style.transform = "scale(0.4)";
 			chanelsInner.style.opacity = "0";
 			document.querySelector(".filter-menu-parent").style.transform = "translateX(0rem)";		
-			// document.querySelector(".filter-menu").style.transform = `translateY(${menuTransform}rem)`;		
-			// document.querySelector(".filter-menu").classList.remove("filter-menu-transform");
-			currentBlock = "filter-menu";
-			addRemFilterMenu();
-			// document.querySelectorAll(".option-btn").forEach((item,index) => {
-			// 	if(index !== document.querySelectorAll(".option-btn").length-1){
-			// 		item.style.display = "none";
-			// 	}
-			// });
+		
+			controls.set_current("tvCategoryBlock");
+			controls.tvCategoryBlock.move();
+			
 			for(var i = 0;i < document.querySelectorAll(".option-btn").length;i++){
 				var item = document.querySelectorAll(".option-btn")[i];
 				if(i !== document.querySelectorAll(".option-btn").length-1){
@@ -468,14 +381,13 @@ function showChanelsMenu(){
 			chanelsInner.style.opacity = "1";
 			chanelsInner.style.transform = "scale(1)";
 			document.querySelector(".filter-menu-parent").style.transform = "translate(-100rem)";
-			// document.querySelector(".filter-menu").classList.add("filter-menu-transform");
-			currentBlock = "tv";
-			if(document.querySelector(".keyboard").classList.contains("live-keyboard"))currentBlock = "login";
-			// document.querySelectorAll(".option-btn").forEach((item,index) => {
-			// 	if(index !== document.querySelectorAll(".option-btn").length-1){
-			// 		item.style.display = "block";
-			// 	}
-			// });
+			if(document.querySelector(".keyboard").classList.contains("live-keyboard")){
+				
+			}else{
+				controls.set_current("tvChanelBlock");
+				controls.tvChanelBlock.move();
+			}
+		
 			for(var j = 0;j < document.querySelectorAll(".option-btn").length;j++){
 				var item = document.querySelectorAll(".option-btn")[j];
 				if(j !== document.querySelectorAll(".option-btn").length-1){
@@ -491,7 +403,9 @@ function chanelsOnClick(){
 	var menuBtn = document.querySelector(".menu-btn");
 	if(menuBtn){
 		menuBtn.addEventListener("click",() => {
-			menuRender();
+			pages.set_current("menu");
+			controls.set_current("menu");
+			controls.menu.move();
 		});
 	}
 	
@@ -506,57 +420,68 @@ function chanelsOnClick(){
 
 function filterMenuOnclick(){
 	var items = document.getElementsByClassName("filter-menu-item");
-	
-	// items.forEach(item => {
-		
-	// });
+
 	var active;
 	for(var i = 0;i < items.length;i++) {
 		items[i].addEventListener("click",function(e){
 			// debugger
 			active = this.textContent;
-			console.log(this);
 			filteredCat = [];
 			nextChanel = 1;
-			chanelsCount = 8;
+			chanelsCount = 6;
 			console.log(categorys)
 				if(active === "All"){
 					// debugger
+					// document.querySelector(".chanels-search-inputblock").style.transform = "translateX(110%)";
+					// document.querySelector(".player-block").style.transform = "translateX(0)";
+
 					filteredCat = chanels;
 					document.querySelector(".filter-menu-title").textContent = active;	
 					document.querySelector(".chanels-inner").innerHTML = "";
 					printChanelsList(chanels,"chanels");
+					controls.set_current("tvChanelBlock");
+					controls.tvChanelBlock.move();
 				}else if(active === "Favorites"){
+					// document.querySelector(".chanels-search-inputblock").style.transform = "translateX(110%)";
+					// document.querySelector(".player-block").style.transform = "translateX(0)";
+
 					document.querySelector(".filter-menu-title").textContent = active;	
 					document.querySelector(".chanels-inner").innerHTML = "";
-					console.log(favoriteItems);
 					printChanelsList(favoriteItems,"favoriteItems");
 					filteredCat = favoriteItems;
+					controls.set_current("tvChanelBlock");
+					controls.tvChanelBlock.move();
 				}else if(active === "Search"){
 					// debugger
-					document.querySelector(".player-block").style.transform = "translateX(110%)";
-					document.querySelector(".chanels-search-inputblock").style.transform = "translateX(0)";
+					blockScroll(document.querySelector(".player-block"),-1,"%",110,"X")
+					blockScroll(document.querySelector(".chanels-search-inputblock"),1,"",0,"X")
+					
+					document.querySelector(".keyboard").classList.add("live-keyboard")
 					document.querySelector(".chanels-inner").innerHTML = "";
 					printChanelsList(chanels,"chanels");
-					document.querySelector(".keyboard").classList.add("live-keyboard")
-					currentBlock = "login";	
-					rowIndex = 0;
-					keyIndex = 0;
-					addRemLogin();
-					keyboard_exist = true; 
 					document.querySelector(".chanels-search-input").value = "";
+
+					// debugger
+					controls.set_current("keyboard");
+					controls.keyboard.rowIndex = 0;
+					controls.keyboard.index = 0;
+					controls.keyboard.move();
 				}else{
+					// document.querySelector(".chanels-search-inputblock").style.transform = "translateX(110%)";
+					// document.querySelector(".player-block").style.transform = "translateX(0)";
+
 					filteredCat = [];
 					for(item in liveObj){
 						if(liveObj[item].category === active){
 							filteredCat = liveObj[item].chanels;
 						}
 					}
-			// debugger
-
+			
 					document.querySelector(".chanels-inner").innerHTML = "";
 					document.querySelector(".filter-menu-title").textContent = active;	
 					printChanelsList(filteredCat,"filteredCat");
+					controls.set_current("tvChanelBlock");
+					controls.tvChanelBlock.move();
 				}
 
 
@@ -566,8 +491,6 @@ function filterMenuOnclick(){
 							currentBlock = "tv";
 						}
 				}, 1);
-				tvChanelI = 0;
-				addRemTvChanel();
 				chanelsOnClick();
 				return;
 			})
@@ -593,116 +516,11 @@ function createChanelsSearechInput(){
 
 
 	tvBlock.append(createTvElements(),rightBlock);
-	rightBlock.append(createPlayerBlock(),inputBlock);	
+	rightBlock.append(createTvPlayerBlock(),inputBlock);	
 	return tvBlock;
 }
 
-function toDate(temp){
-	var date = new Date(+temp * 1000);
-
-	var hours  = date.getHours();
-	var minute = date.getMinutes();
-	if(hours < 10){
-		hours = "0" + date.getHours();
-	}
-	if(minute < 10){
-		minute = "0" + date.getMinutes();
-	}
-	var time = hours + ":" + minute;
-
-	return time;
-}
-
-function addRemTvChanel(){
-	
-	if(document.querySelector(".chanel-item-active")){
-		document.querySelector(".chanel-item-active").classList.remove("chanel-item-active");
-	}
-	if(document.querySelectorAll(".control-chanels")[tvChanelI]){
-		document.querySelectorAll(".control-chanels")[tvChanelI].classList.add("chanel-item-active");
-	}
-
-}
-
-function addRemFilterMenu(){
-	if(document.querySelector(".filter-menu-active")){
-		document.querySelector(".filter-menu-active").classList.remove("filter-menu-active");
-	}
-	document.querySelectorAll(".filter-menu-item")[filterMenuI].classList.add("filter-menu-active");
-}
-
-function tvControls(e){
-	// debugger
-	var chanelItems = document.querySelectorAll(".control-chanels");
-	var items = document.querySelectorAll(".chanels-inner .chanel-item");
-	if(e.key === "ArrowDown"){
-		// debugger
-		console.log(tvChanelI);
-		if(tvChanelI > 1 && nextChanel){
-			chanelItemsRender("bottom");
-			addRemTvChanel();
-		}
-		else if(tvChanelI < chanelItems.length-3){
-			tvChanelI++;
-			addRemTvChanel();
-		}
-	}else if(e.key === "ArrowUp"){
-		if(tvChanelI < chanelItems.length-4 && prevChanel){
-			chanelItemsRender("top");
-			addRemTvChanel();
-		}else if(tvChanelI > 0){
-			tvChanelI--;
-			addRemTvChanel();
-		}
-	}else if(e.key === "Backspace"){
-			showChanelsMenu();
-	}else if(e.key === "Enter"){
-		document.querySelector(".chanel-item-active").click();
-	}
-}
-
-function filterMenuControls(e){
-
-	var filterItems = document.querySelectorAll(".filter-menu-item");
-
-	if(e.key === "ArrowDown"){
-		if(filterMenuI > 1 && filterMenuI < filterItems.length - 4){
-			menuTransform -= 15.6;
-			document.querySelector(".filter-menu").style.transform = `translateY(${menuTransform}rem)`
-			filterMenuI++;
-			addRemFilterMenu();
-		}else if(filterMenuI < filterItems.length - 1){
-			filterMenuI++;
-			addRemFilterMenu();
-		}
-	}else if(e.key === "ArrowUp"){
-		// debugger
-		if(filterMenuI > 2 && filterMenuI < filterItems.length - 3){
-			menuTransform += 15.6;
-			document.querySelector(".filter-menu").style.transform = `translateY(${menuTransform}rem)`;
-			filterMenuI--;
-			addRemFilterMenu();
-		}else if(filterMenuI > 0){
-			filterMenuI--;
-			addRemFilterMenu();
-		};
-	}else if(e.key === "ArrowRight"){
-		// showChanelsMenu();
-		document.querySelector(".filter-menu-item.All").click()
-	}else if(e.key === "Enter"){
-		document.querySelector(".filter-menu-active").click();
-	}else if(e.key === "Backspace"){
-		document.querySelector(".menu-btn").click();
-	}
-}
-
-function enCode(str){
-	return window.atob(str);
-}
-
  function tvRender(chanels,filterMenu){
-	currentPage = "tv";
-	root.innerHTML = "";
 	root.append(createChanelsSearechInput());
 	document.querySelector(".keyboard").classList.add("live-keyboard");
 	document.querySelector(".keyboard").style.display = "flex";
@@ -710,73 +528,34 @@ function enCode(str){
 	printChanelsList(chanels,"chanels");  
 	filteredCat = chanels;
 	printChanelsList(filterMenu,"filterMenu");
-	tvChanelI = 0;
-	filterMenuI = 0;
 	menuTransform = 0;
-	addRemTvChanel();
-	addRemFilterMenu()
+	
 	chanelsSerachBack();
 	filterMenuOnclick();
-	// print_keyboard(vartersKeyboard,document.querySelector(".chanels-search-input") )
 
-	document.querySelector(".chanel-item-active").classList.add("chanel-item-selected");
-	// chanels.forEach(item => {
+	// document.querySelector(".chanel-item-active").classList.add("chanel-item-selected");
+	
+	// for(var i = 0;i < chanels.length;i++){
+	// 	var item = chanels[i];
 	// 	if(item.name === document.querySelector(".chanel-item-selected").querySelector(".chanel-title").textContent){
 	// 		document.querySelector(".video").src = `http://79.143.180.88:25461/4/4/${item.stream_id}`;
 	// 	}
-	// });
-	for(var i = 0;i < chanels.length;i++){
-		var item = chanels[i];
+	// }
+
+	// document.querySelector(".chanel-item-active").click();
+	// debugger
+}
+
+function selectedChanel(){
+	if(document.querySelector(".chanel-item-selected")){
+		document.querySelector(".chanel-item-selected").classList.remove("chanel-item-selected");
+	}
+	if(!document.querySelector(".chanel-item-active").classList.contains("chanel-item-selected")){
+		document.querySelector(".chanel-item-active").classList.add("chanel-item-selected");
+	}
+	chanels.forEach(item => {
 		if(item.name === document.querySelector(".chanel-item-selected").querySelector(".chanel-title").textContent){
 			document.querySelector(".video").src = `http://79.143.180.88:25461/4/4/${item.stream_id}`;
 		}
-	}
-	document.querySelector(".chanel-item-active").click();
-}
-
- function initLive(){
-	var filterMenu = ["Favorites","All","Search"];
-				currentBlock = "tv";
-				getRequest(baseUrl,urlParams.loginUrl,urlParams.liveCategorys)
-					.then(data => {
-						data = data.json();
-						return data;
-					}).then(data => {
-						categorys = data;
-						// debugger
-						console.log(categorys,chanels);
-						liveObj = {};	
-						// categorys.forEach(item => {
-						// 	liveObj[item.category_id] = {category:item.category_name,chanels:[]}
-						// 	filterMenu.push(item.category_name);
-						// })
-						for(var i = 0;i < categorys.length;i++){
-							var item = categorys[i];
-							liveObj[item.category_id] = {category:item.category_name,chanels:[]}
-							filterMenu.push(item.category_name);
-						}
-						return filterMenu
-					}).then(data => {
-						getRequest(baseUrl,urlParams.loginUrl,urlParams.liveChanels)
-						.then(data => {
-							data = data.json();
-							return data;
-						}).then(data => {
-							chanels = data;
-							// chanels.forEach(item => {
-							// 	if(liveObj[item.category_id])liveObj[item.category_id].chanels.push(item);
-							// })
-							for(var j = 0;j < chanels.length;j++){
-								var item = chanels[j];
-								if(liveObj[item.category_id])liveObj[item.category_id].chanels.push(item);
-							}
-							// debugger
-							console.log(liveObj);
-						}).then(data => {
-							if(document.querySelector(".loader-parent"))document.querySelector(".loader-parent").remove();
-							tvRender(chanels,filterMenu);
-							pages.set_current("tv");
-							chanelsOnClick();
-						})
-					})
+	});
 }
