@@ -29,9 +29,9 @@ module.exports = {
     allowedHosts: "all",
   },
 
-  // context: path.resolve(__dirname, "src"),
+  context: path.resolve(__dirname, "src"),
 
-  entry: ["@babel/polyfill", "./src/index.js"],
+  entry: ["@babel/polyfill", "./index.js"],
   // entry: ["@babel/polyfill", "./build/bundle.c7d99004647242b93a04.js"],
 
   output: {

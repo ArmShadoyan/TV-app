@@ -30,7 +30,9 @@ function liveInit () {
 
 				chanels = data;
 				chanels.forEach(item => {
-					if(liveObj[item.category_id])liveObj[item.category_id].chanels.push(item);
+					if(liveObj[item.category_id]){
+						liveObj[item.category_id].chanels.push(item);
+					}
 				})
 				
 				console.log(liveObj);

@@ -5,19 +5,10 @@ var movieCategorys = [];
 var movies = [];
 var moviesObj;
 var movieScroll = 0;
-// var movieScrollCount = 55;
 var mRowTranslate = 0
 var movieCount = 5;
-
-
-// var nextMovie=1
-// var prevMovie = 1;
 let nextMovie = 1;
 let prevMovie = 1;
-
-var previousPage;
-var previousBlock;
-var currentSearch;
 
 var catIndex = null;
 

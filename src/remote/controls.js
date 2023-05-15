@@ -541,11 +541,11 @@ var controls = {
 
 		down:function () {
 			// debugger
-			if(this.rowIndex === 1 && pages.current == "movies" || pages.current == "series"){
+			if(this.rowIndex === 1 && pages.current == "movies" || this.rowIndex === 1 && pages.current == "series" ){
 				document.querySelector(".movie-select-categorys-row").setAttribute("index",this.index)
 				this.index = 0;
 			}
-			if(this.rowIndex === 0 && pages.current == "movies" || pages.current == "series"){
+			if(this.rowIndex === 0 && pages.current == "movies" || this.rowIndex === 0 && pages.current == "series"){
 				this.index = +(document.querySelector(".movie-select-categorys-row").getAttribute("index"))
 			}
 			if(this.rowIndex < this.rows.length-1){
@@ -553,6 +553,7 @@ var controls = {
 				categoryArr[this.rowIndex] = movieCount;
 				this.rowIndex++;
 				movieCount = categoryArr[this.rowIndex];
+
 				if(pages.current == "moviesSearch" || pages.current == "seriesSearch"){
 					if(this.rowIndex == 1){
 						if(searchedItems.length == 0){

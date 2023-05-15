@@ -49,6 +49,7 @@ function moviesInit () {
             moviesRender(movieCategorys,movies,moviesObj,"movies");
             controls.set_current("movies");
             controls.movies.move();
+            removeLoader();
         })
     })
 }

@@ -83,6 +83,10 @@ function loader(){
 	}
 }
 
+function removeLoader() {
+  if(document.querySelector(".loader-parent"))document.querySelector(".loader-parent").remove();
+}
+
 function blockScroll(block,side,unit = "rem",scrollSize = 65,scrollDir = "Y",movieScrollCount = 1){
   let blockTranslate = block.getAttribute("translate")
   scrollSize = scrollSize * movieScrollCount;
@@ -168,9 +172,14 @@ function print_keyboard(keyboardKeys,currentInput){
 
           }else if(activeKey.classList.contains("done")){
 
-            if(controls.loginInputs.index < loginElems.length-1){
-              controls.loginInputs.index++;
-              controls.loginInputs.move();
+            if(pages.current = "login"){
+              if(controls.loginInputs.index < loginElems.length-1){
+                controls.loginInputs.index++;
+                controls.loginInputs.move();
+                currentInput = loginElems[controls.loginInputs.index];
+              }else{
+                document.querySelector(".login-btn").click();
+              }
             }else if(pages.current == "liveTv"){
               document.querySelector(".chanels-search-inputblock").style.transform = "translateX(110%)";
 					    document.querySelector(".player-block").style.transform = "translateX(0)";

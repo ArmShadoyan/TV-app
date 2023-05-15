@@ -33,7 +33,8 @@ function seriesInit () {
             series.forEach(item => {
                 if(seriesObj[item.category_id])seriesObj[item.category_id].movies.push(item);
             })
-            moviesRender(seriesCategory,series,seriesObj,"series")
+            moviesRender(seriesCategory,series,seriesObj,"series");
+            removeLoader();
             controls.set_current("movies");
             controls.movies.move();
         })

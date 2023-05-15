@@ -8,8 +8,8 @@ function movie_info_init(movie){
             }).then(data =>{
                
                 if(document.querySelector(".movie-info-container"))document.querySelector(".movie-info-container").remove();
-                movieInfoRender(data,previousBlock)
-                if(document.querySelector(".loader-parent"))document.querySelector(".loader-parent").remove();
+                movieInfoRender(data,previousBlock);
+                removeLoader();
                 controls.set_current("movieInfo");
                 controls.movieInfo.move();
             })  
@@ -21,9 +21,9 @@ function series_info_init(movie){
         data = data.json();
         return data
     }).then(data => {
-        movieInfoRender(data,previousBlock)
+        movieInfoRender(data)
         
-        if(document.querySelector(".loader-parent"))document.querySelector(".loader-parent").remove();
+        removeLoader();
         controls.set_current("movieInfo");
         controls.movieInfo.move();
     })

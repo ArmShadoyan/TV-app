@@ -8,16 +8,18 @@ async function loginRequest(baseUrl,userName,password){
 		return data;
 	}).then(data => {
 		if(data.user_info.auth){
-			// loader();
-			// pages.set_current("menu");
-			// document.querySelector(".login-input").value = "";
-			// document.querySelector(".password-input").value = "";
+			loader();
+			pages.set_current("menu");
+			document.querySelector(".login-input").value = "";
+			document.querySelector(".password-input").value = "";
 		}
 	}).catch(error => {
-		document.querySelector(".error-message").style.display = "block";
-		setTimeout(() => {
-			document.querySelector(".error-message").style.display = "none";
-		}, 3000);
+		if(document.querySelector(".error-message")){
+			document.querySelector(".error-message").style.display = "block";
+			setTimeout(() => {
+				document.querySelector(".error-message").style.display = "none";
+			}, 3000);
+		}
 
 		console.log(error);
 	});
@@ -30,8 +32,7 @@ function getRequest(baseUrl,param_1,param_2,param_3 = ""){
 	loader();
 	// debugger
 	var url = `${baseUrl + param_1 + param_2 + param_3}`
-	return fetch(`${url}`
-	);
+	return fetch(url);
 }
 
 

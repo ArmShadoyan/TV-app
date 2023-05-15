@@ -14,16 +14,11 @@ var numbersKeyboard = [
 	["Eng"," ","Eng"]
 ];
 
-var currentInput = null;
-
-var test = 0;
-var keyboard_exist = false;
-
-// window.onload = function () {
-// 	pages.set_current("login");
-// 	controls.set_current("loginInputs");
-// 	controls.loginInputs.move();
-// }
+window.onload = function () {
+	pages.set_current("login");
+	controls.set_current("loginInputs");
+	controls.loginInputs.move();
+}
 
 function keyboardPos(){
 	if(!document.querySelector(".keyboard")){
@@ -126,7 +121,8 @@ function build_Login_BLock(){
 	loginBtn.addEventListener("click",() => {
 		controls.loginInputs.index = 2;
 		controls.loginInputs.move();
-		loginRequest(baseUrl,loginInput.value,passwordInput.value)
+		// loginRequest(baseUrl,loginInput.value,passwordInput.value)
+		loginRequest(baseUrl,"QATeamTest","jby2jccj")
 		.then(() => {
 			if(!auth){
 				errorMessage.style.display = "block";
