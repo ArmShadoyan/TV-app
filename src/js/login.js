@@ -1,4 +1,10 @@
-var root = document.querySelector(".root");
+import { pages } from "../remote/pages";
+import { controls } from "../remote/controls";
+// import "../../css/index.css"
+// import "../../css/login.css"
+
+const root = document.querySelector(".root");
+// root.style.backgroundImage = "url(../imgs/bg.png)"
 
 var lettersKeyboard = [
 	["q","w","e","r","t","y","u","i","o","p","/","\\","back"],
@@ -33,7 +39,7 @@ function build_Login_BLock(){
 
 	var loginBlock = document.createElement("div");
 	var logoBlock = document.createElement("div");
-	var logoImg =document.createElement("img");
+	var logoImg = document.createElement("img");
 	var inputsBlock = document.createElement("div");
 	var loginInput = document.createElement("input");
 	var passwordInput = document.createElement("input");
@@ -51,9 +57,8 @@ function build_Login_BLock(){
 
 	document.querySelector(".root").classList.add("root");
 	loginBlock.classList.add("login-block");
-	// loginBlock.style.top = "0";
 	logoBlock.classList.add("logo-block");
-	logoImg.classList.add("logo-bmg");
+	logoImg.classList.add("logo-img");
 	logoImg.src = ("./imgs/logo-large.png");
 	logoImg.alt = "logo image";
 	inputsBlock.classList.add("inputs-block");
@@ -92,7 +97,7 @@ function build_Login_BLock(){
 	errorMessage.style.display = "none";
 	loginBlock.style.top = "12%";
 
-	currentInput = document.querySelector(".active-login");
+	// currentInput = document.querySelector(".active-login");
 
 	loginInput.addEventListener("click", () => {
 		keyboardBlock.innerHTML = "";
@@ -135,7 +140,7 @@ function build_Login_BLock(){
 	});
 };
 
-function loginRender() {
+export function loginRender() {
 	build_Login_BLock();
 	controls.set_current("login");
 	controls.loginInputs.move();

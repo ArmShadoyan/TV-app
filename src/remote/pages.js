@@ -1,4 +1,7 @@
-window.pages = {
+import { loginRender } from "../js/login";
+
+
+export let pages = {
     current: "",
     previous: "",
     pageVisited: false,

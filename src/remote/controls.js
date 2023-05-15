@@ -1,8 +1,10 @@
+import { remove_active, remove_active_login } from "./utils";
 
-var menutTranslate = 0;
-let episodeArr = [0,0];
 
-var searchedItems = [];
+let menutTranslate = 0;
+const episodeArr = [0,0];
+
+const searchedItems = [];
 
 
 //  function keyboardClick(currentInput,key){
@@ -142,7 +144,7 @@ var searchedItems = [];
 
 
 
-var controls = {
+export let controls = {
 	current: "",
 	previous: "",
 	

@@ -1,5 +1,5 @@
 
-function remove_active(className) {
+export function remove_active(className) {
     let active;
     if (!className) {
       className = "active";
@@ -12,7 +12,7 @@ function remove_active(className) {
     }
 }
 
-function remove_active_login(className) {
+export function remove_active_login(className) {
   let active;
   if (!className) {
     className = "active-login";
