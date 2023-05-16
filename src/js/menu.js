@@ -1,4 +1,8 @@
 
+import { controls } from "../remote/controls";
+import { pages } from "../remote/pages";
+
+
 function createMenuElements(){
 	var menuLogoBlock = document.createElement("div");
 	var menuBlock = document.createElement("div");
@@ -30,7 +34,7 @@ function createMenuElements(){
 	menuSeriesTitle.textContent = "Series";
 	menuSettingsTitle.textContent = "Settings";
 
-	root.append(menuLogoBlock,menuBlock);
+	document.querySelector(".root").append(menuLogoBlock,menuBlock);
 	menuBlock.append(menuTvItem,menuMovieItem,menuSeriesitem,menuSettingsItem);
 	menuTvItem.append(menuTvTitle);
 	menuMovieItem.append(menuMovieTitle);
@@ -66,7 +70,7 @@ function menuOnClick(){
 }
 
 
-function menuRender(){
+export function menuRender(){
 	createMenuElements();
 	menuOnClick();
 	console.warn("menu render")

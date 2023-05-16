@@ -1,24 +1,17 @@
+import "../../css/login.css"
+import "../../css/index.css"
 import { pages } from "../remote/pages";
 import { controls } from "../remote/controls";
-// import "../../css/index.css"
-// import "../../css/login.css"
+import { print_keyboard } from "../remote/utils";
+import { loginRequest } from "../requests/requests";
+import { baseUrl,auth} from "../requests/parametrs";
+
+
 
 const root = document.querySelector(".root");
 // root.style.backgroundImage = "url(../imgs/bg.png)"
 
-var lettersKeyboard = [
-	["q","w","e","r","t","y","u","i","o","p","/","\\","back"],
-	["a","s","d","f","g","h","j","k","l",".",":","Done"],
-	["up","z","x","c","v","b","n","m",",","?","clean","up"],
-	["123"," ","123"]
-];
 
-var numbersKeyboard = [
-	["`","1","2","3","4","5","6","7","8","9","0","|","back"],
-	["@", "#", "$", "_", "&", "-", "+", "(", ")", "/", "*", "Done"],
-	["up",'"',"'",":",";","!",".","<",">","=","clean","up"],
-	["Eng"," ","Eng"]
-];
 
 window.onload = function () {
 	pages.set_current("login");
@@ -59,7 +52,7 @@ function build_Login_BLock(){
 	loginBlock.classList.add("login-block");
 	logoBlock.classList.add("logo-block");
 	logoImg.classList.add("logo-img");
-	logoImg.src = ("./imgs/logo-large.png");
+	logoImg.src = require("../imgs/other/logo-large.png");
 	logoImg.alt = "logo image";
 	inputsBlock.classList.add("inputs-block");
 	loginInput.classList.add("login-input","input-block-item","input","login-ctrl");
@@ -172,22 +165,6 @@ export function loginRender() {
 
 // popUpActive();
 
-//  function donee(){
-// 	if(!document.querySelector(".keyboard").classList.contains("live-keyboard") && !document.querySelector(".keyboard").classList.contains("movie-keyboard")){
-// 		inputs[inputI].classList.remove("active-login");
-// 		console.log(inputI, 'inputI')
-// 		inputI++;
-// 		if(inputI === inputs.length-1){
-// 			document.querySelector(".keyboard").remove();
-// 			keyboard_exist = false;
-// 			inputI = 0;
-// 			keyboardPos();
-// 			document.querySelector(".login-btn").classList.add("active-login")
-// 			loginBtn.click();	
-// 		}else{
-	// 			inputs[inputI].classList.add("active-login");
-	// 		}
-	// 	}
-	// }
+
 
 

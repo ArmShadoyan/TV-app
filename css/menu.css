@@ -14,7 +14,7 @@
     height: 20%;
     position: fixed;
     top: 8%;
-	background-image: url(/imgs/logo-large.png);
+	background-image: url(../src/imgs/other/logo-large.png);
 	background-position: center;
 	background-size: 25%;
     background-repeat: no-repeat;
@@ -40,19 +40,19 @@
 	transform: scale(1.05);
 }
 .menu-block .menu-tv-item{
-	background-image: url(/imgs/menu/tv.png);
+	background-image: url(../src/imgs/menu/tv.png);
     background-size: 46%;
 }
 .menu-block .menu-movies-item{
-	background-image: url(/imgs/menu/MOVIES.png);
+	background-image: url(../src/imgs/menu/MOVIES.png);
     background-size: 49%;
 }
 .menu-block .menu-series-item{
-	background-image: url(/imgs/menu/series.png);
+	background-image: url(../src/imgs/menu/series.png);
     background-size: 40%;
 }
 .menu-block .menu-settings-item{
-	background-image: url(/imgs/menu/SETTINGS.png);
+	background-image: url(../src/imgs/menu/SETTINGS.png);
     background-size: 40%;
 }
 .menu-block .menu-item-title{

@@ -1,30 +1,54 @@
-var liveObj = {};
-var chanels = [];
-var categorys = [];
-var favoriteItems = [];
-var filteredEpg = []
-var filteredCat = [];
-var epgTimer;
-var chanelsCount = 6;
-var nextChanel = 1;
-var prevChanel = 1;
-var menuTransform = 0;
+import { print_keyboard } from "../remote/utils";
+import { lettersKeyboard, numbersKeyboard ,currentTime, blockScroll} from "../remote/utils";
+import { controls } from "../remote/controls";
+import { urlParams ,baseUrl} from "../requests/parametrs";
+import { getLiveCategories, getLiveChanels, getRequest } from "../requests/requests";
+import { pages } from "../remote/pages";
+
+
+
+export let liveObj = {};
+export let chanels = [];
+export let liveCategories = [];
+
+let favoriteItems = [];
+let filteredEpg = []
+let filteredCat = [];
+let epgTimer;
+let chanelsCount = 6;
+let nextChanel = 1;
+let prevChanel = 1;
+let menuTransform = 0;
 if(localStorage.getItem("favorites")){
 	favoriteItems = JSON.parse(localStorage.getItem("favorites"));
 	console.log(favoriteItems);
 }
 
+export function setCategories(newCategories) {
+	categorys = newCategories;
+}
+export function setliveObj(newLiveObj){
+	liveObj = newLiveObj;
+}
+export function setChanels(newChanels){
+	chanels = newChanels
+}
+
+function getCategories() {
+	return categorys;
+}
+
 
 function createTvElements(){
-	var filterMenu = document.createElement("div");
-	var filterIcon = document.createElement("div");
-	var filterText = document.createElement("div");
-	var listsBlock = document.createElement("div");
-	var chanelsBlock = document.createElement("div");
-	var chanelsFilterMenu = document.createElement("div");
-	var chanelsInner = document.createElement("div");
-	var menu = document.createElement("div");
-	var filterMenuParent = document.createElement("div");
+	let filterMenu = document.createElement("div");
+	let filterIcon = document.createElement("div");
+	let filterText = document.createElement("div");
+	let listsBlock = document.createElement("div");
+	let chanelsBlock = document.createElement("div");
+	let chanelsFilterMenu = document.createElement("div");
+	let chanelsInner = document.createElement("div");
+	let menu = document.createElement("div");
+	let filterMenuParent = document.createElement("div");
 	
 	chanelsInner.classList.add("chanels-inner");
 	chanelsInner.style.display = "flex";
@@ -41,7 +65,6 @@ function createTvElements(){
 	filterText.classList.add("filter-menu-title");
 	filterText.textContent = "All";
 
-	// debugger
 
 	filterMenuParent.append(menu)
 	chanelsBlock.append(chanelsInner,filterMenuParent)
@@ -53,36 +76,36 @@ function createTvElements(){
 }
 
 function createTvPlayerBlock(){
-	var playerBlock = document.createElement("div");
-	var timeBlock = document.createElement("div");
-	var VideoBlock = document.createElement("div");
-	var video = document.createElement("video");
-	var currentChanel = document.createElement("div");
-	var currentChanelInfo = document.createElement("div");
-	var currentChanelName = document.createElement("div");
-	var currentChanelNumber = document.createElement("div");
-	var currentChanelEpg = document.createElement("div");
-	var currentEpg = document.createElement("div");
-	var nextEpg = document.createElement("div");
+	let playerBlock = document.createElement("div");
+	let timeBlock = document.createElement("div");
+	let VideoBlock = document.createElement("div");
+	let video = document.createElement("video");
+	let currentChanel = document.createElement("div");
+	let currentChanelInfo = document.createElement("div");
+	let currentChanelName = document.createElement("div");
+	let currentChanelNumber = document.createElement("div");
+	let currentChanelEpg = document.createElement("div");
+	let currentEpg = document.createElement("div");
+	let nextEpg = document.createElement("div");
 
-	var optionsBlock = document.createElement("div");
-	var sortBtn = document.createElement("div");
-	var sortRed = document.createElement("div");
-	var redBtn = document.createElement("div");
-	var categoryBtn = document.createElement("div");
-	var categoryGreen = document.createElement("div");
-	var greenBtn = document.createElement("div");
-	var favoritesBtn = document.createElement("div");
-	var favoriteYellow = document.createElement("div");
-	var yellowBtn = document.createElement("div");
-	var menuBtn = document.createElement("div");
-	var menuBlue = document.createElement("div");
-	var blueBtn = document.createElement("div");
-	var chanelNumber = document.createElement("div");
-	var chanelInfo = document.createElement("div");
+	let optionsBlock = document.createElement("div");
+	let sortBtn = document.createElement("div");
+	let sortRed = document.createElement("div");
+	let redBtn = document.createElement("div");
+	let categoryBtn = document.createElement("div");
+	let categoryGreen = document.createElement("div");
+	let greenBtn = document.createElement("div");
+	let favoritesBtn = document.createElement("div");
+	let favoriteYellow = document.createElement("div");
+	let yellowBtn = document.createElement("div");
+	let menuBtn = document.createElement("div");
+	let menuBlue = document.createElement("div");
+	let blueBtn = document.createElement("div");
+	let chanelNumber = document.createElement("div");
+	let chanelInfo = document.createElement("div");
 
-	var time = document.createElement("div");
-	var date = document.createElement("div");
+	let time = document.createElement("div");
+	let date = document.createElement("div");
 
 	playerBlock.classList.add("player-block");
 	timeBlock.classList.add("time-block");
@@ -120,15 +143,15 @@ function createTvPlayerBlock(){
 	menuBtn.textContent = "Menu";
 
 	favoritesBtn.addEventListener("click",function(e) {
-		// debugger
-		var activeChanel = document.querySelector(".chanel-item-active");
-		var fav = activeChanel.querySelector(".chanel-favorite");
+		debugger
+		let activeChanel = document.querySelector(".active");
+		let fav = activeChanel.querySelector(".chanel-favorite");
 		if(!fav.classList.contains("chanel-favorite-active")){
 			fav.classList.add("chanel-favorite-active");
 			activeChanel.classList.add("chanel-item-fav");
 		
-			for(var i = 0;i < chanels.length;i++){
-				var item = chanels[i];
+			for(let i = 0;i < chanels.length;i++){
+				let item = chanels[i];
 				if(item.name === activeChanel.querySelector(".chanel-title").textContent){
 					item.favorite = "true";									
 					favoriteItems.push(item);
@@ -139,12 +162,12 @@ function createTvPlayerBlock(){
 			fav.classList.remove("chanel-favorite-active");
 			activeChanel.classList.remove("chanel-item-fav");
 	
-			for(var j = 0;j < chanels.length;j++){
-				var item = chanels[j];
-				var index = j;
+			for(let j = 0;j < chanels.length;j++){
+				let item = chanels[j];
+				let index = j;
 				if(item.name === activeChanel.querySelector(".chanel-title").textContent){
-					for(var a = 0;a < favoriteItems.length;a++){
-						var fav = favoriteItems[a];
+					for(let a = 0;a < favoriteItems.length;a++){
+						let fav = favoriteItems[a];
 						if(fav.name === item.name){
 							favoriteItems.splice(a,1);
 							console.log(favoriteItems);
@@ -171,14 +194,14 @@ function createTvPlayerBlock(){
 	return playerBlock;
 }
 
-function printChanelsList(items,name){
-	var chanelsBlock = document.querySelector(".chanels-block");
-	var chanelsInner = document.querySelector(".chanels-inner");
-	var menu = document.querySelector(".filter-menu");
-	var menuParent = document.querySelector(".filter-menu-parent");
+export function printChanelsList(items,name){
+	let chanelsBlock = document.querySelector(".chanels-block");
+	let chanelsInner = document.querySelector(".chanels-inner");
+	let menu = document.querySelector(".filter-menu");
+	let menuParent = document.querySelector(".filter-menu-parent");
 
-	for(var i = 0;i < items.length;i++){
-		var item = items[i];
+	for(let i = 0;i < items.length;i++){
+		let item = items[i];
 		if(name === "filterMenu"){
 			menu.append(createChanelItem(item))
 		}else{
@@ -192,14 +215,14 @@ function printChanelsList(items,name){
 }
 
 function createChanelItem(item){
-	var chanelItem = document.createElement("div");
-	var number = document.createElement("div");
-	var logo = document.createElement("div");
-	var title = document.createElement("div");
-	var favorite = document.createElement("div");
+	let chanelItem = document.createElement("div");
+	let number = document.createElement("div");
+	let logo = document.createElement("div");
+	let title = document.createElement("div");
+	let favorite = document.createElement("div");
 
-	for(var i = 0;i < favoriteItems.length;i++){
-		var fav = favoriteItems[i];
+	for(let i = 0;i < favoriteItems.length;i++){
+		let fav = favoriteItems[i];
 		if(item.name === fav.name){
 			favorite.classList.add("chanel-favorite-active");
 		}
@@ -212,7 +235,8 @@ function createChanelItem(item){
 	chanelItem.classList.add("chanel-item");
 
 	if(item.num){
-		var img = new Image()
+		
+		let img = new Image()
 
         img.onload = () =>{
             logo.style.backgroundImage = `url(${img.src})`
@@ -247,7 +271,7 @@ function createChanelItem(item){
 			chanelItem.classList.add("chanel-item-selected");
 		}
 		filteredEpg = [];
-		var chanelTitle = title.textContent;
+		let chanelTitle = title.textContent;
 
 			if(item.name === document.querySelector(".chanel-item-selected").querySelector(".chanel-title").textContent){
 				if(document.querySelector(".video")){
@@ -255,7 +279,6 @@ function createChanelItem(item){
 				}
 			}
 			if(document.querySelector(".chanels-inner").style.opacity === "1"){
-				// debugger
 				if(chanelTitle === item.name){
 					if(document.querySelector(".current-chanel-number"))document.querySelector(".current-chanel-number").textContent = item.num;
 					if(document.querySelector(".current-chanel-name"))document.querySelector(".current-chanel-name").textContent = item.name;
@@ -274,9 +297,8 @@ function createChanelItem(item){
 }
 
 function chanelItemsRender(side){
-	// debugger
-	var items = document.querySelectorAll(".chanels-inner .chanel-item");
-	var block = document.querySelector(".chanels-inner");
+	let items = document.querySelectorAll(".chanels-inner .chanel-item");
+	let block = document.querySelector(".chanels-inner");
 
 	nextChanel = filteredCat[chanelsCount];
 	prevChanel = filteredCat[chanelsCount-7] 
@@ -298,35 +320,35 @@ function chanelItemsRender(side){
 
 function updateEpgs(categorys){
 
-	for(var i = 0;i < categorys.epg_listings.length;i++){
-		var list = categorys.epg_listings[i];
-		var liveDate = list.start.split(" ")[0].split("-").join("");
+	for(let i = 0;i < categorys.epg_listings.length;i++){
+		let list = categorys.epg_listings[i];
+		let liveDate = list.start.split(" ")[0].split("-").join("");
 		if(document.querySelector(".date")){
-			var currentDate = document.querySelector(".date").innerText.split("/").join("");
+			let currentDate = document.querySelector(".date").innerText.split("/").join("");
 			if(liveDate == currentDate){
 				filteredEpg.push(list);
 			}
 		}
 	}
-	var currentEpgs = [];
-	var nextEpgs = [];
+	let currentEpgs = [];
+	let nextEpgs = [];
 	
 	for(let j = 0;j < filteredEpg.length;j++){
-		var epg = filteredEpg[j];
-		var currentHour = document.querySelector(".time").innerText.split(":")[0];
-		var currentMinute = document.querySelector(".time").innerText.split(":")[1];
+		let epg = filteredEpg[j];
+		let currentHour = document.querySelector(".time").innerText.split(":")[0];
+		let currentMinute = document.querySelector(".time").innerText.split(":")[1];
 
-		var start = toDate(epg.start_timestamp).split(":").join("");
-		var end = toDate(epg.stop_timestamp).split(":").join("");
-		var time = document.querySelector(".time").innerText.split(":").join("");
+		let start = toDate(epg.start_timestamp).split(":").join("");
+		let end = toDate(epg.stop_timestamp).split(":").join("");
+		let time = document.querySelector(".time").innerText.split(":").join("");
 			if(+time < +end && +time > +start){
 				currentEpgs.push(filteredEpg[j]);
 				nextEpgs.push(filteredEpg[j+1])
 			} 
 	}
 
-	var currentEpg = currentEpgs[0];
-	var nextEpg = nextEpgs[0];
+	let currentEpg = currentEpgs[0];
+	let nextEpg = nextEpgs[0];
 
 	if(currentEpg){
 		document.querySelector(".current-epg").innerHTML = `<span>${toDate(currentEpg.start_timestamp)}</span> ${enCode(currentEpg.title)}`;
@@ -359,8 +381,7 @@ function chanelsSerachBack(){
 }
 
 function showChanelsMenu(){
-	// debugger
-	var chanelsInner = document.querySelector(".chanels-inner");
+	let chanelsInner = document.querySelector(".chanels-inner");
 	if(chanelsInner){
 		if(chanelsInner.style.opacity === "1"){
 			chanelsInner.style.transform = "scale(0.4)";
@@ -370,8 +391,8 @@ function showChanelsMenu(){
 			controls.set_current("tvCategoryBlock");
 			controls.tvCategoryBlock.move();
 			
-			for(var i = 0;i < document.querySelectorAll(".option-btn").length;i++){
-				var item = document.querySelectorAll(".option-btn")[i];
+			for(let i = 0;i < document.querySelectorAll(".option-btn").length;i++){
+				let item = document.querySelectorAll(".option-btn")[i];
 				if(i !== document.querySelectorAll(".option-btn").length-1){
 					item.style.display = "none";
 				}
@@ -388,8 +409,8 @@ function showChanelsMenu(){
 				controls.tvChanelBlock.move();
 			}
 		
-			for(var j = 0;j < document.querySelectorAll(".option-btn").length;j++){
-				var item = document.querySelectorAll(".option-btn")[j];
+			for(let j = 0;j < document.querySelectorAll(".option-btn").length;j++){
+				let item = document.querySelectorAll(".option-btn")[j];
 				if(j !== document.querySelectorAll(".option-btn").length-1){
 					item.style.display = "block";
 				}
@@ -399,8 +420,8 @@ function showChanelsMenu(){
 	if(document.querySelector(".chanel-item-active"))document.querySelector(".chanel-item-active").click();
 }
 
-function chanelsOnClick(){
-	var menuBtn = document.querySelector(".menu-btn");
+export function chanelsOnClick(){
+	let menuBtn = document.querySelector(".menu-btn");
 	if(menuBtn){
 		menuBtn.addEventListener("click",() => {
 			pages.set_current("menu");
@@ -409,7 +430,7 @@ function chanelsOnClick(){
 		});
 	}
 	
-	var categoryBtn = document.querySelector(".category-btn");
+	let categoryBtn = document.querySelector(".category-btn");
 	if(categoryBtn){
 		categoryBtn.addEventListener("click", () => {
 			showChanelsMenu();
@@ -419,40 +440,35 @@ function chanelsOnClick(){
 }
 
 function filterMenuOnclick(){
-	var items = document.getElementsByClassName("filter-menu-item");
+	let items = document.getElementsByClassName("filter-menu-item");
 
-	var active;
-	for(var i = 0;i < items.length;i++) {
+	let active;
+	for(let i = 0;i < items.length;i++) {
 		items[i].addEventListener("click",function(e){
-			// debugger
 			active = this.textContent;
 			filteredCat = [];
 			nextChanel = 1;
 			chanelsCount = 6;
-			console.log(categorys)
 				if(active === "All"){
-					// debugger
-					// document.querySelector(".chanels-search-inputblock").style.transform = "translateX(110%)";
-					// document.querySelector(".player-block").style.transform = "translateX(0)";
-
+			
 					filteredCat = chanels;
 					document.querySelector(".filter-menu-title").textContent = active;	
 					document.querySelector(".chanels-inner").innerHTML = "";
 					printChanelsList(chanels,"chanels");
 					controls.set_current("tvChanelBlock");
 					controls.tvChanelBlock.move();
-				}else if(active === "Favorites"){
-					// document.querySelector(".chanels-search-inputblock").style.transform = "translateX(110%)";
-					// document.querySelector(".player-block").style.transform = "translateX(0)";
 
+				}else if(active === "Favorites"){
+				
 					document.querySelector(".filter-menu-title").textContent = active;	
-					document.querySelector(".chanels-inner").innerHTML = "";
+					document.querySelector(".chanels-inner").innerHTML = ""; 
 					printChanelsList(favoriteItems,"favoriteItems");
 					filteredCat = favoriteItems;
 					controls.set_current("tvChanelBlock");
 					controls.tvChanelBlock.move();
+
 				}else if(active === "Search"){
-					// debugger
+
 					blockScroll(document.querySelector(".player-block"),-1,"%",110,"X")
 					blockScroll(document.querySelector(".chanels-search-inputblock"),1,"",0,"X")
 					
@@ -461,17 +477,15 @@ function filterMenuOnclick(){
 					printChanelsList(chanels,"chanels");
 					document.querySelector(".chanels-search-input").value = "";
 
-					// debugger
 					controls.set_current("keyboard");
 					controls.keyboard.rowIndex = 0;
 					controls.keyboard.index = 0;
 					controls.keyboard.move();
+
 				}else{
-					// document.querySelector(".chanels-search-inputblock").style.transform = "translateX(110%)";
-					// document.querySelector(".player-block").style.transform = "translateX(0)";
 
 					filteredCat = [];
-					for(item in liveObj){
+					for(let item in liveObj){
 						if(liveObj[item].category === active){
 							filteredCat = liveObj[item].chanels;
 						}
@@ -487,9 +501,6 @@ function filterMenuOnclick(){
 
 				setTimeout(() => {
 						showChanelsMenu();
-						if(active !== "Search"){
-							currentBlock = "tv";
-						}
 				}, 1);
 				chanelsOnClick();
 				return;
@@ -499,11 +510,10 @@ function filterMenuOnclick(){
 }
 
 function createChanelsSearechInput(){
-	// debugger
-	var inputBlock = document.createElement("div");
-	var tvBlock = document.createElement("div");
-	var rightBlock = document.createElement("div");
-	var input = document.createElement("input");
+	let inputBlock = document.createElement("div");
+	let tvBlock = document.createElement("div");
+	let rightBlock = document.createElement("div");
+	let input = document.createElement("input");
 	
 	inputBlock.append(input,print_keyboard(lettersKeyboard,input));
 	
@@ -520,8 +530,8 @@ function createChanelsSearechInput(){
 	return tvBlock;
 }
 
- function tvRender(chanels,filterMenu){
-	root.append(createChanelsSearechInput());
+ export function tvRender(chanels,filterMenu){
+	document.querySelector(".root").append(createChanelsSearechInput());
 	document.querySelector(".keyboard").classList.add("live-keyboard");
 	document.querySelector(".keyboard").style.display = "flex";
 	currentTime();
@@ -535,15 +545,14 @@ function createChanelsSearechInput(){
 
 	// document.querySelector(".chanel-item-active").classList.add("chanel-item-selected");
 	
-	// for(var i = 0;i < chanels.length;i++){
-	// 	var item = chanels[i];
+	// for(let i = 0;i < chanels.length;i++){
+	// 	let item = chanels[i];
 	// 	if(item.name === document.querySelector(".chanel-item-selected").querySelector(".chanel-title").textContent){
 	// 		document.querySelector(".video").src = `http://79.143.180.88:25461/4/4/${item.stream_id}`;
 	// 	}
 	// }
 
 	// document.querySelector(".chanel-item-active").click();
-	// debugger
 }
 
 function selectedChanel(){
@@ -558,4 +567,38 @@ function selectedChanel(){
 			document.querySelector(".video").src = `http://79.143.180.88:25461/4/4/${item.stream_id}`;
 		}
 	});
+}
+
+export async function liveInit () {
+	debugger
+	Promise.all([getLiveCategories(),getLiveChanels()])
+	.then(res => {
+		// debugger
+		let chanelsMenu = ["Favorites","All","Search"];
+		liveCategories = res[0];
+		chanels = res[1];
+
+		liveObj = chanels_data_build(chanels,liveCategories,chanelsMenu);
+		tvRender(chanels,chanelsMenu)
+		chanelsOnClick();
+
+		controls.set_current("tvChanelBlock");
+		controls.tvChanelBlock.move();
+	})
+}
+
+function chanels_data_build (chanels,chanelCategories,chanelsMenu) {
+	// debugger
+
+	chanelCategories.forEach(item => {
+		liveObj[item.category_id] = {category:item.category_name,chanels:[]}
+		chanelsMenu.push(item.category_name);
+	})
+	chanels.forEach(item => {
+		if(liveObj[item.category_id]){
+			liveObj[item.category_id].chanels.push(item);
+		}
+	})
+
+	return liveObj;
 }

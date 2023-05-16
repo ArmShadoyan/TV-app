@@ -1,3 +1,8 @@
+import { pinKeys } from "./settings";
+import { controls } from "../remote/controls";
+import { pages } from "../remote/pages";
+
+
 
 function ChangeParentalCodeElements(){
 	var backToMenuDiv = document.createElement("div");
@@ -51,7 +56,7 @@ function ChangeParentalCodeElements(){
 	});
 	pinKeyboardBlock.append(pinKeyboardRow);
 	pinBlock.append(pinInputBlock,pinKeyboardBlock);
-	root.append(backToMenuDiv,pinBlock);
+	document.querySelector(".root").append(backToMenuDiv,pinBlock);
 	pinKeyboardRow.style.display = "none";
 
 	backToMenuBtn.addEventListener("click",function() {
@@ -61,9 +66,9 @@ function ChangeParentalCodeElements(){
 	})
 }
 
-function parentalCodeRender(){
+export function parentalCodeRender(){
 	// debugger
-	root.innerHTML = "";
+	document.querySelector(".root").innerHTML = "";
 	ChangeParentalCodeElements();
 	controls.set_current("parentalCode");
 	controls.parentalCode.index = 1;
@@ -72,9 +77,9 @@ function parentalCodeRender(){
 	controls.parentalCode.move();
 }
 
-function lockCategoriesRender(){
+export function lockCategoriesRender(){
 	// debugger
-	root.innerHTML = "";
+	document.querySelector(".root").innerHTML = "";
 	ChangeParentalCodeElements();
 	document.querySelector(".pin_title").textContent = "Enter Pin";
 	controls.set_current("parentalCode");
@@ -82,7 +87,7 @@ function lockCategoriesRender(){
 	controls.parentalCode.move();
 }
 
-function parentalCodeOnclick(){
+export function parentalCodeOnclick(){
 	var keyboardRow = document.querySelector(".pin_keyboard_row");
 	var parentalInputs = document.querySelectorAll(".pin_input");
 	console.log(parentalInputs);

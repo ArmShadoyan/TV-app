@@ -1,5 +1,11 @@
 import { loginRender } from "../js/login";
-
+import { menuRender } from "../js/menu";
+import { movie_info_init } from "../pageInits/info";
+import { moviesInit, movieSearchRender } from "../js/movies";
+import { liveInit } from "../js/liveTv";
+import { seriesInit } from "../js/series";
+import { series_info_init } from "../pageInits/info";
+import { settingsRender } from "../js/settings";
 
 export let pages = {
     current: "",

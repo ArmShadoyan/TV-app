@@ -20,7 +20,7 @@
     width: 5%;
     height: 8rem;
     float: left;
-    background-image: url(/imgs/settingsmenu/back.png);
+    background-image: url(../src/imgs/settingsmenu/back.png);
     background-repeat: no-repeat;
     background-size: 3rem;
     background-position: 40%;
@@ -33,7 +33,7 @@
     height: 8rem;
     float: left;
     margin-left: 1%;
-    background-image: url(/imgs/movies/search.png);
+    background-image: url(../src/imgs/movies/search.png);
     background-repeat: no-repeat;
     background-size: 12%;
     background-position: 8% 50%;

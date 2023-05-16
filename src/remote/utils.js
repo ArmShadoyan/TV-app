@@ -1,3 +1,25 @@
+import "../../css/index.css"
+
+import { controls } from "../remote/controls";
+import { pages } from "./pages";
+import { chanels ,printChanelsList} from "../js/liveTv";
+import { setSearchedItems ,movies, searchedItems} from "../js/movies";
+import { build_movie_items } from "../js/movies";
+import { series } from "../js/series";
+
+export const lettersKeyboard = [
+	["q","w","e","r","t","y","u","i","o","p","/","\\","back"],
+	["a","s","d","f","g","h","j","k","l",".",":","Done"],
+	["up","z","x","c","v","b","n","m",",","?","clean","up"],
+	["123"," ","123"]
+];
+
+export const numbersKeyboard = [
+	["`","1","2","3","4","5","6","7","8","9","0","|","back"],
+	["@", "#", "$", "_", "&", "-", "+", "(", ")", "/", "*", "Done"],
+	["up",'"',"'",":",";","!",".","<",">","=","clean","up"],
+	["Eng"," ","Eng"]
+];
 
 export function remove_active(className) {
     let active;
@@ -25,7 +47,7 @@ export function remove_active_login(className) {
   }
 }
 
-function toDate(temp){
+export function toDate(temp){
   var date = new Date(+temp * 1000);
 
   var hours  = date.getHours();
@@ -41,7 +63,7 @@ function toDate(temp){
   return time;
 }
 
-function currentTime(){
+export function currentTime(){
 	var date = new Date();
     var month = date.getMonth() + 1;
     var year = date.getFullYear();
@@ -65,11 +87,13 @@ function currentTime(){
 
 
 	setTimeout(() => {
-		currentTime();
+    if(pages.current == "liveTv"){
+      currentTime();
+    }
 	}, 10000);
 }
 
-function loader(){
+export function loader(){
 	var loader = document.createElement("div");
 	var loaderParent = document.createElement("div");
 	var loaderText = document.createElement("div");
@@ -78,16 +102,16 @@ function loader(){
 	loaderParent.classList.add("loader-parent");
 	loader.classList.add("loader");
 	if(!document.querySelector(".loader-parent")){
-		root.append(loaderParent);
+		document.querySelector(".root").append(loaderParent);
 		loaderParent.append(loader,loaderText)
 	}
 }
 
-function removeLoader() {
+export function removeLoader() {
   if(document.querySelector(".loader-parent"))document.querySelector(".loader-parent").remove();
 }
 
-function blockScroll(block,side,unit = "rem",scrollSize = 65,scrollDir = "Y",movieScrollCount = 1){
+export function blockScroll(block,side,unit = "rem",scrollSize = 65,scrollDir = "Y",movieScrollCount = 1){
   let blockTranslate = block.getAttribute("translate")
   scrollSize = scrollSize * movieScrollCount;
   if(side > 0){
@@ -101,7 +125,7 @@ function blockScroll(block,side,unit = "rem",scrollSize = 65,scrollDir = "Y",mov
   }
 }
 
-function print_keyboard(keyboardKeys,currentInput){
+export function print_keyboard(keyboardKeys,currentInput){
 	var keyboard = document.createElement("div");
 	keyboard.classList.add("keyboard");
 	
@@ -158,7 +182,6 @@ function print_keyboard(keyboardKeys,currentInput){
         
         if(!activeKey.classList.contains("no-print")){
           
-          // searchedItems = [];
           currentInput.value += activeKey.textContent;
 
 
@@ -220,7 +243,8 @@ function print_keyboard(keyboardKeys,currentInput){
           
           if(activeKey.classList.contains("back") || !activeKey.classList.contains("no-print") || activeKey.classList.contains("clean")){
             if(controls.current == "keyboard"){
-              searchedItems = [];
+              // searchedItems = [];
+              setSearchedItems([])
 
               if(pages.current == "liveTv"){
                 for (var j = 0;j < chanels.length;j++){
@@ -275,3 +299,5 @@ function print_keyboard(keyboardKeys,currentInput){
 
 	return keyboard;
 };
+
+

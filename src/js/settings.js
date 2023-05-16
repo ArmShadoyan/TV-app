@@ -1,34 +1,52 @@
-var timezoneRem = 0;
+import { controls } from "../remote/controls";
+import { pages } from "../remote/pages";
+import { parentalCodeRender,parentalCodeOnclick ,lockCategoriesRender} from "./pincodeBlock";
 
-var settingsMenuOptions = [
-	{id:1,name:"Use Xtream Code EPG",icon:"/imgs/settingsmenu/format.svg",class:"xtream-item", label:"1"},
-	{id:2,name:"Use TMDB API",icon:"/imgs/settingsmenu/tmdb.png",class:"tmdb-item", label:"1"},
-	{id:3,name:"Remove subtitle background",icon:"/imgs/settingsmenu/subtitles.png",class:"remove-item", label:"1"},
-	{id:4,name:"Change Language",icon:"/imgs/settingsmenu/globus.png",class:"change-language-item"},
-	{id:5,name:"Change Timezone",icon:"/imgs/settingsmenu/time.png",class:"change-timezone-item"},
-	{id:6,name:"Change Parental Code",icon:"/imgs/settingsmenu/parentalicon.png",class:"change-parental-item"},
-	{id:7,name:"Lock Categories",icon:"/imgs/settingsmenu/padlock.png",class:"lock-item"},
-	{id:8,name:"Log out",icon:"/imgs/settingsmenu/logout.png",class:"logout-item"},
+let epgIcon = require("../imgs/settingsmenu/format.svg");
+let tmdbicon = require("../imgs/settingsmenu/subtitles.png")
+let remSubIcon = require("../imgs/settingsmenu/subtitles.png")
+let langIcon = require("../imgs/settingsmenu/globus.png")
+let timzoneIcon = require("../imgs/settingsmenu/time.png")
+let parentalIcon = require("../imgs/settingsmenu/parentalicon.png")
+let lockCatIcon = require("../imgs/settingsmenu/padlock.png")
+let logOutIcon = require("../imgs/settingsmenu/logout.png")
+
+let engIcon = require("../imgs/settingsmenu/us.png");
+let portIcon = require("../imgs/settingsmenu/br.png");
+let spanIcon = require("../imgs/settingsmenu/es.png");
+let checkedIcon = require("../imgs/settingsmenu/checked.svg")
+
+
+let settingsMenuOptions = [
+	{id:1,name:"Use Xtream Code EPG",icon:epgIcon,class:"xtream-item", label:"1"},
+	{id:2,name:"Use TMDB API",icon:tmdbicon,class:"tmdb-item", label:"1"},
+	{id:3,name:"Remove subtitle background",icon:remSubIcon,class:"remove-item", label:"1"},
+	{id:4,name:"Change Language",icon:langIcon,class:"change-language-item"},
+	{id:5,name:"Change Timezone",icon:timzoneIcon,class:"change-timezone-item"},
+	{id:6,name:"Change Parental Code",icon:parentalIcon,class:"change-parental-item"},
+	{id:7,name:"Lock Categories",icon:lockCatIcon,class:"lock-item"},
+	{id:8,name:"Log out",icon:logOutIcon,class:"logout-item"},
 ];
 
-var languageOptions = [
-	{id:1,name:"English",icon:"/imgs/settingsmenu/checked.svg",class:"english",img:"/imgs/settingsmenu/us.png"},
-	{id:2,name:"Portugues Brazil",icon:"",class:"port-braz",img:"/imgs/settingsmenu/br.png"},
-	{id:3,name:"Spanish",icon:"",class:"spanish",img:"/imgs/settingsmenu/es.png"},
+let languageOptions = [
+	{id:1,name:"English",icon:checkedIcon,class:"english",img:engIcon},
+	{id:2,name:"Portugues Brazil",icon:"",class:"port-braz",img:portIcon},
+	{id:3,name:"Spanish",icon:"",class:"spanish",img:spanIcon},
 ];
+let timezoneRem = 0;
 
-var timeZoneOptions = ["-12","-11","-10","-9","-8","-7","-6","-5","-4","-3","-2","-1","0","1","2","3","4","5","6","7","8","9","10","11","12"];
+export let timeZoneOptions = ["-12","-11","-10","-9","-8","-7","-6","-5","-4","-3","-2","-1","0","1","2","3","4","5","6","7","8","9","10","11","12"];
 
-var pinKeys = ["1","2","3","4","5","6","7","8","9","0"];
+export let pinKeys = ["1","2","3","4","5","6","7","8","9","0"];
 
 
 function createSettingsElemnts(options){
-	var settingsMenu = document.createElement("div");
-	var settingsBlock = document.createElement("div");
-	var settingsBlockInner = document.createElement("div");
-	var backToMenuDiv = document.createElement("div");
-	var backToMenuBtn = document.createElement("div");
-	var settingsTitle = document.createElement("div");
+	let settingsMenu = document.createElement("div");
+	let settingsBlock = document.createElement("div");
+	let settingsBlockInner = document.createElement("div");
+	let backToMenuDiv = document.createElement("div");
+	let backToMenuBtn = document.createElement("div");
+	let settingsTitle = document.createElement("div");
 	
 	settingsBlock.classList.add("settings-block");
 	settingsBlockInner.classList.add("settings-block-inner");
@@ -39,17 +57,17 @@ function createSettingsElemnts(options){
 
 	settingsTitle.textContent = "Settings";
 
-	root.classList.add("settings-root");
-	root.append(backToMenuDiv,settingsBlock);
+	document.querySelector(".root").classList.add("settings-root");
+	document.querySelector(".root").append(backToMenuDiv,settingsBlock);
 	settingsBlockInner.append(settingsMenu);
 	settingsBlock.append(settingsTitle,settingsBlockInner);
 	backToMenuDiv.append(backToMenuBtn);
 
 	options.forEach(item => {
 		console.log(item);
-		var settingsItem = document.createElement("div");
-		var icon = document.createElement("div");
-		var title = document.createElement("div");
+		let settingsItem = document.createElement("div");
+		let icon = document.createElement("div");
+		let title = document.createElement("div");
 
 		if(options == settingsMenuOptions || options == languageOptions){
 
@@ -58,9 +76,8 @@ function createSettingsElemnts(options){
 			icon.classList.add(`${item.class}-icon`,"item-icon");
 			title.classList.add(`${item.class}-title`,"item-title");
 			title.textContent = `${item.name}`;
-			icon.style.cssText = `
-			background-image: url(${item.icon});
-			`;
+			console.log(item.icon);
+			icon.style.backgroundImage = `url(${item.icon})`;
 		}else if(options = timeZoneOptions){
 			settingsItem.classList.add("settings-item","timezone-settings-item","settings-ctrl");
 			title.classList.add("item-title","timezone-item-title");
@@ -70,10 +87,10 @@ function createSettingsElemnts(options){
 		settingsItem.append(icon,title);
 
 		if(item.label){
-			var label = document.createElement("label");
-			var input = document.createElement("input");
-			var span = document.createElement("span");
-			var childSpan = document.createElement("span");
+			let label = document.createElement("label");
+			let input = document.createElement("input");
+			let span = document.createElement("span");
+			let childSpan = document.createElement("span");
 			childSpan.classList.add("settings-child-span");
 			settingsItem.classList.add("label");
 			input.type = "checkbox";
@@ -88,7 +105,7 @@ function createSettingsElemnts(options){
 				}
 			});
 		}else if(item.img){
-			var flag = document.createElement("img");
+			let flag = document.createElement("img");
 			flag.src = item.img;
 			flag.classList.add("language-flag-img");
 			settingsItem.append(flag);
@@ -112,7 +129,7 @@ function createSettingsElemnts(options){
 				parentalCodeOnclick();
 			}
 			else if(item.name === "Log out"){
-				root.innerHTML = "";
+				document.querySelector(".root").innerHTML = "";
 				build_Login_BLock();
 			
 			}
@@ -120,12 +137,6 @@ function createSettingsElemnts(options){
 	});
 
 	backToMenuBtn.addEventListener("click",function(){
-		// debugger
-		// if(options === languageOptions || options === timeZoneOptions){
-		// 	pages.set_current("settings");
-		// }else if(options === settingsMenuOptions){
-		// 	pages.set_current("menu");
-		// }
 		if(options === settingsMenuOptions){
 				pages.set_current("menu");
 				controls.set_current("menu");
@@ -139,7 +150,7 @@ function createSettingsElemnts(options){
 
 }
 
-function settingsRender(){
+export function settingsRender(){
 	createSettingsElemnts(settingsMenuOptions);
 	controls.set_current("settings");
 	controls.settings.index = 1;
@@ -147,7 +158,7 @@ function settingsRender(){
 }
 
 function languageRender(){
-	root.innerHTML = "";
+	document.querySelector(".root").innerHTML = "";
 	createSettingsElemnts(languageOptions);
 	document.querySelector(".settings-title").textContent = "Languages";
 	controls.set_current("settings");
@@ -156,7 +167,7 @@ function languageRender(){
 }
 
 function timeZoneRender(){
-	root.innerHTML = "";
+	document.querySelector(".root").innerHTML = "";
 	createSettingsElemnts(timeZoneOptions);
 	document.querySelector(".settings-title").textContent = "Select Timezone";
 	controls.set_current("settings");

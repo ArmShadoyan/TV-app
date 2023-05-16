@@ -17,7 +17,7 @@
 .back-to-menu-btn{
 	width: 7rem;
     height: 7rem;
-    background-image: url(/imgs/settingsmenu/back.png);
+    background-image: url(../src/imgs/settingsmenu/back.png);
     background-repeat: no-repeat;
     background-size: 3rem;
     background-position: 40%;

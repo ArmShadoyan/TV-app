@@ -1,10 +1,9 @@
 import { remove_active, remove_active_login } from "./utils";
-
-
+import { pages } from "./pages";
+import { searchedItems } from "../js/movies";
 let menutTranslate = 0;
 const episodeArr = [0,0];
 
-const searchedItems = [];
 
 
 //  function keyboardClick(currentInput,key){

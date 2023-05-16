@@ -1,13 +1,13 @@
 // var userName = 4;
 // var password = 4;
 
-var auth = 0;
+export let auth = 0;
 
 // var baseUrl = "http://79.143.180.88:25461/player_api.php?";
 // var baseUrl = "https://xtream-ie.com/player_api.php?";
-var baseUrl = "http://kingtop10.net:7070/player_api.php?";
+export const baseUrl = "http://kingtop10.net:7070/player_api.php?";
 
-var urlParams = {
+export const urlParams = {
 	// playerBase:"https://xtream-ie.com",
 	// loginUrl:"username=MYOWN1&password=Meins321",
 	// loginUrl:"username=4&password=4",

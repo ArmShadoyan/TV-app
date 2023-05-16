@@ -1,9 +1,17 @@
+// import { getModeForFileReference } from "typescript";
+import { controls } from "../remote/controls";
+import { pages } from "../remote/pages";
+import { getMoviecategorys, getMovies } from "../requests/requests";
+import { removeLoader,print_keyboard,lettersKeyboard,blockScroll } from "../remote/utils";
+
+export let searchedItems = [];
+
 let categoryArr = [];
 
 
-var movieCategorys = [];
-var movies = [];
-var moviesObj;
+export let movieCategorys = [];
+export let movies = [];
+export let moviesObj = {};
 var movieScroll = 0;
 var mRowTranslate = 0
 var movieCount = 5;
@@ -14,6 +22,12 @@ var catIndex = null;
 
 var episodes = [];
 
+// export function setMovieCategorys(newCategories){
+//     movieCategorys = newCategories;
+// }
+export function setSearchedItems(newSearcheditems){
+    searchedItems = newSearcheditems;
+}
 
 function build_movies_header(){
     var moviesHeader = document.createElement("div");
@@ -106,7 +120,7 @@ function build_category_blocks(movieCategorys,movies,obj){
         moviesRow.classList.add("movies-row","m-row");
         categoryBlock.classList.add("movie-category-block");
         categoryTitle.classList.add("movie-category-title");
-        categoryTitle.textContent = `${item.category_name}`
+        categoryTitle.textContent = `${item.category_name?item.category_name:item.name}`
         if(obj[item.category_id]){
             if(obj[item.category_id].movies.length > 0){
                 // moviesRow.setAttribute("catIndex",index);
@@ -122,7 +136,7 @@ function build_category_blocks(movieCategorys,movies,obj){
     return moviesContainer;
 };
     
-function build_movie_items(movie,index){
+export function build_movie_items(movie,index){
      var movieItem = document.createElement("div");
      var movieImgBlock = document.createElement("div");
      var movieTitleBlock = document.createElement("div");
@@ -131,7 +145,6 @@ function build_movie_items(movie,index){
     movieItem.classList.add("movies-item","m-i");
     movieItem.setAttribute("index",index)
     var img = new Image()
-    // debugger
     img.onload = () =>{
         requestAnimationFrame(() =>{
         movieImgBlock.style.backgroundImage = `url(${img.src})`
@@ -157,7 +170,7 @@ function build_movie_items(movie,index){
     movieItem.addEventListener("click",() => {
 
         if(pages.current === "movies" || pages.current === "moviesSearch"){
-            // debugger
+
             pages.set_current("movieInfo",movie);
 
         }else if(pages.current === "series" || pages.current === "seriesSearch"){
@@ -180,7 +193,7 @@ function build_movie_category_item(item,obj,index){
     selectCategory.setAttribute("index",index)
     selectCategoryTitle.classList.add("select-category-title");  
     
-    selectCategoryTitle.textContent = `${item.category_name}`
+    selectCategoryTitle.textContent = `${item.category_name?item.category_name:item.name}`
 
     selectCategory.append(selectCategoryTitle);
 
@@ -196,9 +209,9 @@ function build_movie_category_item(item,obj,index){
     return selectCategory;
 }
 
-function moviesRender(categorys,movies,obj,page){
+export function moviesRender(categorys,movies,obj,page){
     
-    root.append(build_category_blocks(categorys,movies,obj));
+    document.querySelector(".root").append(build_category_blocks(categorys,movies,obj));
     document.querySelector(".movie-select-categorys-row").style.transform = "translateY(0rem)";
     document.querySelector(".movies-container").addEventListener("wheel",(e) => {
         let container = document.querySelector(".movies-container");
@@ -215,7 +228,7 @@ function moviesRender(categorys,movies,obj,page){
     });
 };
 
-function movieInfoRender(data,previousPage,block){
+export function movieInfoRender(data,previousPage,block){
 
     var container = document.createElement("div");
     var backToMovieBlock = document.createElement("div");
@@ -253,9 +266,7 @@ function movieInfoRender(data,previousPage,block){
     episodeBlock.classList.add("episode-block","episode-row");
     seasonSection.classList.add("season-section");
     
-    if(currentSearch === "movies"){
-        // debugger
-        seriesInfo = 0;
+    if(pages.current === "movieInfo"){
         var img = new Image()
 
         img.onload = () =>{
@@ -270,7 +281,6 @@ function movieInfoRender(data,previousPage,block){
         // console.log(moviesObj[data.movie_data.category_id]);
         infoBlock.classList.add("movie-info-block");
         infoName.classList.add("movie-info-name");
-        // debugger
         infoName.textContent = `${data.info.name?data.info.name:data.movie_data.name}`
         infoDesc.classList.add("movie-info-desc");
         infoDesc.textContent = `${data.info.description? data.info.description : data.info.plot? data.info.plot : ""}`;
@@ -291,10 +301,10 @@ function movieInfoRender(data,previousPage,block){
         infoRateTimeBlock.append(infoRate,infoTime);
         containerInner.append(imgBlock,infoBlock);
         container.append(backToMovieBlock,containerInner);
-        root.append(container);
+        document.querySelector(".root").append(container);
         
-    }else if(currentSearch === "series"){
-        seriesInfo = 0;
+    }else if(pages.current === "seriesInfo"){
+        // seriesInfo = 0;
         var img = new Image()
 
         img.onload = () =>{
@@ -331,7 +341,7 @@ function movieInfoRender(data,previousPage,block){
         var seasonsObj = {};
 
         if(!Array.isArray(data.episodes)){
-                for(item in data.episodes){
+                for(let item in data.episodes){
                     episodes.push(data.episodes[item])
                 }
         }else{
@@ -353,18 +363,16 @@ function movieInfoRender(data,previousPage,block){
             infoRateTimeBlock.append(infoRate,infoTime);
             containerInner.append(imgBlock,infoBlock);
             container.append(backToMovieBlock,containerInner);
-            root.append(container);
+            document.querySelector(".root").append(container);
             
-            var seasonIndex = 0;
-            for(item in seasonsObj){
+            for(let item in seasonsObj){
                 var season = document.createElement("div");
                 season.classList.add("season","episode-ctrl"); 
                 season.setAttribute("season",item);
                 seasonBlock.append(season);
                 season.textContent = `season${item}`
-                // debugger
                 var defaultEpisodes 
-                // debugger
+                
                 if(episodes[Object.keys(seasonsObj)]){
                      defaultEpisodes = episodes[Object.keys(seasonsObj)[0]].episodes;
                 }else{
@@ -393,7 +401,6 @@ function movieInfoRender(data,previousPage,block){
                     createEpisode(ep,data)
                 })
         }else{
-            // debugger
             seasonSection.append(seasonBlock,episodeBlock)
             infoRateTimeBlock.append(infoRate,infoTime);
             containerInner.append(imgBlock,infoBlock);
@@ -407,7 +414,6 @@ function movieInfoRender(data,previousPage,block){
                 season.textContent = `season${index+1}`
                 
                 season.addEventListener("click",(e) => {
-                    // debugger
                     e.stopPropagation();
                     var currentEpisodes = episodes[+(e.target.getAttribute("season"))]
                     console.log(currentEpisodes);
@@ -436,7 +442,6 @@ function movieInfoRender(data,previousPage,block){
 
     playBtn.addEventListener("click",(e) => {
         e.stopPropagation();
-        debugger
         playerBlockRender(data);
         console.log(data);
     })
@@ -472,9 +477,9 @@ function createEpisode(item,data){
     document.querySelector(".episode-block").append(episode);
 }
 
-function movieSearchRender (){
+export function movieSearchRender (){
     searchedItems = [];
-    isNextMovie = 1;
+    // isNextMovie = 1;
     movieCount = 5;
     var movieSearchContainer = document.createElement("div");
     var backToMovieBlock = document.createElement("div");
@@ -499,7 +504,7 @@ function movieSearchRender (){
     searchedMoviesRow.style.display = "none";
     notFoundBlock.classList.add("not-found-block");
     notFoundImg.classList.add("not-found-img");
-    notFoundImg.src = "/imgs/movies/empty.svg";
+    notFoundImg.src = require("../imgs/movies/empty.svg");
     notFoundText.classList.add("not-found-text");
     notFoundText.textContent = "Not found";
     inputBlock.classList.add("movie-search-input-block");
@@ -507,7 +512,7 @@ function movieSearchRender (){
     input.classList.add("movie-search-input");
 
     
-    root.append(movieSearchContainer);
+    document.querySelector(".root").append(movieSearchContainer);
     movieSearchContainer.append(backToMovieBlock,searchedMoviesBlock,inputBlock,print_keyboard(lettersKeyboard,input));
     notFoundBlock.append(notFoundImg,notFoundText);
     inputBlock.append(inputIcon,input);
@@ -520,7 +525,6 @@ function movieSearchRender (){
 
     backToMovieBtn.addEventListener("click",(e) => {
         e.stopPropagation();
-        // debugger
         movieSearchContainer.style.display = "none";
         
         // pages.set_previous();
@@ -540,6 +544,8 @@ function movieSearchRender (){
     });
 };
 
+
+
 function movieItemsRender(side){
     
     var row;
@@ -548,7 +554,6 @@ function movieItemsRender(side){
     }else if(pages.current === "moviesSearch" || pages.current === "seriesSearch"){
         row = document.querySelector(".searched-movies-row .active").parentNode
     }
-            // debugger
             var items = row.querySelectorAll(".movies-item")
             if(side === "right"){
                 movieCount++;
@@ -578,7 +583,7 @@ function movieItemsRender(side){
             //     nextMovie = searchedItems[movieCount]
             //     prevMovie = searchedItems[movieCount-6]
             // }
-            // debugger
+            
             
             if(nextMovie && side === "right"){
                 items[0].remove();
@@ -614,3 +619,35 @@ function movieItemsRender(side){
 
 
 
+
+export async function moviesInit () {
+     Promise.all([getMovies(), getMoviecategorys()])
+        .then(res => {
+            movies = res[0];
+            movieCategorys = res[1];
+
+            moviesObj = movie_data_build(movies,movieCategorys)
+            moviesRender(movieCategorys,movies,moviesObj)
+            controls.set_current("movies");
+            controls.movies.move();
+            removeLoader();
+        })
+}
+
+
+function movie_data_build(movies,movieCategorys){
+    movieCategorys.forEach((cat,index) => {
+        moviesObj[cat.category_id] = {category:cat.category_name,movies:[],index:index};	
+    })
+    movies.forEach(movie => {
+        if(moviesObj[movie.category_id])moviesObj[movie.category_id].movies.push(movie)
+    })
+    for(let item in moviesObj){
+        if(moviesObj[item].movies.length === 0){
+            console.log(moviesObj[item]);
+            delete moviesObj[item]
+        }
+    }
+
+    return moviesObj;
+}
