@@ -4,17 +4,17 @@ import { pages } from "../remote/pages";
 
 
 function createMenuElements(){
-	var menuLogoBlock = document.createElement("div");
-	var menuBlock = document.createElement("div");
-	var menuTvItem = document.createElement("div");
-	var menuMovieItem = document.createElement("div");
-	var menuSeriesitem = document.createElement("div");
-	var menuSettingsItem = document.createElement("div");
+	let menuLogoBlock = document.createElement("div");
+	let menuBlock = document.createElement("div");
+	let menuTvItem = document.createElement("div");
+	let menuMovieItem = document.createElement("div");
+	let menuSeriesitem = document.createElement("div");
+	let menuSettingsItem = document.createElement("div");
 
-	var menuTvTitle = document.createElement("div");
-	var menuMovieTitle = document.createElement("div");
-	var menuSeriesTitle = document.createElement("div");
-	var menuSettingsTitle = document.createElement("div");
+	let menuTvTitle = document.createElement("div");
+	let menuMovieTitle = document.createElement("div");
+	let menuSeriesTitle = document.createElement("div");
+	let menuSettingsTitle = document.createElement("div");
 
 	menuLogoBlock.classList.add("menu-logo-block");
 	menuBlock.classList.add("menu-block");
@@ -44,7 +44,7 @@ function createMenuElements(){
 
 
 function menuOnClick(){
-	var menuItems = document.querySelector(".menu-block").querySelectorAll(".menu-item");
+	let menuItems = document.querySelector(".menu-block").querySelectorAll(".menu-item");
 	menuItems.forEach(item => {
 		item.addEventListener("click",() => {
 			

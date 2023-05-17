@@ -13,31 +13,27 @@ export let liveCategories = [];
 
 let favoriteItems = [];
 let filteredEpg = []
-let filteredCat = [];
+export let filteredCat = [];
 let epgTimer;
 let chanelsCount = 6;
-let nextChanel = 1;
-let prevChanel = 1;
+export let nextChanel = 1;
+export let prevChanel = 1;
 let menuTransform = 0;
 if(localStorage.getItem("favorites")){
 	favoriteItems = JSON.parse(localStorage.getItem("favorites"));
 	console.log(favoriteItems);
 }
 
-export function setCategories(newCategories) {
-	categorys = newCategories;
-}
-export function setliveObj(newLiveObj){
-	liveObj = newLiveObj;
-}
-export function setChanels(newChanels){
-	chanels = newChanels
-}
+// export function setCategories(newCategories) {
+// 	categorys = newCategories;
+// }
+// function getCategories() {
+// 	return categorys;
+// }
 
-function getCategories() {
-	return categorys;
+export function setFilteredCat (newFilteredCat) {
+	filteredCat = newFilteredCat
 }
-
 
 function createTvElements(){
 	let filterMenu = document.createElement("div");
@@ -296,7 +292,7 @@ function createChanelItem(item){
 	return chanelItem;
 }
 
-function chanelItemsRender(side){
+export function chanelItemsRender(side){
 	let items = document.querySelectorAll(".chanels-inner .chanel-item");
 	let block = document.querySelector(".chanels-inner");
 
@@ -570,7 +566,6 @@ function selectedChanel(){
 }
 
 export async function liveInit () {
-	debugger
 	Promise.all([getLiveCategories(),getLiveChanels()])
 	.then(res => {
 		// debugger

@@ -2,7 +2,7 @@ import "../../css/index.css"
 
 import { controls } from "../remote/controls";
 import { pages } from "./pages";
-import { chanels ,printChanelsList} from "../js/liveTv";
+import { chanels ,printChanelsList, setFilteredCat} from "../js/liveTv";
 import { setSearchedItems ,movies, searchedItems} from "../js/movies";
 import { build_movie_items } from "../js/movies";
 import { series } from "../js/series";
@@ -29,7 +29,7 @@ export function remove_active(className) {
   
     active = document.getElementsByClassName(className);
   
-    for (var i = 0; i < active.length; i++) {
+    for (let i = 0; i < active.length; i++) {
       active[i].classList.remove(className);
     }
 }
@@ -42,35 +42,35 @@ export function remove_active_login(className) {
 
   active = document.getElementsByClassName(className);
 
-  for (var i = 0; i < active.length; i++) {
+  for (let i = 0; i < active.length; i++) {
     active[i].classList.remove(className);
   }
 }
 
 export function toDate(temp){
-  var date = new Date(+temp * 1000);
+  let date = new Date(+temp * 1000);
 
-  var hours  = date.getHours();
-  var minute = date.getMinutes();
+  let hours  = date.getHours();
+  let minute = date.getMinutes();
   if(hours < 10){
     hours = "0" + date.getHours();
   }
   if(minute < 10){
     minute = "0" + date.getMinutes();
   }
-  var time = hours + ":" + minute;
+  let time = hours + ":" + minute;
 
   return time;
 }
 
 export function currentTime(){
-	var date = new Date();
-    var month = date.getMonth() + 1;
-    var year = date.getFullYear();
+	let date = new Date();
+    let month = date.getMonth() + 1;
+    let year = date.getFullYear();
 
-    var day = date.getDate(); 
-    var hours = date.getHours();
-    var minuts = date.getMinutes();
+    let day = date.getDate(); 
+    let hours = date.getHours();
+    let minuts = date.getMinutes();
 
     if (hours < 10) hours = "0" + hours;
     if (minuts < 10) minuts = "0" + minuts;
@@ -94,9 +94,9 @@ export function currentTime(){
 }
 
 export function loader(){
-	var loader = document.createElement("div");
-	var loaderParent = document.createElement("div");
-	var loaderText = document.createElement("div");
+	let loader = document.createElement("div");
+	let loaderParent = document.createElement("div");
+	let loaderText = document.createElement("div");
 	loaderText.classList.add("loader-text");
 	loaderText.textContent = "Loading...";
 	loaderParent.classList.add("loader-parent");
@@ -126,16 +126,16 @@ export function blockScroll(block,side,unit = "rem",scrollSize = 65,scrollDir = 
 }
 
 export function print_keyboard(keyboardKeys,currentInput){
-	var keyboard = document.createElement("div");
+	let keyboard = document.createElement("div");
 	keyboard.classList.add("keyboard");
 	
 	keyboardKeys.forEach((row,rowI) => {
-		var rowLine = document.createElement("div");
+		let rowLine = document.createElement("div");
 		rowLine.classList.add("row","keyboard-row-ctrl");
 		keyboard.append(rowLine);
 
 		row.forEach((key,keyI) => {
-			var symbol = document.createElement("div");
+			let symbol = document.createElement("div");
 			symbol.classList.add("key","key-ctrl");	
 			if(key.toUpperCase() != key.toLowerCase() && key.length === 1){
 				symbol.classList.add("letter");
@@ -194,8 +194,7 @@ export function print_keyboard(keyboardKeys,currentInput){
             currentInput.value = "";
 
           }else if(activeKey.classList.contains("done")){
-
-            if(pages.current = "login"){
+            if(pages.current == "login"){
               if(controls.loginInputs.index < loginElems.length-1){
                 controls.loginInputs.index++;
                 controls.loginInputs.move();
@@ -209,11 +208,9 @@ export function print_keyboard(keyboardKeys,currentInput){
               currentInput.value = "";
               document.querySelector(".chanels-inner").innerHTML = "";
               printChanelsList(searchedItems);
-              filteredCat = searchedItems;
+              setFilteredCat(searchedItems);
               controls.set_current("tvChanelBlock");
               controls.tvChanelBlock.move();
-
-              // if(document.querySelector(".chanel-item-active")) document.querySelector(".chanel-item-active").click();
             }
 
 
@@ -247,9 +244,9 @@ export function print_keyboard(keyboardKeys,currentInput){
               setSearchedItems([])
 
               if(pages.current == "liveTv"){
-                for (var j = 0;j < chanels.length;j++){
-                  var chanel = chanels[j];
-                  var chanelName = chanel.name.split(" ").join("").toLowerCase();
+                for (let j = 0;j < chanels.length;j++){
+                  let chanel = chanels[j];
+                  let chanelName = chanel.name.split(" ").join("").toLowerCase();
                   if(chanelName.includes(currentInput.value.split(" ").join("").toLowerCase())){
                     searchedItems.push(chanel)
                     document.querySelector(".chanels-inner").innerHTML = "";
@@ -261,9 +258,9 @@ export function print_keyboard(keyboardKeys,currentInput){
 
               }else if(pages.current == "moviesSearch"){
                   document.querySelector(".searched-movies-row").innerHTML = "";
-          				for(var a = 0;a < movies.length;a++){
-          					var movie = movies[a];
-          					var movieName = movie.name.split(" ").join("").toLowerCase()
+          				for(let a = 0;a < movies.length;a++){
+          					let movie = movies[a];
+          					let movieName = movie.name.split(" ").join("").toLowerCase()
           					if(movieName.includes(currentInput.value.split(" ").join("").toLowerCase())){
           						searchedItems.push(movie);
           						document.querySelector(".not-found-block").style.display = "none";
@@ -277,7 +274,7 @@ export function print_keyboard(keyboardKeys,currentInput){
               }else if(pages.current == "seriesSearch"){
                 document.querySelector(".searched-movies-row").innerHTML = "";
                 series.forEach((movie,index) => {
-                    var movieName = movie.name.split(" ").join("").toLowerCase()
+                    let movieName = movie.name.split(" ").join("").toLowerCase()
                     if(movieName.includes(currentInput.value.split(" ").join("").toLowerCase())){
                       searchedItems.push(movie);
                       document.querySelector(".not-found-block").style.display = "none";

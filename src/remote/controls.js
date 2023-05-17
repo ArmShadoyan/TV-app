@@ -1,6 +1,12 @@
 import { remove_active, remove_active_login } from "./utils";
 import { pages } from "./pages";
 import { searchedItems } from "../js/movies";
+import { keydown } from "./keys";
+import { keyboardPos } from "../js/login";
+import { nextChanel,prevChanel,chanelItemsRender } from "../js/liveTv";
+import { menuRender } from "../js/menu";
+
+
 let menutTranslate = 0;
 const episodeArr = [0,0];
 

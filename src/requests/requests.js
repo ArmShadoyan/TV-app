@@ -36,7 +36,7 @@ export async function loginRequest(baseUrl,userName,password){
 
 export function getRequest(baseUrl,param_1,param_2,param_3 = ""){
 	// loader();
-	var url = `${baseUrl + param_1 + param_2 + param_3}`
+	let url = `${baseUrl + param_1 + param_2 + param_3}`
 	return fetch(url);
 }
 

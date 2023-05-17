@@ -1,5 +1,5 @@
 // import { showScreenSaver, screen_saver_timeout } from "../index";
-// import { controls } from "./controls";
+import { controls } from "./controls";
 
 window.KeyCode = {
   N0: 48,
@@ -85,6 +85,7 @@ function animation_end() {
 }
 
 document.onkeydown = function (e) {
+  // debugger
   if (!is_animation) {
     check_key(e);
   } else {
@@ -302,7 +303,7 @@ function check_key(e) {
 //   asdvasdv: function() {}
 // }
 
-function keydown(e) {
+export function keydown(e) {
   // debugger
   var method = e.keyName;
 

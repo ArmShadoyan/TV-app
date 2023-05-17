@@ -5,22 +5,22 @@ import { pages } from "../remote/pages";
 
 
 function ChangeParentalCodeElements(){
-	var backToMenuDiv = document.createElement("div");
-	var backToMenuBtn = document.createElement("div");
+	let backToMenuDiv = document.createElement("div");
+	let backToMenuBtn = document.createElement("div");
 
-	var pinBlock = document.createElement("div");
-	var pinInputBlock = document.createElement("div");
-	var pinTitle = document.createElement("div");
-	var pinRow = document.createElement("div");
-	var pin1 = document.createElement("div");
-	var pin2 = document.createElement("div");
-	var pin3 = document.createElement("div");
-	var pin4 = document.createElement("div");
-	var errorPin = document.createElement("div");
-	var successPin = document.createElement("div");
+	let pinBlock = document.createElement("div");
+	let pinInputBlock = document.createElement("div");
+	let pinTitle = document.createElement("div");
+	let pinRow = document.createElement("div");
+	let pin1 = document.createElement("div");
+	let pin2 = document.createElement("div");
+	let pin3 = document.createElement("div");
+	let pin4 = document.createElement("div");
+	let errorPin = document.createElement("div");
+	let successPin = document.createElement("div");
 
-	var pinKeyboardBlock = document.createElement("div");
-	var pinKeyboardRow = document.createElement("div");
+	let pinKeyboardBlock = document.createElement("div");
+	let pinKeyboardRow = document.createElement("div");
 
 	pinInputBlock.classList.add("pin_input_block");
 	pinTitle.classList.add("pin_title");
@@ -45,8 +45,8 @@ function ChangeParentalCodeElements(){
 	pinRow.append(pin1,pin2,pin3,pin4);
 
 	pinKeys.forEach(key => {
-		var pinKeyBlock = document.createElement("div");
-		var pinKey = document.createElement("div");
+		let pinKeyBlock = document.createElement("div");
+		let pinKey = document.createElement("div");
 		pinKeyBlock.classList.add("pin_key_block");
 		pinKey.classList.add("pin_key", "pin-key-ctrl");
 		pinKey.textContent = key;
@@ -88,8 +88,8 @@ export function lockCategoriesRender(){
 }
 
 export function parentalCodeOnclick(){
-	var keyboardRow = document.querySelector(".pin_keyboard_row");
-	var parentalInputs = document.querySelectorAll(".pin_input");
+	let keyboardRow = document.querySelector(".pin_keyboard_row");
+	let parentalInputs = document.querySelectorAll(".pin_input");
 	console.log(parentalInputs);
 	parentalInputs.forEach(item => {
 		item.addEventListener("click",() => {
@@ -97,8 +97,8 @@ export function parentalCodeOnclick(){
 		});
 	});
 
-	var pinKeys = document.querySelectorAll(".pin_key");
-	var pinInputs = document.querySelectorAll(".pin_input");
+	let pinKeys = document.querySelectorAll(".pin_key");
+	let pinInputs = document.querySelectorAll(".pin_input");
 
 	pinKeys.forEach(item => {
 		item.addEventListener("click",() => {

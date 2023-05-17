@@ -1,8 +1,7 @@
-import "../../css/login.css"
-import "../../css/index.css"
+
 import { pages } from "../remote/pages";
 import { controls } from "../remote/controls";
-import { print_keyboard } from "../remote/utils";
+import { print_keyboard ,lettersKeyboard} from "../remote/utils";
 import { loginRequest } from "../requests/requests";
 import { baseUrl,auth} from "../requests/parametrs";
 
@@ -19,7 +18,7 @@ window.onload = function () {
 	controls.loginInputs.move();
 }
 
-function keyboardPos(){
+export function keyboardPos(){
 	if(!document.querySelector(".keyboard")){
 		document.querySelector(".login-block").style.top = "12%";
 	}else{
@@ -30,23 +29,23 @@ function keyboardPos(){
 
 function build_Login_BLock(){
 
-	var loginBlock = document.createElement("div");
-	var logoBlock = document.createElement("div");
-	var logoImg = document.createElement("img");
-	var inputsBlock = document.createElement("div");
-	var loginInput = document.createElement("input");
-	var passwordInput = document.createElement("input");
-	var loginBtn = document.createElement("div");
+	let loginBlock = document.createElement("div");
+	let logoBlock = document.createElement("div");
+	let logoImg = document.createElement("img");
+	let inputsBlock = document.createElement("div");
+	let loginInput = document.createElement("input");
+	let passwordInput = document.createElement("input");
+	let loginBtn = document.createElement("div");
 
-	var errorMessage = document.createElement("p");
-	var keyboardBlock = document.createElement("div");
+	let errorMessage = document.createElement("p");
+	let keyboardBlock = document.createElement("div");
 
-	var popUp = document.createElement("div");
-	var popUpInner = document.createElement("div");
-	var popUpAnswer = document.createElement("div");
-	var popUpButtonsDiv = document.createElement("div");
-	var cancleBtn = document.createElement("button");
-	var exitBtn = document.createElement("button");
+	let popUp = document.createElement("div");
+	let popUpInner = document.createElement("div");
+	let popUpAnswer = document.createElement("div");
+	let popUpButtonsDiv = document.createElement("div");
+	let cancleBtn = document.createElement("button");
+	let exitBtn = document.createElement("button");
 
 	document.querySelector(".root").classList.add("root");
 	loginBlock.classList.add("login-block");
@@ -142,7 +141,7 @@ export function loginRender() {
 
 
 // function popUpActive(){
-// 	var popUpBtns = popUp.querySelectorAll("button");
+// 	let popUpBtns = popUp.querySelectorAll("button");
 // 	// popUpBtns[popUpi].classList.add("popup-active");
 // 	document.addEventListener("keydown",(e) => {
 // 		if(currentBlock === "login"){

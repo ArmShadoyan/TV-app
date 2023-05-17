@@ -12,15 +12,15 @@ let categoryArr = [];
 export let movieCategorys = [];
 export let movies = [];
 export let moviesObj = {};
-var movieScroll = 0;
-var mRowTranslate = 0
-var movieCount = 5;
+let movieScroll = 0;
+let mRowTranslate = 0
+let movieCount = 5;
 let nextMovie = 1;
 let prevMovie = 1;
 
-var catIndex = null;
+let catIndex = null;
 
-var episodes = [];
+let episodes = [];
 
 // export function setMovieCategorys(newCategories){
 //     movieCategorys = newCategories;
@@ -30,9 +30,9 @@ export function setSearchedItems(newSearcheditems){
 }
 
 function build_movies_header(){
-    var moviesHeader = document.createElement("div");
-    var backToMenuBtn = document.createElement("div");
-    var searchBlock = document.createElement("div");
+    let moviesHeader = document.createElement("div");
+    let backToMenuBtn = document.createElement("div");
+    let searchBlock = document.createElement("div");
     
     moviesHeader.classList.add("movies-header","m-row");
     backToMenuBtn.classList.add("movies-back-to-menu","m-i","search-back-ctrl");
@@ -83,15 +83,15 @@ function build_movies_header(){
 function build_category_blocks(movieCategorys,movies,obj){
     categoryArr = [];
 
-    var selectCategorysBlock = document.createElement("div");
-    var selectCategorysRow = document.createElement("div");
+    let selectCategorysBlock = document.createElement("div");
+    let selectCategorysRow = document.createElement("div");
     selectCategorysBlock.classList.add("movie-select-categorys-block");
     selectCategorysRow.classList.add("movie-select-categorys-row","m-row","movies-row");
 
     selectCategorysBlock.append(selectCategorysRow);
 
-    var moviesContainerInner = document.createElement("div");
-    var moviesContainer = document.createElement("div");
+    let moviesContainerInner = document.createElement("div");
+    let moviesContainer = document.createElement("div");
     moviesContainerInner.classList.add("movies-containerinner");
     moviesContainer.classList.add("movies-container");
     moviesContainer.setAttribute("translate",0)
@@ -101,14 +101,14 @@ function build_category_blocks(movieCategorys,movies,obj){
     movieCategorys.forEach((item,index) => {
         selectCategorysRow.append(build_movie_category_item(item,obj,index));
 
-        var categoryBlock = document.createElement("div");
-        var categoryTitle = document.createElement("div");
+        let categoryBlock = document.createElement("div");
+        let categoryTitle = document.createElement("div");
 
-        var moviesRow = document.createElement("div");
+        let moviesRow = document.createElement("div");
         moviesRow.setAttribute("index",item.category_id);
         moviesRow.setAttribute("position",0);
         if(obj[item.category_id]){
-            for (var i = 0; i < obj[item.category_id].movies.length; i++) {
+            for (let i = 0; i < obj[item.category_id].movies.length; i++) {
                 if(i < 5){
                    if(moviesRow){
                        moviesRow.append(build_movie_items(obj[item.category_id].movies[i],i));
@@ -137,14 +137,14 @@ function build_category_blocks(movieCategorys,movies,obj){
 };
     
 export function build_movie_items(movie,index){
-     var movieItem = document.createElement("div");
-     var movieImgBlock = document.createElement("div");
-     var movieTitleBlock = document.createElement("div");
-     var movieTitle = document.createElement("div");
+     let movieItem = document.createElement("div");
+     let movieImgBlock = document.createElement("div");
+     let movieTitleBlock = document.createElement("div");
+     let movieTitle = document.createElement("div");
 
     movieItem.classList.add("movies-item","m-i");
     movieItem.setAttribute("index",index)
-    var img = new Image()
+    let img = new Image()
     img.onload = () =>{
         requestAnimationFrame(() =>{
         movieImgBlock.style.backgroundImage = `url(${img.src})`
@@ -185,8 +185,8 @@ export function build_movie_items(movie,index){
 }
 
 function build_movie_category_item(item,obj,index){
-    var selectCategory = document.createElement("div");
-    var selectCategoryTitle = document.createElement("div");
+    let selectCategory = document.createElement("div");
+    let selectCategoryTitle = document.createElement("div");
 
     
     selectCategory.classList.add("movie-select-category","m-i");
@@ -230,27 +230,27 @@ export function moviesRender(categorys,movies,obj,page){
 
 export function movieInfoRender(data,previousPage,block){
 
-    var container = document.createElement("div");
-    var backToMovieBlock = document.createElement("div");
-    var backToMovieBtn = document.createElement("div");
-    var containerInner = document.createElement("div");
-    var imgBlock = document.createElement("div");
-    var imgDiv = document.createElement("div");
-    var playBtnDiv = document.createElement("div");
-    var playBtn = document.createElement("div");
+    let container = document.createElement("div");
+    let backToMovieBlock = document.createElement("div");
+    let backToMovieBtn = document.createElement("div");
+    let containerInner = document.createElement("div");
+    let imgBlock = document.createElement("div");
+    let imgDiv = document.createElement("div");
+    let playBtnDiv = document.createElement("div");
+    let playBtn = document.createElement("div");
 
-    var infoBlock = document.createElement("div");
-    var infoName = document.createElement("div");
-    var infoDesc = document.createElement("div");
-    var infoCast = document.createElement("div");
-    var infoGenres = document.createElement("div");
-    var infoRateTimeBlock = document.createElement("div");
-    var infoRate = document.createElement("div");
-    var infoTime = document.createElement("div");
+    let infoBlock = document.createElement("div");
+    let infoName = document.createElement("div");
+    let infoDesc = document.createElement("div");
+    let infoCast = document.createElement("div");
+    let infoGenres = document.createElement("div");
+    let infoRateTimeBlock = document.createElement("div");
+    let infoRate = document.createElement("div");
+    let infoTime = document.createElement("div");
 
-    var seasonSection = document.createElement("div");
-    var seasonBlock = document.createElement("div");
-    var episodeBlock = document.createElement("div");
+    let seasonSection = document.createElement("div");
+    let seasonBlock = document.createElement("div");
+    let episodeBlock = document.createElement("div");
 
     container.classList.add("movie-info-container");
     backToMovieBlock.classList.add("movie-info-back-block");
@@ -267,7 +267,7 @@ export function movieInfoRender(data,previousPage,block){
     seasonSection.classList.add("season-section");
     
     if(pages.current === "movieInfo"){
-        var img = new Image()
+        let img = new Image()
 
         img.onload = () =>{
             imgDiv.style.backgroundImage = `url(${img.src})`
@@ -305,7 +305,7 @@ export function movieInfoRender(data,previousPage,block){
         
     }else if(pages.current === "seriesInfo"){
         // seriesInfo = 0;
-        var img = new Image()
+        let img = new Image()
 
         img.onload = () =>{
             imgDiv.style.backgroundImage = `url(${img.src})`
@@ -338,7 +338,7 @@ export function movieInfoRender(data,previousPage,block){
         infoBlock.append(infoName,infoDesc,infoCast,infoGenres,infoRateTimeBlock,seasonSection);
         
         episodes = [];
-        var seasonsObj = {};
+        let seasonsObj = {};
 
         if(!Array.isArray(data.episodes)){
                 for(let item in data.episodes){
@@ -365,13 +365,13 @@ export function movieInfoRender(data,previousPage,block){
             container.append(backToMovieBlock,containerInner);
             document.querySelector(".root").append(container);
             
+            let defaultEpisodes 
             for(let item in seasonsObj){
-                var season = document.createElement("div");
+                let season = document.createElement("div");
                 season.classList.add("season","episode-ctrl"); 
                 season.setAttribute("season",item);
                 seasonBlock.append(season);
                 season.textContent = `season${item}`
-                var defaultEpisodes 
                 
                 if(episodes[Object.keys(seasonsObj)]){
                      defaultEpisodes = episodes[Object.keys(seasonsObj)[0]].episodes;
@@ -383,7 +383,7 @@ export function movieInfoRender(data,previousPage,block){
                 
                 season.addEventListener("click",(e) => {
                     e.stopPropagation();
-                    var currentEpisodes = seasonsObj[e.target.getAttribute("season")].episodes
+                    let currentEpisodes = seasonsObj[e.target.getAttribute("season")].episodes
                     console.log(currentEpisodes);
                     document.querySelector(".episode-block").innerHTML = "";
                     document.querySelector(".episode-block").style.transform = "translate(0rem)"
@@ -407,7 +407,7 @@ export function movieInfoRender(data,previousPage,block){
             container.append(backToMovieBlock,containerInner);
             root.append(container);
             episodes.forEach((ep,index) => {
-                var season = document.createElement("div");
+                let season = document.createElement("div");
                 season.classList.add("season","episode-ctrl");
                 season.setAttribute("season",index);
                 seasonBlock.append(season);
@@ -415,7 +415,7 @@ export function movieInfoRender(data,previousPage,block){
                 
                 season.addEventListener("click",(e) => {
                     e.stopPropagation();
-                    var currentEpisodes = episodes[+(e.target.getAttribute("season"))]
+                    let currentEpisodes = episodes[+(e.target.getAttribute("season"))]
                     console.log(currentEpisodes);
                     document.querySelector(".episode-block").innerHTML = "";
                     currentEpisodes.forEach(item => {
@@ -423,7 +423,7 @@ export function movieInfoRender(data,previousPage,block){
                     })
                 })
             })
-                    var defaultEpisodes = episodes[0];
+                    let defaultEpisodes = episodes[0];
                     
                     defaultEpisodes.forEach(ep => {
                         console.log(ep.season);
@@ -448,11 +448,11 @@ export function movieInfoRender(data,previousPage,block){
 }
 
 function createEpisode(item,data){
-    var episode = document.createElement("div");
-    var episodeImgBlock = document.createElement("div");
-    var episodeNameBlock = document.createElement("div");
+    let episode = document.createElement("div");
+    let episodeImgBlock = document.createElement("div");
+    let episodeNameBlock = document.createElement("div");
     
-    var img = new Image()
+    let img = new Image()
 
     img.onload = () =>{
             requestAnimationFrame(() =>{
@@ -481,18 +481,18 @@ export function movieSearchRender (){
     searchedItems = [];
     // isNextMovie = 1;
     movieCount = 5;
-    var movieSearchContainer = document.createElement("div");
-    var backToMovieBlock = document.createElement("div");
-    var backToMovieBtn = document.createElement("div");
-    var currentPageTitle = document.createElement("div");
-    var searchedMoviesBlock = document.createElement("div");
-    var searchedMoviesRow = document.createElement("div");
-    var notFoundBlock = document.createElement("div");
-    var notFoundImg = document.createElement("img");
-    var notFoundText = document.createElement("div");
-    var inputBlock = document.createElement("div");
-    var inputIcon = document.createElement("div");
-    var input = document.createElement("input");
+    let movieSearchContainer = document.createElement("div");
+    let backToMovieBlock = document.createElement("div");
+    let backToMovieBtn = document.createElement("div");
+    let currentPageTitle = document.createElement("div");
+    let searchedMoviesBlock = document.createElement("div");
+    let searchedMoviesRow = document.createElement("div");
+    let notFoundBlock = document.createElement("div");
+    let notFoundImg = document.createElement("img");
+    let notFoundText = document.createElement("div");
+    let inputBlock = document.createElement("div");
+    let inputIcon = document.createElement("div");
+    let input = document.createElement("input");
     
     movieSearchContainer.classList.add("movie-search-container","movies-container");
     backToMovieBlock.classList.add("movies-header","search-row","movie-search-row");
@@ -548,13 +548,13 @@ export function movieSearchRender (){
 
 function movieItemsRender(side){
     
-    var row;
+    let row;
     if(pages.current === "movies" || pages.current === "series"){
         row = document.querySelector(".active").parentNode;
     }else if(pages.current === "moviesSearch" || pages.current === "seriesSearch"){
         row = document.querySelector(".searched-movies-row .active").parentNode
     }
-            var items = row.querySelectorAll(".movies-item")
+            let items = row.querySelectorAll(".movies-item")
             if(side === "right"){
                 movieCount++;
             }else if(side === "left"){

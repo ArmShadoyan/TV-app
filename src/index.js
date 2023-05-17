@@ -15,6 +15,7 @@ import "../css/settings.css";
 
 window.onload = function () {
 	pages.set_current("login");
+	// debugger
 	controls.set_current("loginInputs");
 	controls.loginInputs.move();
 }

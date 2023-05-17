@@ -1,15 +1,15 @@
 function playerBlockRender(data){
-    var playerContainer = document.createElement("div");
-    var playerBlock = document.createElement("div");
-    var video = document.createElement("video");
-    var progresSection = document.createElement("div")
-    var progresBlock = document.createElement("div");
-    var time = document.createElement("div");
-    var progres = document.createElement("div");
-    var progresInner = document.createElement("div");
-    var progresBtn = document.createElement("div");
-    var duration = document.createElement("div");
-    var settingsButton = document.createElement("div");
+    let playerContainer = document.createElement("div");
+    let playerBlock = document.createElement("div");
+    let video = document.createElement("video");
+    let progresSection = document.createElement("div")
+    let progresBlock = document.createElement("div");
+    let time = document.createElement("div");
+    let progres = document.createElement("div");
+    let progresInner = document.createElement("div");
+    let progresBtn = document.createElement("div");
+    let duration = document.createElement("div");
+    let settingsButton = document.createElement("div");
 
     playerContainer.classList.add("player-container");
     playerBlock.classList.add("player-block");
